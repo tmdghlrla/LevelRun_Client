@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/missionFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="임무" />
+    <item
+        android:id="@+id/rankingFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="랭킹" />
+    <item
+        android:id="@+id/mainFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="메인" />
+    <item
+        android:id="@+id/socialFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="소셜" />
+    <item
+        android:id="@+id/settingsFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="설정" />
+</menu>

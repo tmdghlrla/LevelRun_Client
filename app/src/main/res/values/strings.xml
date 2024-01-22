@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">levelRunProject</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="txt_register">회원가입</string>
+    <string name="txt_line_register"><u>회원가입</u></string>
+    <string name="txt_login">로그인</string>
+    <string name="txt_nickname">닉네임</string>
+    <string name="txt_id">아이디</string>
+    <string name="txt_password">비밀번호</string>
+    <string name="btn_register">회원가입</string>
+    <string name="btn_login">로그인</string>
+
+</resources>
+
