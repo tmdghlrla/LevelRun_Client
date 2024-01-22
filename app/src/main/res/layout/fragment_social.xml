@@ -77,7 +77,6 @@
                 android:checked="false"
                 android:splitTrack="false"
                 android:switchMinWidth="48dp"
-                android:switchMinHeight="48dp"
                 android:switchPadding="20sp"
                 android:text="필터"
                 android:textColor="#000000"

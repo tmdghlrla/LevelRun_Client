@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -24,7 +25,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.qooke.levelrunproject.api.NetworkClient;
+import com.qooke.levelrunproject.api.UserApi;
+import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.User;
+import com.qooke.levelrunproject.model.UserRes;
+
 import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -71,6 +83,51 @@ public class LoginActivity extends AppCompatActivity {
                 showProgress();
 
                 // 로그인 api
+                showProgress();
+
+                Retrofit retrofit = NetworkClient.getRetrofitClient(LoginActivity.this);
+                UserApi api = retrofit.create(UserApi.class);
+                User user = new User(email, password);
+
+                Call<UserRes> call = api.login(user);
+                call.enqueue(new Callback<UserRes>() {
+                    @Override
+                    public void onResponse(Call<UserRes> call, Response<UserRes> response) {
+                        dismissProgress();
+
+                        if (response.isSuccessful()) {
+                            UserRes userRes = response.body();
+
+                            SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString("token", userRes.access_token);
+                            editor.apply();
+
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+
+                        } else if (response.code() == 400) {
+                            Toast.makeText(LoginActivity.this, "회원가입이 되지 않은 이메일이거나 비밀번호가 틀립니다.", Toast.LENGTH_SHORT).show();
+                            return;
+
+                        } else if (response.code() == 500) {
+                            Toast.makeText(LoginActivity.this, "데이터 베이스에 문제가 있습니다.", Toast.LENGTH_SHORT).show();
+                            return;
+
+                        } else {
+                            Toast.makeText(LoginActivity.this, "잠시후 다시 이용하세요.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserRes> call, Throwable t) {
+                        dismissProgress();
+                        Toast.makeText(LoginActivity.this, "네트워크 연결 오류", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                });
 
             }
         });

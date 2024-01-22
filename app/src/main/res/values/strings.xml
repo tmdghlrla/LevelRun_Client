@@ -11,10 +11,14 @@
     <string name="txt_posting">포스팅</string>
     <string name="txt_latest">최신순</string>
     <string name="txt_popularity">인기순</string>
+    <string name="txt_title">제목을 입력하세요</string>
+    <string name="txt_tag"># 태그를 입력하세요</string>
+    <string name="txt_content">내용을 입력하세요</string>
     <string name="txt_id">아이디</string>
     <string name="txt_password">비밀번호</string>
     <string name="btn_register">회원가입</string>
     <string name="btn_login">로그인</string>
+    <string name="btn_posting">포스팅 등록</string>
 
 </resources>
 

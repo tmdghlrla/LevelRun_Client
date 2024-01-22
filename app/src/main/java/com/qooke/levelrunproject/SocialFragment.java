@@ -163,7 +163,7 @@ public class SocialFragment extends Fragment {
         fbtnPostingAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), PostingActivity.class);
+                Intent intent = new Intent(getActivity(), PostingAddActivity.class);
                 startActivity(intent);
             }
         });
