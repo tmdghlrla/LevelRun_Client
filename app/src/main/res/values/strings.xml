@@ -7,6 +7,10 @@
     <string name="txt_line_register"><u>회원가입</u></string>
     <string name="txt_login">로그인</string>
     <string name="txt_nickname">닉네임</string>
+    <string name="txt_ranker">랭커</string>
+    <string name="txt_posting">포스팅</string>
+    <string name="txt_latest">최신순</string>
+    <string name="txt_popularity">인기순</string>
     <string name="txt_id">아이디</string>
     <string name="txt_password">비밀번호</string>
     <string name="btn_register">회원가입</string>
