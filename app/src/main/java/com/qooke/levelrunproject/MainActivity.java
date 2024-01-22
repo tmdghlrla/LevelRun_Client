@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         socialFragment = new SocialFragment();
         settingsFragment = new SettingsFragment();
 
+        loadFragment(mainFragment);
 
         // 바텀 네비게이션뷰 눌렀을때
         bottom_menu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
