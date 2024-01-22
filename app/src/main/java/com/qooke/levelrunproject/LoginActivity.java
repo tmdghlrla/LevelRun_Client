@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText editEmail;
     EditText editPassword;
     Button btnLogin;
-    ImageView imgKakaoLogin;
+    ImageButton btnKakaoLogin;
     TextView txtRegister;
 
     @Override
@@ -41,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         editEmail = findViewById(R.id.editEmail);
         editPassword = findViewById(R.id.editPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        imgKakaoLogin = findViewById(R.id.imgKakaoLogin);
+        btnKakaoLogin = findViewById(R.id.btnKakaoLogin);
         txtRegister = findViewById(R.id.txtRegister);
 
 
@@ -76,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         // 카카오 로그인 눌렀을때(카카오 로그인 API)
-        imgKakaoLogin.setOnClickListener(new View.OnClickListener() {
+        btnKakaoLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
