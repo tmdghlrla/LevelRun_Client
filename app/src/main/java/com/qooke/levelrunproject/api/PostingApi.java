@@ -21,7 +21,6 @@ public interface PostingApi {
     @POST("/posting")
     Call<Res> addPosting(@Header("Authorization") String token,
                          @Part MultipartBody.Part image,
-                         @Part ("title")RequestBody title,
                          @Part ("content")RequestBody content);
 
 
