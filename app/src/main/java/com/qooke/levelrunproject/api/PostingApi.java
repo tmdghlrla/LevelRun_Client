@@ -21,7 +21,9 @@ public interface PostingApi {
     @POST("/posting")
     Call<Res> addPosting(@Header("Authorization") String token,
                          @Part MultipartBody.Part image,
+                         @Part ("title")RequestBody title,
                          @Part ("content")RequestBody content);
+
 
     // 최신순 포스팅 가져오는 API
     @GET("/posting/latest")
@@ -35,6 +37,7 @@ public interface PostingApi {
     Call<PostingList> popularityPosting(@Header("Authorization") String token,
                                    @Query("offset") int offset,
                                    @Query("limit") int limit);
+
 
     // 내 포스팅 리스트 가져오는 API
     @GET("/posting/me")
