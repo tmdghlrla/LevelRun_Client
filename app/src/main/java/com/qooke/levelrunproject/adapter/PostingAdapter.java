@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.qooke.levelrunproject.PostDetailActivity;
 import com.qooke.levelrunproject.R;
 import com.qooke.levelrunproject.model.Posting;
 
@@ -36,8 +37,7 @@ public class PostingAdapter extends RecyclerView.Adapter<PostingAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Posting posting = postingArrayList.get(position);
-        holder.txtDescription.setText(posting.description);
-        Glide.with(context).load(posting.mediumUrl).into(holder.imgPosting);
+        Glide.with(context).load(posting.imgUrl).into(holder.imgPosting);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class PostingAdapter extends RecyclerView.Adapter<PostingAdapter.ViewHold
                     int index = getAdapterPosition();
                     posting = postingArrayList.get(index);
 
-                    Intent intent = new Intent(context, PostingDetailActivity.class);
+                    Intent intent = new Intent(context, PostDetailActivity.class);
                     context.startActivity(intent);
 
                 }
