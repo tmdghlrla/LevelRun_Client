@@ -26,8 +26,8 @@
         android:label="fragment_social"
         tools:layout="@layout/fragment_social" />
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.qooke.levelrunproject.SettingsFragment"
+        android:id="@+id/profileFragment"
+        android:name="com.qooke.levelrunproject.ProfileFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_profile" />
 </navigation>

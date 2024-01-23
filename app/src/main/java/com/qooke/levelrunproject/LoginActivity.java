@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,26 +26,30 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kakao.sdk.auth.model.OAuthToken;
+import com.kakao.sdk.user.UserApiClient;
+import com.kakao.sdk.user.model.User;
 import com.qooke.levelrunproject.api.NetworkClient;
-import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
-import com.qooke.levelrunproject.model.User;
 import com.qooke.levelrunproject.model.UserRes;
 
 import java.util.regex.Pattern;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
-
     EditText editEmail;
     EditText editPassword;
     Button btnLogin;
     ImageButton btnKakaoLogin;
     TextView txtRegister;
+    String email;
+    String nickName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +62,15 @@ public class LoginActivity extends AppCompatActivity {
         btnKakaoLogin = findViewById(R.id.btnKakaoLogin);
         txtRegister = findViewById(R.id.txtRegister);
 
-
+        // 카카오가 설치되어 있는지 확인 하는 메소드 또한 카카오에서 제공 콜백 객체를 이용함
+        Function2<OAuthToken, Throwable, Unit> callback = new Function2<OAuthToken, Throwable, Unit>() {
+            @Override
+            public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
+                // 이때 토큰이 전달이 되면 로그인이 성공한 것이고 토큰이 전달되지 않았다면 로그인 실패
+                updateKakaoLoginUi();
+                return null;
+            }
+        };
         // 로그인 버튼 눌렀을때
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,51 +96,6 @@ public class LoginActivity extends AppCompatActivity {
                 showProgress();
 
                 // 로그인 api
-                showProgress();
-
-                Retrofit retrofit = NetworkClient.getRetrofitClient(LoginActivity.this);
-                UserApi api = retrofit.create(UserApi.class);
-                User user = new User(email, password);
-
-                Call<UserRes> call = api.login(user);
-                call.enqueue(new Callback<UserRes>() {
-                    @Override
-                    public void onResponse(Call<UserRes> call, Response<UserRes> response) {
-                        dismissProgress();
-
-                        if (response.isSuccessful()) {
-                            UserRes userRes = response.body();
-
-                            SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sp.edit();
-                            editor.putString("token", userRes.access_token);
-                            editor.apply();
-
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-
-                        } else if (response.code() == 400) {
-                            Toast.makeText(LoginActivity.this, "회원가입이 되지 않은 이메일이거나 비밀번호가 틀립니다.", Toast.LENGTH_SHORT).show();
-                            return;
-
-                        } else if (response.code() == 500) {
-                            Toast.makeText(LoginActivity.this, "데이터 베이스에 문제가 있습니다.", Toast.LENGTH_SHORT).show();
-                            return;
-
-                        } else {
-                            Toast.makeText(LoginActivity.this, "잠시후 다시 이용하세요.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<UserRes> call, Throwable t) {
-                        dismissProgress();
-                        Toast.makeText(LoginActivity.this, "네트워크 연결 오류", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                });
 
             }
         });
@@ -137,7 +105,12 @@ public class LoginActivity extends AppCompatActivity {
         btnKakaoLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(UserApiClient.getInstance().isKakaoTalkLoginAvailable(LoginActivity.this)) {
+                    UserApiClient.getInstance().loginWithKakaoTalk(LoginActivity.this, callback);
 
+                } else {
+                    UserApiClient.getInstance().loginWithKakaoAccount(LoginActivity.this, callback);
+                }
             }
         });
 
@@ -148,6 +121,32 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
+            }
+        });
+    }
+
+
+    private void updateKakaoLoginUi() {
+        UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
+            @Override
+            public Unit invoke(User user, Throwable throwable) {
+                // 로그인이 되었있으면
+                if(user != null) {
+                    // 유저 이메일
+                    Log.i("tag", "invoke: email = " + user.getKakaoAccount().getEmail());
+                    // 유저 닉네임
+                    Log.i("tag", "invoke: nickName = " + user.getKakaoAccount().getProfile().getNickname());
+
+                    email = user.getKakaoAccount().getEmail();
+                    nickName = user.getKakaoAccount().getProfile().getNickname();
+                    Log.i("tag", "invoke: url = " + user.getKakaoAccount().getProfile().getThumbnailImageUrl());
+
+
+                } else {
+                    // 로그인이 안되어 있을 때
+                    Log.i("tag", "로그인이 되어 있지 않음");
+                }
+                return null;
             }
         });
     }
