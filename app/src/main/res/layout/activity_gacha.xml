@@ -9,11 +9,28 @@
         android:id="@+id/textView20"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_marginTop="70dp"
+        android:gravity="center"
+        android:text="뽑기"
+        android:textColor="#000000"
+        android:textSize="50sp"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
         app:srcCompat="@drawable/gacha" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:text="상자를 눌러 보상을 획득하세요!"
+        android:textColor="#000000"
+        android:textSize="22sp"
+        android:textStyle="bold" />
 </LinearLayout>
