@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MissionActivity">
+    tools:context=".MissionFragment">
 
     <TextView
         android:id="@+id/textView20"
@@ -148,5 +148,6 @@
         </LinearLayout>
 
     </ScrollView>
+
 
 </FrameLayout>
