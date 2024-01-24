@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:title="소셜" />
     <item
-        android:id="@+id/settingsFragment"
+        android:id="@+id/profileFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="설정" />
