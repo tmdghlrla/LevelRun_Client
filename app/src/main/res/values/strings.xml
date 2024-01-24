@@ -26,6 +26,9 @@
         <item>카메라 실행</item>
         <item>앨범에서 선택</item>
     </string-array>
+    <string name="today_button_label">오늘</string>
 
 </resources>
+
+
 
