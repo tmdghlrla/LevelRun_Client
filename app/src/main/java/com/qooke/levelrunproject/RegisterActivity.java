@@ -1,6 +1,5 @@
 package com.qooke.levelrunproject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
@@ -10,8 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +19,7 @@ import android.widget.Toast;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
-import com.qooke.levelrunproject.model.User;
+import com.qooke.levelrunproject.model.MyAppUser;
 import com.qooke.levelrunproject.model.UserRes;
 
 import java.util.regex.Pattern;
@@ -97,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
                 // 회원가입 API 불러오기
                 Retrofit retrofit = NetworkClient.getRetrofitClient(RegisterActivity.this);
                 UserApi api = retrofit.create(UserApi.class);
-                User user = new User(name, email, password);
+                MyAppUser user = new MyAppUser(name, email, password);
 
                 Call<UserRes> call = api.register(user);
                 call.enqueue(new Callback<UserRes>() {
@@ -110,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
                             SharedPreferences.Editor editor = sp.edit();
-                            editor.putString("token", userRes.access_token);
+                            editor.putString("token", userRes.accessToken);
                             editor.apply();
 
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);

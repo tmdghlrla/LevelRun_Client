@@ -1,22 +1,21 @@
 package com.qooke.levelrunproject.model;
 
-public class User {
+public class MyAppUser {
     public String nickName;
     public String email;
     public String password;
 
-    public User() {
+    public MyAppUser() {
     }
 
-    public User(String email, String password) {
+    public MyAppUser(String nickName, String email) {
+        this.nickName = nickName;
         this.email = email;
-        this.password = password;
     }
 
-    public User(String nickName, String email, String password) {
+    public MyAppUser(String nickName, String email, String password) {
         this.nickName = nickName;
         this.email = email;
         this.password = password;
     }
 }
-
