@@ -101,7 +101,7 @@
                 android:id="@+id/imageView27"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                app:srcCompat="@drawable/levelUp" />
+                app:srcCompat="@drawable/level_up" />
 
             <TextView
                 android:id="@+id/textView33"
