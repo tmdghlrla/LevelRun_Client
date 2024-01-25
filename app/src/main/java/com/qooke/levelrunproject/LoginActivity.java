@@ -1,27 +1,19 @@
 package com.qooke.levelrunproject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,9 +55,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        editEmail = findViewById(R.id.editEmail);
+        editEmail = findViewById(R.id.txtNickName);
         editPassword = findViewById(R.id.editPassword);
-        btnLogin = findViewById(R.id.btnLogin);
+        btnLogin = findViewById(R.id.btnStart);
         btnKakaoLogin = findViewById(R.id.btnKakaoLogin);
         txtRegister = findViewById(R.id.txtRegister);
 
@@ -141,10 +133,8 @@ public class LoginActivity extends AppCompatActivity {
         // 2. api 패키지에 있는 interface 생성
         UserApi api = retrofit.create(UserApi.class);
 
-        MyAppUser user = new MyAppUser(nickName, email, "kakao");
-        Log.i("tag", "nickName : " + user.nickName);
-        Log.i("tag", "email : " + user.email);
-        Log.i("tag", "password : " + user.password);
+        MyAppUser user = new MyAppUser(nickName, email);
+        user.profileUrl = profileUrl;
 
         // 3. api 호출
         Call<UserRes> call = api.kakaoLogin(user);
@@ -155,15 +145,12 @@ public class LoginActivity extends AppCompatActivity {
             // 성공했을 때
             @Override
             public void onResponse(Call<UserRes> call, Response<UserRes> response) {
-                Log.i("tag", "haha");
-
                 // 서버에서 보낸 응답이 200 OK 일 때 처리하는 코드
                 // 데이터 베이스에 카카오 로그인 정보가 없을 때
                 if(response.isSuccessful()) {
                     UserRes userRes = response.body();
                     String result = userRes.result;
-                    Log.i("tag", "userRes : " + userRes);
-                    Log.i("tag", "result : " + result);
+
                     SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
                     SharedPreferences.Editor  editor = sp.edit();
 
@@ -185,20 +172,25 @@ public class LoginActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    Log.i("tag", "result : " + result);
+
                     result = StringEscapeUtils.unescapeJava(result);
-                    Log.i("tag", "result : " + result);
+
 
                     if(result.contains("이메일")) {
-                        Log.i("tag", "여기는 이메일입니다.");
+                        Log.i("Login_tag", "여기는 이메일입니다.");
                         Toast.makeText(LoginActivity.this, "해당 이메일 주소로 가입된 정보가 있습니다.", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     else if(result.contains("닉네임")) {
-                        Log.i("tag", "여기는 닉네임입니다.");
-//                        Intent intent = new Intent(LoginActivity.this, )
+                        Log.i("Login_tag", "여기는 닉네임입니다.");
+                        Intent intent = new Intent(LoginActivity.this, NickNameActivity.class);
+                        intent.putExtra("email", email);
+                        intent.putExtra("profileUrl", profileUrl);
+                        startActivity(intent);
                     }
 
+                } else {
+                    Log.i("Login_tag", "response.code : " +response.code());
                 }
             }
 
@@ -216,21 +208,21 @@ public class LoginActivity extends AppCompatActivity {
         UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
             @Override
             public Unit invoke(User user, Throwable throwable) {
-                // 로그인이 되었있으면
+                // 핸드폰에 카카오 로그인이 되었있으면
                 if(user != null) {
                     // 유저 이메일
-                    Log.i("tag", "invoke: email = " + user.getKakaoAccount().getEmail());
+                    Log.i("Login_tag", "invoke: email = " + user.getKakaoAccount().getEmail());
                     // 유저 닉네임
-                    Log.i("tag", "invoke: nickName = " + user.getKakaoAccount().getProfile().getNickname());
+                    Log.i("Login_tag", "invoke: nickName = " + user.getKakaoAccount().getProfile().getNickname());
                     // 유저 프로필
-                    Log.i("tag", "invoke: url = " + user.getKakaoAccount().getProfile().getThumbnailImageUrl());
+                    Log.i("Login_tag", "invoke: url = " + user.getKakaoAccount().getProfile().getThumbnailImageUrl());
                     email = user.getKakaoAccount().getEmail().toString();
                     nickName = user.getKakaoAccount().getProfile().getNickname().toString();
                     profileUrl = user.getKakaoAccount().getProfile().getThumbnailImageUrl().toString();
                     kakaoLogin();
                 } else {
-                    // 로그인이 안되어 있을 때
-                    Log.i("tag", "로그인이 되어 있지 않음");
+                    // 핸드폰에 로그인이 안되어 있을 때
+                    Log.i("Login_tag", "로그인이 되어 있지 않음");
                 }
                 return null;
             }

@@ -4,6 +4,7 @@ public class MyAppUser {
     public String nickName;
     public String email;
     public String password;
+    public String profileUrl;
 
     public MyAppUser() {
     }
@@ -17,5 +18,12 @@ public class MyAppUser {
         this.nickName = nickName;
         this.email = email;
         this.password = password;
+    }
+
+    public MyAppUser(String nickName, String email, String password, String profileUrl) {
+        this.nickName = nickName;
+        this.email = email;
+        this.password = password;
+        this.profileUrl = profileUrl;
     }
 }

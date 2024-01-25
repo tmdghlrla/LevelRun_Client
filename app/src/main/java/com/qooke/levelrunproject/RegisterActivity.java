@@ -46,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         imgBack = findViewById(R.id.imgBack);
         editNickname = findViewById(R.id.editNickname);
-        editEmail = findViewById(R.id.editEmail);
+        editEmail = findViewById(R.id.txtNickName);
         editPassword = findViewById(R.id.editPassword);
         btnRegister = findViewById(R.id.btnRegister);
         imgKakaoLogin = findViewById(R.id.imgKakaoLogin);

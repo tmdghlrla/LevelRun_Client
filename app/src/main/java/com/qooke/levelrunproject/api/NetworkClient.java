@@ -34,7 +34,7 @@ public class NetworkClient {
             // 네트워크로 데이터를 보내고 받는
             // 레트로핏 라이브러리 관련 코드
             retrofit = new Retrofit.Builder()
-                    .baseUrl(Config.DOMAIN_LOCAL) // 서버의 도메인(aws 엔드포인트)
+                    .baseUrl(Config.DOMAIN) // 서버의 도메인(aws 엔드포인트)
                     .client(httpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
