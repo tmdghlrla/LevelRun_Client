@@ -57,6 +57,10 @@ dependencies {
     implementation ("androidx.navigation:navigation-fragment:2.5.3")
     implementation ("androidx.navigation:navigation-ui:2.5.3")
 
+    // 카카오
     implementation ("com.kakao.sdk:v2-user:2.8.6")
+
+    // 유니코드 이스케이프
+    implementation ("org.apache.commons:commons-lang3:3.12.0")
 
 }

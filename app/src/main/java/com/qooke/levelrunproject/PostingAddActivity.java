@@ -110,14 +110,14 @@ public class PostingAddActivity extends AppCompatActivity {
                 }
                 String content = editContent.getText().toString().trim();
 
-                if (content.isEmpty()) {
-                    Toast.makeText(PostingAddActivity.this, "제목과 내용을 모두 입력해주세요.", Toast.LENGTH_SHORT).show();
+                if (photoFile == null || content.isEmpty()) {
+                    Toast.makeText(PostingAddActivity.this, "사진과 내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                // 네트워크로 API 호출
                 showProgress();
 
+                // 네트워크로 API 호출
                 Retrofit retrofit = NetworkClient.getRetrofitClient(PostingAddActivity.this);
                 PostingApi api = retrofit.create(PostingApi.class);
 
@@ -125,13 +125,9 @@ public class PostingAddActivity extends AppCompatActivity {
                 String token = sp.getString("token", "");
                 token = "Bearer " + token;
 
-
                 // 보낼 파일
                 RequestBody fileBody = RequestBody.create(photoFile, MediaType.parse("image/jpeg"));
-                // 보낼 사진 사이즈가 크니 파일 쪼개서 보내기
                 MultipartBody.Part image = MultipartBody.Part.createFormData("image", photoFile.getName(), fileBody);
-
-                // 보낼 텍스트
                 RequestBody textBody = RequestBody.create(content, MediaType.parse("text/plain"));
 
                 Call<Res> call = api.addPosting(token, image, textBody);
@@ -173,10 +169,8 @@ public class PostingAddActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(i == 0) {
-                    // 첫번째 항목 : 카메라 실행
                     camera();
                 } else if (i == 1) {
-                    // 두번째 항목 : 앨범에서 선택
                     album();
                 }
             }
@@ -186,7 +180,6 @@ public class PostingAddActivity extends AppCompatActivity {
 
     // 카메라 실행 함수
     private void camera(){
-        // 카메라 권한 체크
         int permissionCheck = ContextCompat.checkSelfPermission(
                 PostingAddActivity.this, android.Manifest.permission.CAMERA);
 
@@ -194,26 +187,25 @@ public class PostingAddActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(PostingAddActivity.this,
                     new String[]{android.Manifest.permission.CAMERA} ,
                     1000);
-            Toast.makeText(PostingAddActivity.this, "카메라 권한 필요합니다.",
+            Toast.makeText(PostingAddActivity.this, "카메라 권한이 필요합니다.",
                     Toast.LENGTH_SHORT).show();
             return;
         } else {
             Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if(i.resolveActivity(PostingAddActivity.this.getPackageManager())  != null  ){
 
-                // 사진의 파일명을 만들기
                 String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 photoFile = getPhotoFile(fileName);
 
 
                 // todo : 패키지명을 현재의 프로젝트에 맞게 수정해야함
                 Uri fileProvider = FileProvider.getUriForFile(PostingAddActivity.this,
-                        "com.qooke.cameraapp.fileprovider", photoFile);
+                        "com.qooke.levelrunproject.fileprovider", photoFile);
                 i.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
                 startActivityForResult(i, 100);
 
             } else{
-                Toast.makeText(PostingAddActivity.this, "이폰에는 카메라 앱이 없습니다.",
+                Toast.makeText(PostingAddActivity.this, "휴대폰에 카메라 앱이 없습니다.",
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -226,23 +218,22 @@ public class PostingAddActivity extends AppCompatActivity {
         switch (requestCode) {
             case 1000: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(PostingAddActivity.this, "권한 허가 되었음",
+                    Toast.makeText(PostingAddActivity.this, "카메라 권한이 승인되었습니다.",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(PostingAddActivity.this, "아직 승인하지 않았음",
+                    Toast.makeText(PostingAddActivity.this, "카메라 권한 승인이 필요합니다.",
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
             }
             case 500: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(PostingAddActivity.this, "권한 허가 되었음",
+                    Toast.makeText(PostingAddActivity.this, "앨범 권한이 승인되었습니다.",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(PostingAddActivity.this, "아직 승인하지 않았음",
+                    Toast.makeText(PostingAddActivity.this, "앨범 권한 승인이 필요합니다.",
                             Toast.LENGTH_SHORT).show();
                 }
-
             }
 
         }
@@ -279,6 +270,7 @@ public class PostingAddActivity extends AppCompatActivity {
             // 해상도 낮춰서 압축시킨다.
             OutputStream os;
             try {
+
                 os = new FileOutputStream(photoFile);
                 photo.compress(Bitmap.CompressFormat.JPEG, 50, os);
                 os.flush();
@@ -387,7 +379,6 @@ public class PostingAddActivity extends AppCompatActivity {
         }
     }
 
-
     // 앨범 실행 함수
     private void album(){
         if(checkPermission()){
@@ -421,12 +412,12 @@ public class PostingAddActivity extends AppCompatActivity {
         if(ActivityCompat.shouldShowRequestPermissionRationale(PostingAddActivity.this,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
             Log.i("DEBUGGING5", "true");
-            Toast.makeText(PostingAddActivity.this, "권한 수락이 필요합니다.",
+            Toast.makeText(PostingAddActivity.this, "앨범 권한 수락이 필요합니다.",
                     Toast.LENGTH_SHORT).show();
         }else{
             Log.i("DEBUGGING6", "false");
             ActivityCompat.requestPermissions(PostingAddActivity.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 500);
+                    new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 500);
         }
     }
 

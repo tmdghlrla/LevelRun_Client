@@ -17,6 +17,7 @@ import retrofit2.http.Query;
 public interface PostingApi {
 
     // 포스팅 생성 API
+
     @Multipart
     @POST("/posting")
     Call<Res> addPosting(@Header("Authorization") String token,
@@ -28,6 +29,7 @@ public interface PostingApi {
     @GET("/posting/latest")
     Call<PostingList> latestPosting(@Header("Authorization") String token,
                                     @Query("offset") int offset,
+
                                     @Query("limit") int limit);
 
 
@@ -38,9 +40,9 @@ public interface PostingApi {
                                    @Query("limit") int limit);
 
 
-    // 내 포스팅 리스트 가져오는 API
-    @GET("/posting/me")
-    Call<PostingList> getMyPosting(@Header("Authorization") String token,
+    // 전체 포스팅 가져오는 API
+    @GET("/posting/all")
+    Call<PostingList> getAllPosting(@Header("Authorization") String token,
                                    @Query("offset") int offset,
                                    @Query("limit") int limit);
 }

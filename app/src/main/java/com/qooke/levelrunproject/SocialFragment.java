@@ -110,6 +110,7 @@ public class SocialFragment extends Fragment {
         fbtnPostingAdd = rootView.findViewById(R.id.fbtnPostingAdd);
         imgBack = rootView.findViewById(R.id.imgBack);
         switchFilter = rootView.findViewById(R.id.switchFilter);
+        progressBar = rootView.findViewById(R.id.progressBar);
 
         recyclerviewRanker = rootView.findViewById(R.id.recyclerviewRanker);
         recyclerviewRanker.setHasFixedSize(true);
@@ -125,10 +126,7 @@ public class SocialFragment extends Fragment {
                 int totalCount = recyclerView.getAdapter().getItemCount();
 
                 if(lastPosition + 1 == totalCount) {
-                    // 네트워크 통해서 데이터를 더 불러온다.
                     if (limit == count) {
-                        // DB에 데이터가 더 존재할 수 있으니까, 데이터를 불러온다.(네트워크 낭비 제한)
-                        // 네트워크 통하는 함수 만들기(페이징 처리)
                         addNetworkData();
                     }
                 }
@@ -149,10 +147,7 @@ public class SocialFragment extends Fragment {
                 int totalCount = recyclerView.getAdapter().getItemCount();
 
                 if(lastPosition + 1 == totalCount) {
-                    // 네트워크 통해서 데이터를 더 불러온다.
                     if (limit == count) {
-                        // DB에 데이터가 더 존재할 수 있으니까, 데이터를 불러온다.(네트워크 낭비 제한)
-                        // 네트워크 통하는 함수 만들기(페이징 처리)
                         addNetworkData();
                     }
                 }
@@ -193,7 +188,7 @@ public class SocialFragment extends Fragment {
         String token = sp.getString("token", "");
         token = "Bearer " + token;
 
-        Call<PostingList> call = api.getMyPosting(token, offset, limit);
+        Call<PostingList> call = api.getAllPosting(token, offset, limit);
         call.enqueue(new Callback<PostingList>() {
             @Override
             public void onResponse(Call<PostingList> call, Response<PostingList> response) {
@@ -231,17 +226,15 @@ public class SocialFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        // 네트워크로 API 호출한다.
         Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
         PostingApi api = retrofit.create(PostingApi.class);
 
         SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, Context.MODE_PRIVATE);
         String token = sp.getString("token", "");
 
-        // 오프셋을 count만큼 증가시킬 수 있도록 셋팅
         offset = offset + count;
 
-        Call<PostingList> call = api.getMyPosting(token, offset, limit);
+        Call<PostingList> call = api.getAllPosting(token, offset, limit);
         call.enqueue(new Callback<PostingList>() {
             @Override
             public void onResponse(Call<PostingList> call, Response<PostingList> response) {

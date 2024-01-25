@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.kakao.sdk.common.KakaoSdk;
 import com.qooke.levelrunproject.config.Config;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.i("getKeyHash", ""+getKeyHash(MainActivity.this));
         bottom_menu = findViewById(R.id.bottom_menu);
-        missionFragment = new MissionFragment();
+        missionFragment = new RecordFragment();
         rankingFragment = new RankingFragment();
         mainFragment = new MainFragment();
         socialFragment = new SocialFragment();
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
                 Fragment fragment = null;
-                if (itemId == R.id.missionFragment) {
+                if (itemId == R.id.recordFragment) {
                     fragment = missionFragment;
                 } else if (itemId == R.id.rankingFragment) {
                     fragment = rankingFragment;

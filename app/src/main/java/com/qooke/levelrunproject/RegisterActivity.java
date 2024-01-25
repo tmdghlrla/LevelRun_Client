@@ -1,6 +1,5 @@
 package com.qooke.levelrunproject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
@@ -10,8 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +19,7 @@ import android.widget.Toast;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
-import com.qooke.levelrunproject.model.User;
+import com.qooke.levelrunproject.model.MyAppUser;
 import com.qooke.levelrunproject.model.UserRes;
 
 import java.util.regex.Pattern;
@@ -94,10 +91,10 @@ public class RegisterActivity extends AppCompatActivity {
 
                 showProgress();
 
-                // 회원가입 API 불러오기
+                // 회원가입 API
                 Retrofit retrofit = NetworkClient.getRetrofitClient(RegisterActivity.this);
                 UserApi api = retrofit.create(UserApi.class);
-                User user = new User(name, email, password);
+                MyAppUser user = new MyAppUser(name, email, password);
 
                 Call<UserRes> call = api.register(user);
                 call.enqueue(new Callback<UserRes>() {
@@ -110,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
                             SharedPreferences.Editor editor = sp.edit();
-                            editor.putString("token", userRes.access_token);
+                            editor.putString("token", userRes.accessToken);
                             editor.apply();
 
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
@@ -122,6 +119,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this, "이메일과 비밀번호 형식이 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
                             return;
                         } else if (response.code() == 500) {
+                            // todo : 이메일, 닉네임 중복확인하는 함수 필요
                             Toast.makeText(RegisterActivity.this, "데이터 베이스에 문제가 있습니다.", Toast.LENGTH_SHORT).show();
                             return;
                         } else {

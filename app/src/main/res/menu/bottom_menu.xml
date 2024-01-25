@@ -1,29 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/missionFragment"
+        android:id="@+id/recordFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="임무" />
+        android:icon="@drawable/iconfontcalendarlinespen"
+        android:title="기록" />
     <item
         android:id="@+id/rankingFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:icon="@drawable/iconfonttrophy"
         android:title="랭킹" />
     <item
         android:id="@+id/mainFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:icon="@drawable/iconfontrunning"
         android:title="메인" />
     <item
         android:id="@+id/socialFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:icon="@drawable/iconfontusersalt"
         android:title="소셜" />
     <item
         android:id="@+id/profileFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="설정" />
+        android:icon="@drawable/iconfontuser"
+        android:title="정보" />
 </menu>
