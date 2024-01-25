@@ -21,11 +21,11 @@ public class NetworkClient {
             // 통신 로그 확인할 때 필요한 코드
             HttpLoggingInterceptor loggingInterceptor =
                     new HttpLoggingInterceptor();
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC); // 실제 사용할 때는 BASIC으로 사용(테스트용: BODY)
 
             // 네트워크 연결관련 코드
             OkHttpClient httpClient = new OkHttpClient.Builder()
-                    .connectTimeout(1, TimeUnit.MINUTES)
+                    .connectTimeout(1, TimeUnit.MINUTES) // 보통 1분 정도 부여
                     .readTimeout(1, TimeUnit.MINUTES)
                     .writeTimeout(1, TimeUnit.MINUTES)
                     .addInterceptor(loggingInterceptor)

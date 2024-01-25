@@ -1,11 +1,10 @@
 package com.qooke.levelrunproject;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.kakao.sdk.common.KakaoSdk;
 
-public class kakaoApplication extends Application {
+public class KakaoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

@@ -1,153 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".RecordFragment">
 
+    <!-- 추가 정보를 표시할 레이아웃 -->
     <TextView
-        android:id="@+id/textView20"
+        android:id="@+id/textView30"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"   />
+        android:layout_height="wrap_content"
+        android:gravity="center|center_horizontal"
+        android:text="오늘의 기록"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp" />
 
-
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/additionalInfoLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="5"   >
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- 선택된 날짜에 대한 추가 정보를 표시할 TextView -->
+        <TextView
+            android:id="@+id/additionalInfoTextView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/textView23"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp"
-                android:text="일일 퀘스트"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="27sp"
-                android:textStyle="bold" />
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/additionalInfoLayout"
+        android:layout_centerInParent="true"
+        android:headerBackground="#3F51B5"
+        android:minDate="01/23/2024" />
 
-            <ProgressBar
-                android:id="@+id/progress2"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_margin="10sp"
-                android:max="1000"
-                android:progress="1000" />
+    <Button
+        android:id="@+id/todayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/today_button_label"
+        android:layout_below="@id/calendarView"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="16dp"
+        android:onClick="goToToday" />
 
-            <TextView
-                android:id="@+id/textView24"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="1,000보 걷기"
-                android:textSize="16sp" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
-            <ImageButton
-                android:id="@+id/imageButton3"
-                style="@android:style/Widget.ImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:src="@android:drawable/btn_star_big_on" />
-
-            <ProgressBar
-                android:id="@+id/progress3"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_margin="10sp"
-                android:max="3000"
-                android:progress="2000" />
-
-            <TextView
-                android:id="@+id/textView25"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="3,000보 걷기"
-                android:textSize="16sp" />
-
-            <ImageButton
-                android:id="@+id/imageButton1"
-                style="@android:style/Widget.ImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:src="@android:drawable/btn_star_big_off" />
-
-            <ProgressBar
-                android:id="@+id/progress4"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_margin="10sp"
-                android:max="5000"
-                android:progress="3000" />
-
-            <TextView
-                android:id="@+id/textView26"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="5,000보 걷기"
-                android:textSize="16sp" />
-
-            <ImageButton
-                android:id="@+id/imageButton2"
-                style="@android:style/Widget.ImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:src="@android:drawable/btn_star_big_off" />
-
-            <TextView
-                android:id="@+id/textView27"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp"
-                android:text="특별 퀘스트"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="27sp"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:id="@+id/progress5"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_margin="10sp"
-                android:max="10000"
-                android:progress="2500" />
-
-            <TextView
-                android:id="@+id/textView28"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10,000보 걷기 3회 달성"
-                android:textSize="16sp" />
-
-            <ImageButton
-                android:id="@+id/imageButton4"
-                style="@android:style/Widget.ImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:src="@android:drawable/btn_star_big_off"
-                android:layout_weight="1"   />
-        </LinearLayout>
-
-    </ScrollView>
-
-
-</FrameLayout>
+</RelativeLayout>
