@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +25,15 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    ImageView imgSetting;
+    ImageView imgProfile;
+    TextView txtCount;
+    TextView txtNickName;
+    TextView txtRank;
+    TextView txtLevel;
+    TextView txtExp;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -58,7 +69,23 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
+        imgSetting = rootView.findViewById(R.id.imgSetting);
+        imgProfile = rootView.findViewById(R.id.imgProfile);
+        txtCount = rootView.findViewById(R.id.txtCount);
+        txtNickName = rootView.findViewById(R.id.editEmail);
+        txtRank = rootView.findViewById(R.id.txtRank);
+        txtLevel = rootView.findViewById(R.id.txtLevel);
+        txtExp = rootView.findViewById(R.id.txtExp);
+
+        //여기서 작업
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
     }
 }

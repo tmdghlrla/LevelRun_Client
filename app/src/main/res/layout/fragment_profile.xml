@@ -18,17 +18,11 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/baseline_arrow_back_ios_24" />
-
-            <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/imgSetting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="310dp"
+                android:layout_marginLeft="345dp"
                 android:src="@drawable/outline_settings_24" />
         </LinearLayout>
 
@@ -45,7 +39,7 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/imgProfile"
                 android:layout_width="180dp"
                 android:layout_height="160dp"
                 android:layout_weight="1"
@@ -66,7 +60,7 @@
                     android:src="@drawable/randombox" />
 
                 <TextView
-                    android:id="@+id/textView11"
+                    android:id="@+id/txtCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
@@ -94,7 +88,7 @@
             app:cardMaxElevation="10dp">
 
             <TextView
-                android:id="@+id/textView13"
+                android:id="@+id/editEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -127,7 +121,7 @@
                     android:textSize="22sp" />
 
                 <TextView
-                    android:id="@+id/textView17"
+                    android:id="@+id/txtRank"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -154,7 +148,7 @@
                     android:textSize="22sp" />
 
                 <TextView
-                    android:id="@+id/textView18"
+                    android:id="@+id/txtLevel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -181,7 +175,7 @@
                     android:textSize="22sp" />
 
                 <TextView
-                    android:id="@+id/textView19"
+                    android:id="@+id/txtExp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -194,15 +188,10 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
