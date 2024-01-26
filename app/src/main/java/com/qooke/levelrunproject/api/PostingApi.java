@@ -16,33 +16,41 @@ import retrofit2.http.Query;
 
 public interface PostingApi {
 
-    // 포스팅 생성 API
-
+    // 포스팅 생성
     @Multipart
     @POST("/posting")
     Call<Res> addPosting(@Header("Authorization") String token,
                          @Part MultipartBody.Part image,
                          @Part ("content")RequestBody content);
 
+    // 랭커 포스팅 가져오기
+    @GET("/posting/ranker")
+    Call<PostingList> getRankerPost(@Header("Authorization") String token,
+                                    @Query("offset") int offset,
+                                    @Query("limit") int limit);
 
-    // 최신순 포스팅 가져오는 API
+    // 전체 포스팅 가져오기
+    @GET("/posting")
+    Call<PostingList> getAllPosting(@Header("Authorization") String token,
+                                    @Query("offset") int offset,
+                                    @Query("limit") int limit);
+
+    // 포스팅 상세정보
+    @GET("/posting/{postingId}")
+    Call<PostingList> postDetail(@Header("Authorization") String token);
+
+
+    // 최신순 포스팅 가져오기
     @GET("/posting/latest")
     Call<PostingList> latestPosting(@Header("Authorization") String token,
                                     @Query("offset") int offset,
-
                                     @Query("limit") int limit);
 
-
-    // 인기순 포스팅 가져오는 API
+    // 인기순 포스팅 가져오기
     @GET("/posting/popularity")
     Call<PostingList> popularityPosting(@Header("Authorization") String token,
-                                   @Query("offset") int offset,
-                                   @Query("limit") int limit);
+                                        @Query("offset") int offset,
+                                        @Query("limit") int limit);
 
 
-    // 전체 포스팅 가져오는 API
-    @GET("/posting/all")
-    Call<PostingList> getAllPosting(@Header("Authorization") String token,
-                                   @Query("offset") int offset,
-                                   @Query("limit") int limit);
 }
