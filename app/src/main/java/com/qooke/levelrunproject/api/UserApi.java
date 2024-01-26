@@ -1,11 +1,14 @@
 package com.qooke.levelrunproject.api;
 
 import com.qooke.levelrunproject.model.MyAppUser;
+import com.qooke.levelrunproject.model.Res;
 import com.qooke.levelrunproject.model.UserRes;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -23,6 +26,9 @@ public interface UserApi {
     @POST("/user/kakaoLogin")
         // 파라미터에 보낼 데이터를 적는다. 데이터는 묶어서 보낸다.
     Call<UserRes> kakaoLogin(@Body MyAppUser user);
+
+    @DELETE("/user/logout")
+    Call<Res> logout(@Header("Authorization") String token);
 
     // 유정 정보 가져오기
 //    @GET("/user")

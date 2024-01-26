@@ -85,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                 MyAppUser user = new MyAppUser();
                 user.email = email;
                 user.password = password;
+
                 Call<UserRes> call = api.login(user);
                 call.enqueue(new Callback<UserRes>() {
                     @Override
