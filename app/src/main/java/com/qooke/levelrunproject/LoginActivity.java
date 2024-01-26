@@ -97,7 +97,9 @@ public class LoginActivity extends AppCompatActivity {
                 // 로그인 api
                 Retrofit retrofit = NetworkClient.getRetrofitClient(LoginActivity.this);
                 UserApi api = retrofit.create(UserApi.class);
-                MyAppUser user = new MyAppUser(email, password);
+                MyAppUser user = new MyAppUser();
+                user.email = email;
+                user.password = password;
 
                 Call<UserRes> call = api.loginDefault(user);
                 call.enqueue(new Callback<UserRes>() {

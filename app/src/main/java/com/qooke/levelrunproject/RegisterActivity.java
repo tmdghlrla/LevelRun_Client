@@ -105,11 +105,6 @@ public class RegisterActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             UserRes userRes = response.body();
 
-                            SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sp.edit();
-                            editor.putString("token", userRes.accessToken);
-                            editor.apply();
-
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
