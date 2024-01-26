@@ -102,6 +102,15 @@ public class ProfileFragment extends Fragment {
         txtLevel = rootView.findViewById(R.id.txtLevel);
         txtExp = rootView.findViewById(R.id.txtExp);
 
+        // 설정 버튼 눌렀을때
+        imgSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
+
         //여기서 작업
         return rootView;
     }

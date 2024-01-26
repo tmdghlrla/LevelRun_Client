@@ -410,14 +410,14 @@ public class PostingAddActivity extends AppCompatActivity {
     // 앨범 권한 수락 여부 확인 함수
     private void requestPermission() {
         if(ActivityCompat.shouldShowRequestPermissionRationale(PostingAddActivity.this,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+                android.Manifest.permission.READ_MEDIA_IMAGES)){
             Log.i("DEBUGGING5", "true");
             Toast.makeText(PostingAddActivity.this, "앨범 권한 수락이 필요합니다.",
                     Toast.LENGTH_SHORT).show();
         }else{
             Log.i("DEBUGGING6", "false");
             ActivityCompat.requestPermissions(PostingAddActivity.this,
-                    new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 500);
+                    new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 500);
         }
     }
 
