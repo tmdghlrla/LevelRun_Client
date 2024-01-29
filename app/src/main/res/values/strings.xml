@@ -12,7 +12,7 @@
     <string name="txt_latest">최신순</string>
     <string name="txt_popularity">인기순</string>
     <string name="txt_title">제목을 입력하세요</string>
-    <string name="txt_tag"># 태그를 입력하세요</string>
+    <string name="txt_tag"># 태그를 입력하세요(최대 5개)</string>
     <string name="txt_content">내용을 입력하세요</string>
     <string name="txt_id">아이디</string>
     <string name="txt_password">비밀번호</string>

@@ -380,7 +380,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
 
                 imgChange.setImageBitmap(photo);
-                imgChange.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imgChange.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
 //                imageView.setImageBitmap( getBitmapAlbum( imageView, albumUri ) );
 

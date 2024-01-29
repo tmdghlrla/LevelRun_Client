@@ -1,0 +1,81 @@
+package com.qooke.levelrunproject.adapter;
+
+import static android.media.CamcorderProfile.get;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.qooke.levelrunproject.PostDetailActivity;
+import com.qooke.levelrunproject.R;
+import com.qooke.levelrunproject.api.NetworkClient;
+import com.qooke.levelrunproject.api.RankerApi;
+import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.Ranker;
+import com.qooke.levelrunproject.model.RankerList;
+
+import java.util.ArrayList;
+
+
+public class RankerSocialAdapter extends RecyclerView.Adapter<RankerSocialAdapter.ViewHolder> {
+
+    Context context;
+    ArrayList<Ranker> rankerArrayList;
+
+    public RankerSocialAdapter(Context context, ArrayList<Ranker> rankerArrayList) {
+        this.context = context;
+        this.rankerArrayList = rankerArrayList;
+    }
+
+    @NonNull
+    @Override
+    public RankerSocialAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.ranking_row, parent, false);
+        return new RankerSocialAdapter.ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Ranker ranker = rankerArrayList.get(position);
+        Glide.with(context).load(ranker.profileUrl).into(holder.imgRanker);
+    }
+
+    @Override
+    public int getItemCount() {
+        return rankerArrayList.size();
+    }
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView imgRanker;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            imgRanker = itemView.findViewById(R.id.imgRanker);
+
+            imgRanker.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int index = getAdapterPosition();
+                    Ranker ranker = rankerArrayList.get(index);
+
+                    Intent intent = new Intent(context, PostDetailActivity.class);
+                    intent.putExtra("index", index);
+                    intent.putExtra("ranker", ranker);
+                    context.startActivity(intent);
+
+                }
+            });
+        }
+    }
+}

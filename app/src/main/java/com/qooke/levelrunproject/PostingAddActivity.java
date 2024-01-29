@@ -321,7 +321,7 @@ public class PostingAddActivity extends AppCompatActivity {
                 }
 
                 imgAddPhoto.setImageBitmap(photo);
-                imgAddPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imgAddPhoto.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
 //                imageView.setImageBitmap( getBitmapAlbum( imageView, albumUri ) );
 
@@ -391,7 +391,7 @@ public class PostingAddActivity extends AppCompatActivity {
     // 앨범에서 권한 확인하는 함수
     private boolean checkPermission(){
         int result = ContextCompat.checkSelfPermission(PostingAddActivity.this,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                android.Manifest.permission.READ_MEDIA_IMAGES);
         if(result == PackageManager.PERMISSION_DENIED){
             return false;
         }else{

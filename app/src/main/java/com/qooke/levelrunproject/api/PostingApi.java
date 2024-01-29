@@ -29,7 +29,7 @@ public interface PostingApi {
                                     @Query("offset") int offset,
                                     @Query("limit") int limit);
 
-    // 전체 포스팅 가져오기
+    // 전체 포스팅 가져오기(최신순)
     @GET("/posting")
     Call<PostingList> getAllPosting(@Header("Authorization") String token,
                                     @Query("offset") int offset,
@@ -40,11 +40,6 @@ public interface PostingApi {
     Call<PostingList> postDetail(@Header("Authorization") String token);
 
 
-    // 최신순 포스팅 가져오기
-    @GET("/posting/latest")
-    Call<PostingList> latestPosting(@Header("Authorization") String token,
-                                    @Query("offset") int offset,
-                                    @Query("limit") int limit);
 
     // 인기순 포스팅 가져오기
     @GET("/posting/popularity")
