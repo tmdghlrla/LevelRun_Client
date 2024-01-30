@@ -10,10 +10,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.kakao.sdk.user.model.User;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.PostingApi;
@@ -95,8 +99,6 @@ public class SettingsActivity extends AppCompatActivity {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, ProfileFragment.class);
-                startActivity(intent);
                 finish();
             }
         });
@@ -116,7 +118,7 @@ public class SettingsActivity extends AppCompatActivity {
                 String nickName = editNickname.getText().toString().trim();
 
                 if (nickName.isEmpty()) {
-                    Toast.makeText(SettingsActivity.this, "사진과 닉네임을 모두 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -224,18 +226,27 @@ public class SettingsActivity extends AppCompatActivity {
     private void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
         builder.setTitle(R.string.alert_title);
-        builder.setItems(R.array.alert_photo, new DialogInterface.OnClickListener() {
+        builder.setItems(R.array.alert_profile, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(i == 0) {
                     camera();
                 } else if (i == 1) {
                     album();
+                } else {
+                    profileDelete();
                 }
             }
         });
         builder.show();
     }
+
+    // 프로필 사진 삭제(기본 이미지)
+    private void profileDelete() {
+        imgChange.setImageResource(R.drawable.blankprofilepicture);
+        imgChange.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+    }
+
 
     // 카메라 실행 함수
     private void camera(){
@@ -255,7 +266,6 @@ public class SettingsActivity extends AppCompatActivity {
 
                 String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 photoFile = getPhotoFile(fileName);
-
 
                 // todo : 패키지명을 현재의 프로젝트에 맞게 수정해야함
                 Uri fileProvider = FileProvider.getUriForFile(SettingsActivity.this,
@@ -389,6 +399,8 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             // 네트워크로 데이터 보낼 필요가 있으면 여기에 코드 작성
+
+
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

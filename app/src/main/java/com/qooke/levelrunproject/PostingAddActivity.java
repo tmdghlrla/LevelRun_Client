@@ -165,7 +165,7 @@ public class PostingAddActivity extends AppCompatActivity {
     private void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PostingAddActivity.this);
         builder.setTitle(R.string.alert_title);
-        builder.setItems(R.array.alert_photo, new DialogInterface.OnClickListener() {
+        builder.setItems(R.array.alert_posting, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(i == 0) {
@@ -282,7 +282,7 @@ public class PostingAddActivity extends AppCompatActivity {
             photo = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
 
             imgAddPhoto.setImageBitmap(photo);
-            imgAddPhoto.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imgAddPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
 
             // 네트워크로 데이터 보낼 필요가 있으면 여기에 코드 작성

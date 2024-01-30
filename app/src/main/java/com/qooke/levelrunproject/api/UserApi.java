@@ -31,11 +31,11 @@ public interface UserApi {
         // 파라미터에 보낼 데이터를 적는다. 데이터는 묶어서 보낸다.
     Call<UserRes> kakaoLogin(@Body MyAppUser user);
 
-    // 유저 정보 변경
+    // 유저 정보 수정
     @PUT("/user")
     Call<Res> profileChange(@Header("Authorization") String token,
                          @Part MultipartBody.Part image,
-                         @Part ("ninkName") RequestBody nickName);
+                         @Part ("nickName") RequestBody nickName);
 
     // 로그아웃
     @DELETE("/user/logout")

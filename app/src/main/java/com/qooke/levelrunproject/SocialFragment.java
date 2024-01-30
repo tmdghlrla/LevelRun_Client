@@ -175,6 +175,18 @@ public class SocialFragment extends Fragment {
             }
         });
 
+        // 최신순, 인기순 버튼 선택시
+        switchFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(switchFilter.isChecked()) {
+
+                } else {
+
+                }
+            }
+        });
+
         return rootView;
     }
 
