@@ -34,6 +34,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
@@ -50,6 +51,7 @@ import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.PostingApi;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.MyAppUser;
 import com.qooke.levelrunproject.model.Res;
 
 import org.apache.commons.io.IOUtils;
@@ -82,6 +84,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     private File photoFile;
 
+    String nickName;
+    String profileUrl;
+
     Context context;
 
     @Override
@@ -95,6 +100,15 @@ public class SettingsActivity extends AppCompatActivity {
         editNickname = findViewById(R.id.editNickname);
         btnLogout = findViewById(R.id.btnLogout);
 
+        // 프로필 프레그먼트 데이터 받아오기
+        MyAppUser myAppUser = (MyAppUser) getIntent().getSerializableExtra("myAppUser");
+        nickName = myAppUser.nickName;
+        profileUrl = myAppUser.profileUrl;
+
+        editNickname.setText(nickName);
+        Glide.with(SettingsActivity.this).load(profileUrl).into(imgChange);
+
+
         // 뒤로가기 버튼
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +117,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+
         // 이미지 변경 버튼 눌렀을때
         imgChange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +125,7 @@ public class SettingsActivity extends AppCompatActivity {
                 showDialog();
             }
         });
+
 
         // 프로필 변경 저장 버튼
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -223,6 +239,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    // 프로필 사진 처리
     private void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
         builder.setTitle(R.string.alert_title);
@@ -245,6 +262,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void profileDelete() {
         imgChange.setImageResource(R.drawable.blankprofilepicture);
         imgChange.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        String fileName = null;
     }
 
 
@@ -319,9 +337,11 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+
     // 카메라에서 찍거나 앨범에서 선택한 사진 보여주는 함수
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // 카메라 사진 처리
         if(requestCode == 100 && resultCode == RESULT_OK){
 
             Bitmap photo = BitmapFactory.decodeFile(photoFile.getAbsolutePath());

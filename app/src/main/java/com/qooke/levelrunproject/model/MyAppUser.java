@@ -1,6 +1,8 @@
 package com.qooke.levelrunproject.model;
 
-public class MyAppUser {
+import java.io.Serializable;
+
+public class MyAppUser implements Serializable {
     public String nickName;
     public String email;
     public String password;

@@ -11,5 +11,14 @@ public class Posting {
     public int likeCnt;
     public int isLike;
 
-
+    public Posting(int photoId, String imgUrl, String content, int userId, String email, String createdAt, int likeCnt, int isLike) {
+        this.photoId = photoId;
+        this.imgUrl = imgUrl;
+        this.content = content;
+        this.userId = userId;
+        this.email = email;
+        this.createdAt = createdAt;
+        this.likeCnt = likeCnt;
+        this.isLike = isLike;
+    }
 }

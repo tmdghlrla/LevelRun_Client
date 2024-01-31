@@ -4,23 +4,20 @@ import static android.media.CamcorderProfile.get;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.PostDetailActivity;
 import com.qooke.levelrunproject.R;
-import com.qooke.levelrunproject.api.NetworkClient;
-import com.qooke.levelrunproject.api.RankerApi;
-import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.Ranker;
-import com.qooke.levelrunproject.model.RankerList;
+import com.qooke.levelrunproject.model.RankerProfile;
 
 import java.util.ArrayList;
 
@@ -30,7 +27,7 @@ public class RankerSocialAdapter extends RecyclerView.Adapter<RankerSocialAdapte
     Context context;
     ArrayList<Ranker> rankerArrayList;
 
-    public RankerSocialAdapter(Context context, ArrayList<Ranker> rankerArrayList) {
+    public RankerSocialAdapter(Context context, ArrayList<RankerProfile> rankerProfileArrayList) {
         this.context = context;
         this.rankerArrayList = rankerArrayList;
     }
@@ -38,7 +35,7 @@ public class RankerSocialAdapter extends RecyclerView.Adapter<RankerSocialAdapte
     @NonNull
     @Override
     public RankerSocialAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.ranking_row, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.rankersocial_row, parent, false);
         return new RankerSocialAdapter.ViewHolder(view);
     }
 
@@ -57,13 +54,17 @@ public class RankerSocialAdapter extends RecyclerView.Adapter<RankerSocialAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imgRanker;
+        CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imgRanker = itemView.findViewById(R.id.imgRanker);
+            cardView = itemView.findViewById(R.id.cardView);
 
-            imgRanker.setOnClickListener(new View.OnClickListener() {
+
+            // 카드뷰 눌렀을때 실행되는 함수
+            cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int index = getAdapterPosition();

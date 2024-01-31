@@ -26,7 +26,7 @@ import com.qooke.levelrunproject.api.RankerApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.PostingList;
-import com.qooke.levelrunproject.model.Ranker;
+import com.qooke.levelrunproject.model.RankerProfile;
 import com.qooke.levelrunproject.model.RankerList;
 
 import java.util.ArrayList;
@@ -108,7 +108,7 @@ public class SocialFragment extends Fragment {
     RecyclerView recyclerView;
     RankerSocialAdapter rankerSocialAdapter;
     PostingAdapter postingAdapter;
-    ArrayList<Ranker> rankerListArrayList = new ArrayList<>();
+    ArrayList<RankerProfile> rankerProfileListArrayList = new ArrayList<>();
     ArrayList<Posting> postingListArrayList = new ArrayList<>();
 
 
@@ -266,7 +266,7 @@ public class SocialFragment extends Fragment {
                 if(response.isSuccessful()) {
 
                     RankerList rankerList = response.body();
-                    rankerListArrayList.addAll(rankerList.items);
+                    rankerProfileListArrayList.addAll(rankerList.items);
                     count = rankerList.count;
 
                     rankerSocialAdapter.notifyDataSetChanged();

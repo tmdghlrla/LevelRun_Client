@@ -37,6 +37,8 @@ public interface UserApi {
                          @Part MultipartBody.Part image,
                          @Part ("nickName") RequestBody nickName);
 
+
+
     // 로그아웃
     @DELETE("/user/logout")
     Call<Res> logout(@Header("Authorization") String token);

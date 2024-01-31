@@ -24,10 +24,10 @@ public interface PostingApi {
                          @Part ("content")RequestBody content);
 
     // 랭커 포스팅 가져오기
-    @GET("/posting/ranker")
-    Call<PostingList> getRankerPost(@Header("Authorization") String token,
-                                    @Query("offset") int offset,
-                                    @Query("limit") int limit);
+//    @GET("/posting/ranker")
+//    Call<PostingList> getRankerPost(@Header("Authorization") String token,
+//                                    @Query("offset") int offset,
+//                                    @Query("limit") int limit);
 
     // 전체 포스팅 가져오기(최신순)
     @GET("/posting")
