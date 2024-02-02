@@ -1,24 +1,26 @@
 package com.qooke.levelrunproject.model;
 
-public class Posting {
+import java.io.Serializable;
 
-    public int photoId;
-    public String imgUrl;
+public class Posting implements Serializable {
+
+    public int id;
+    public String imgURL;
     public String content;
     public int userId;
     public String email;
     public String createdAt;
+    public String updatedAt;
     public int likeCnt;
     public int isLike;
 
-    public Posting(int photoId, String imgUrl, String content, int userId, String email, String createdAt, int likeCnt, int isLike) {
-        this.photoId = photoId;
-        this.imgUrl = imgUrl;
+
+    public Posting(int id, String imgURL, String content, int userId, String createdAt, String updatedAt) {
+        this.id = id;
+        this.imgURL = imgURL;
         this.content = content;
         this.userId = userId;
-        this.email = email;
         this.createdAt = createdAt;
-        this.likeCnt = likeCnt;
-        this.isLike = isLike;
+        this.updatedAt = updatedAt;
     }
 }

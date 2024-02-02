@@ -15,4 +15,7 @@ public class Ranker implements Serializable {
 
     }
 
+    public Ranker(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
 }

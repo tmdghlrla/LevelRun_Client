@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.PostDetailActivity;
 import com.qooke.levelrunproject.R;
+import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.Ranker;
 import com.qooke.levelrunproject.model.RankerProfile;
 
@@ -27,7 +28,7 @@ public class RankerSocialAdapter extends RecyclerView.Adapter<RankerSocialAdapte
     Context context;
     ArrayList<Ranker> rankerArrayList;
 
-    public RankerSocialAdapter(Context context, ArrayList<RankerProfile> rankerProfileArrayList) {
+    public RankerSocialAdapter(Context context, ArrayList<Ranker> rankerArrayList) {
         this.context = context;
         this.rankerArrayList = rankerArrayList;
     }
@@ -54,17 +55,16 @@ public class RankerSocialAdapter extends RecyclerView.Adapter<RankerSocialAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imgRanker;
-        CardView cardView;
+        CardView cardViewRanker;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imgRanker = itemView.findViewById(R.id.imgRanker);
-            cardView = itemView.findViewById(R.id.cardView);
+            cardViewRanker = itemView.findViewById(R.id.cardViewRanker);
 
-
-            // 카드뷰 눌렀을때 실행되는 함수
-            cardView.setOnClickListener(new View.OnClickListener() {
+            // 이미지 눌렀을때 실행되는 함수
+            cardViewRanker.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int index = getAdapterPosition();
@@ -74,7 +74,6 @@ public class RankerSocialAdapter extends RecyclerView.Adapter<RankerSocialAdapte
                     intent.putExtra("index", index);
                     intent.putExtra("ranker", ranker);
                     context.startActivity(intent);
-
                 }
             });
         }

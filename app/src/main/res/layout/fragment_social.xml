@@ -53,12 +53,13 @@
             android:layout_height="100dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:orientation="horizontal" />
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
@@ -124,7 +125,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerviewPosting"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
 
     </LinearLayout>
 

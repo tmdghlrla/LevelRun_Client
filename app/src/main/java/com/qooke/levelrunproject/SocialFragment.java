@@ -1,15 +1,20 @@
 package com.qooke.levelrunproject;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.qooke.levelrunproject.adapter.PostingAdapter;
 import com.qooke.levelrunproject.adapter.RankerSocialAdapter;
@@ -26,10 +32,14 @@ import com.qooke.levelrunproject.api.RankerApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.PostingList;
+import com.qooke.levelrunproject.model.Ranker;
 import com.qooke.levelrunproject.model.RankerProfile;
-import com.qooke.levelrunproject.model.RankerList;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -89,27 +99,21 @@ public class SocialFragment extends Fragment {
     Switch switchFilter;
     ProgressBar progressBar;
 
-    RecyclerView recyclerviewRanker;
-    PostingAdapter adapter;
-    ArrayList<Posting> postingArrayList = new ArrayList<>();
-
-    RecyclerView recyclerviewPosting;
-
 
     // 페이징 관련 처리 함수
     int offset;
-    int limit = 5;
+    int limit = 15;
     int count;
 
-    // 멤버변수화
-    String token;
 
     // 리사이클러뷰 관련 멤버변수
-    RecyclerView recyclerView;
+    RecyclerView recyclerviewRanker;
     RankerSocialAdapter rankerSocialAdapter;
+    ArrayList<Ranker> rankerArrayList = new ArrayList<>();
+
+    RecyclerView recyclerviewPosting;
     PostingAdapter postingAdapter;
-    ArrayList<RankerProfile> rankerProfileListArrayList = new ArrayList<>();
-    ArrayList<Posting> postingListArrayList = new ArrayList<>();
+    ArrayList<Posting> postingArrayList = new ArrayList<>();
 
 
     @Override
@@ -123,10 +127,11 @@ public class SocialFragment extends Fragment {
         switchFilter = rootView.findViewById(R.id.switchFilter);
         progressBar = rootView.findViewById(R.id.progressBar);
 
+
         // 랭커 리사이클러뷰 처리하는 함수
         recyclerviewRanker = rootView.findViewById(R.id.recyclerviewRanker);
         recyclerviewRanker.setHasFixedSize(true);
-        recyclerviewRanker.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerviewRanker.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         recyclerviewRanker.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -138,9 +143,10 @@ public class SocialFragment extends Fragment {
 
                 if(lastPosition + 1 == totalCount) {
                     if (limit == count) {
-                        rankerNetworkData();
+                        RankerNetworkData();
                     }
                 }
+
             }
         });
 
@@ -148,7 +154,7 @@ public class SocialFragment extends Fragment {
         // 포스팅 리사이클러뷰 페이징 처리하는 함수
         recyclerviewPosting = rootView.findViewById(R.id.recyclerviewPosting);
         recyclerviewPosting.setHasFixedSize(true);
-        recyclerviewPosting.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerviewPosting.setLayoutManager(new GridLayoutManager(getActivity(),3));
 
         recyclerviewPosting.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -194,95 +200,76 @@ public class SocialFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         getNetworkData();
     }
 
     // 포스팅 작성 후 새로고침
     private void getNetworkData() {
 
-        offset = 0;
-        count = 0;
-
         Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
-        PostingApi api = retrofit.create(PostingApi.class);
+        PostingApi postingApi = retrofit.create(PostingApi.class);
+        RankerApi rankerApi = retrofit.create(RankerApi.class);
 
-        SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
         token = "Bearer " + token;
 
-        Call<PostingList> call = api.getAllPosting(token, offset, limit);
-        call.enqueue(new Callback<PostingList>() {
+        // 포스팅 이미지
+        Call<PostingList> postCall = postingApi.getAllPosting(token, offset, limit);
+        postCall.enqueue(new Callback<PostingList>() {
             @Override
             public void onResponse(Call<PostingList> call, Response<PostingList> response) {
                 progressBar.setVisibility(View.GONE);
 
                 if (response.isSuccessful()) {
-                    PostingList postingList = response.body();
 
+                    offset = 0;
+                    count = 0;
+
+                    PostingList postingList = response.body();
+                    postingArrayList.clear();
+                    postingArrayList.addAll(postingList.items);
                     count = postingList.count;
 
-                    postingArrayList.clear();
-
-                    postingArrayList.addAll(postingList.items);
-
-                    adapter = new PostingAdapter(getActivity(), postingArrayList);
-                    recyclerviewPosting.setAdapter(adapter);
-
-                } else {
-
+                    postingAdapter = new PostingAdapter(getActivity(), postingArrayList);
+                    recyclerviewPosting.setAdapter(postingAdapter);
                 }
             }
 
             @Override
             public void onFailure(Call<PostingList> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-
             }
         });
 
-    }
-
-
-    // 랭커 데이터 페이징 함수
-    private void rankerNetworkData() {
-
-        progressBar.setVisibility(View.VISIBLE);
-
-        Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
-        RankerApi api = retrofit.create(RankerApi.class);
-
-        SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, Context.MODE_PRIVATE);
-        String token = sp.getString("token", "");
-
-        offset = offset + count;
-
-        Call<RankerList> call = api.rankerimg(token);
-        call.enqueue(new Callback<RankerList>() {
+        // 랭커 프로필
+        Call<RankerProfile> rankerCall = rankerApi.rankerimg(token);
+        rankerCall.enqueue(new Callback<RankerProfile>() {
             @Override
-            public void onResponse(Call<RankerList> call, Response<RankerList> response) {
+            public void onResponse(Call<RankerProfile> rankerCall, Response<RankerProfile> response) {
                 progressBar.setVisibility(View.GONE);
 
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
+                    RankerProfile rankerProfile = response.body();
+                    rankerArrayList.clear();
+                    rankerArrayList.addAll(rankerProfile.items);
+                    count = rankerProfile.count;
 
-                    RankerList rankerList = response.body();
-                    rankerProfileListArrayList.addAll(rankerList.items);
-                    count = rankerList.count;
+                    Log.i("AAA", "어레이 리스트 : "+postingArrayList);
 
-                    rankerSocialAdapter.notifyDataSetChanged();
-
-                } else {
-
+                    rankerSocialAdapter = new RankerSocialAdapter(getActivity(), rankerArrayList);
+                    recyclerviewRanker.setAdapter(rankerSocialAdapter);
                 }
             }
 
             @Override
-            public void onFailure(Call<RankerList> call, Throwable t) {
+            public void onFailure(Call<RankerProfile> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
             }
-
         });
     }
+
+
 
     // 포스팅 데이터 페이징 함수
     private void postNetworkData() {
@@ -291,7 +278,7 @@ public class SocialFragment extends Fragment {
         Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
         PostingApi api = retrofit.create(PostingApi.class);
 
-        SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
 
         offset = offset + count;
@@ -305,7 +292,7 @@ public class SocialFragment extends Fragment {
                 if(response.isSuccessful()) {
 
                     PostingList postingList = response.body();
-                    postingListArrayList.addAll(postingList.items);
+                    postingArrayList.addAll(postingList.items);
                     count = postingList.count;
 
                     postingAdapter.notifyDataSetChanged();
@@ -323,4 +310,42 @@ public class SocialFragment extends Fragment {
         });
     }
 
+    // 랭커 데이터 함수
+    public void RankerNetworkData() {
+        progressBar.setVisibility(View.VISIBLE);
+
+        Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
+        RankerApi api = retrofit.create(RankerApi.class);
+
+        SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        offset = offset + count;
+
+        Call<RankerProfile> call = api.rankerimg(token);
+        call.enqueue(new Callback<RankerProfile>() {
+            @Override
+            public void onResponse(Call<RankerProfile> call, Response<RankerProfile> response) {
+                progressBar.setVisibility(View.GONE);
+
+                if(response.isSuccessful()) {
+
+                    RankerProfile rankerProfile = response.body();
+                    rankerArrayList.addAll(rankerProfile.items);
+                    count = rankerProfile.count;
+                    rankerSocialAdapter.notifyDataSetChanged();
+
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RankerProfile> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
 }
+

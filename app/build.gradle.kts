@@ -52,6 +52,7 @@ dependencies {
 
     // 글라이드
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
 
     // 프래그먼트, 탭바
     implementation ("androidx.navigation:navigation-fragment:2.5.3")
