@@ -43,6 +43,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -77,6 +78,9 @@ public class SettingsActivity extends AppCompatActivity {
     ImageView imgBack;
     Button btnSave;
     ImageView imgChange;
+    ImageView imgLoginType;
+    TextView txtLoginType;
+    TextView txtEmail;
     EditText editNickname;
     Button btnLogout;
 
@@ -86,6 +90,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     String nickName;
     String profileUrl;
+
 
     Context context;
 
@@ -97,16 +102,23 @@ public class SettingsActivity extends AppCompatActivity {
         imgBack = findViewById(R.id.imgBack);
         btnSave = findViewById(R.id.btnSave);
         imgChange = findViewById(R.id.imgChange);
+        imgLoginType = findViewById(R.id.imgLoginType);
+        txtLoginType = findViewById(R.id.txtLoginType);
+        txtEmail = findViewById(R.id.txtEmail);
         editNickname = findViewById(R.id.editNickname);
         btnLogout = findViewById(R.id.btnLogout);
 
+
         // 프로필 프레그먼트 데이터 받아오기
         MyAppUser myAppUser = (MyAppUser) getIntent().getSerializableExtra("myAppUser");
-        nickName = myAppUser.nickName;
         profileUrl = myAppUser.profileUrl;
+        nickName = myAppUser.nickName;
+
+        Log.i("AAA", "데이터 : "+myAppUser.profileUrl);
+        Log.i("AAA", "데이터 : "+myAppUser.nickName);
 
         editNickname.setText(nickName);
-        Glide.with(SettingsActivity.this).load(profileUrl).into(imgChange);
+        Glide.with(SettingsActivity.this).load(myAppUser.profileUrl).into(imgChange);
 
 
         // 뒤로가기 버튼

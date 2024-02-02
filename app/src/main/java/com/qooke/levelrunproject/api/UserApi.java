@@ -2,6 +2,7 @@ package com.qooke.levelrunproject.api;
 
 import com.qooke.levelrunproject.model.MyAppUser;
 import com.qooke.levelrunproject.model.Res;
+import com.qooke.levelrunproject.model.UserInfoRes;
 import com.qooke.levelrunproject.model.UserRes;
 
 import okhttp3.MultipartBody;
@@ -37,16 +38,12 @@ public interface UserApi {
                          @Part MultipartBody.Part image,
                          @Part ("nickName") RequestBody nickName);
 
-
-
     // 로그아웃
     @DELETE("/user/logout")
     Call<Res> logout(@Header("Authorization") String token);
 
-
-
     // 유정 정보 가져오기
-//    @GET("/user")
+    @GET("/user")
     // 파라미터에 보낼 데이터를 적는다. 데이터는 묶어서 보낸다.
-//    Call<UserRes> kakaoLogin(@Body MyAppUser user);
+    Call<UserInfoRes> getUserInfo(@Header("Authorization") String token);
 }

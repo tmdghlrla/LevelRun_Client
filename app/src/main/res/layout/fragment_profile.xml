@@ -38,12 +38,20 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/imgProfile"
-                android:layout_width="180dp"
-                android:layout_height="160dp"
-                android:layout_weight="1"
-                android:src="@drawable/blankprofilepicture" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="75dp">
+
+                <ImageView
+                    android:id="@+id/imgProfile"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/blankprofilepicture" />
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -66,7 +74,7 @@
                     android:layout_gravity="right"
                     android:layout_marginRight="32dp"
                     android:layout_weight="1"
-                    android:hint="보유 상자 100 개"
+                    android:hint="보유 상자 ??? 개"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -88,7 +96,7 @@
             app:cardMaxElevation="10dp">
 
             <TextView
-                android:id="@+id/editEmail"
+                android:id="@+id/txtNickName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -127,7 +135,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="2024"
+                    android:hint="\???"
                     android:textSize="22sp" />
             </LinearLayout>
 
@@ -181,7 +189,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="10"
+                    android:text="0"
                     android:textSize="22sp" />
             </LinearLayout>
 
