@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- toggle_button_rounded.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="20dp" /> <!-- 조절 가능한 반지름 -->
+            <solid android:color="#4CAF50" /> <!-- 토글 켜짐 상태일 때의 배경색 -->
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="20dp" /> <!-- 조절 가능한 반지름 -->
+            <solid android:color="#BDBDBD" /> <!-- 토글 꺼짐 상태일 때의 배경색 -->
+        </shape>
+    </item>
+</selector>

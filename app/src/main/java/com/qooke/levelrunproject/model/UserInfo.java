@@ -8,7 +8,7 @@ public class UserInfo {
     public int level;
     public int exp;
     public int userId;
-    public int count;
+    public int boxCount;
 
     public UserInfo() {
     }

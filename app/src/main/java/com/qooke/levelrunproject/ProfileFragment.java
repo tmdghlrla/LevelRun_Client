@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.UserApi;
+
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.MyAppUser;
 import com.qooke.levelrunproject.model.UserInfo;
@@ -61,7 +62,6 @@ public class ProfileFragment extends Fragment {
     String nickName = null;
     String profileUrl = null;
     boolean isComplete = false;
-    int myId = 0;
     int count = 0;
     ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
 
@@ -100,7 +100,6 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
-
         imgSetting = rootView.findViewById(R.id.imgSetting);
         imgProfile = rootView.findViewById(R.id.imgProfile);
         txtCount = rootView.findViewById(R.id.txtCount);
@@ -117,14 +116,11 @@ public class ProfileFragment extends Fragment {
                     Toast.makeText(getActivity(), "데이터를 불러오는 중입니다. 잠시후 다시 시도하세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
+                Log.i("ProfileFrgment_tag", profileUrl);
                 MyAppUser myAppUser = new MyAppUser(nickName, email, "", profileUrl);
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 intent.putExtra("myAppUser", myAppUser);
                 getActivity().startActivity(intent);
-
-                Log.i("AAA", "프로필 데이터 : "+ myAppUser.nickName);
-
             }
         });
 
@@ -166,34 +162,26 @@ public class ProfileFragment extends Fragment {
                 // 데이터 베이스에 카카오 로그인 정보가 없을 때
                 if(response.isSuccessful()) {
                     UserInfoRes userInfoRes = response.body();
-                    myId = userInfoRes.myId;
+                    int rank = userInfoRes.rank;
                     userInfoArrayList.clear();
-                    userInfoArrayList.addAll(userInfoRes.items);
+                    userInfoArrayList.addAll(userInfoRes.userInfo);
 
                     // 정보 세팅하기
-                    int i = 0;
-                    for (UserInfo userInfo:userInfoArrayList) {
-                        if(userInfo.userId == myId) {
-                            Log.i("Profile_tag", "myRank : " + i);
+                    Glide.with(getActivity()).load(userInfoArrayList.get(0).profileUrl).into(imgProfile);
 
-                            Glide.with(getActivity()).load(userInfo.profileUrl).into(imgProfile);
-                            txtCount.setText("보유 상자 " + userInfo.count + " 개");
+                    txtCount.setText("보유 상자 " + userInfoArrayList.get(0).boxCount + " 개");
 
-                            txtNickName.setText(userInfo.nickName);
+                    txtNickName.setText(userInfoArrayList.get(0).nickName);
+                    txtRank.setText(rank);
+                    txtLevel.setText("" + userInfoArrayList.get(0).level);
+                    txtExp.setText("" + userInfoArrayList.get(0).exp);
 
-                            txtRank.setText(""+(i+1));
-                            txtLevel.setText(""+userInfo.level);
-                            txtExp.setText(""+userInfo.exp);
+                    nickName = userInfoArrayList.get(0).nickName;
+                    email = userInfoArrayList.get(0).email;
+                    profileUrl = userInfoArrayList.get(0).profileUrl;
 
-                            nickName = userInfo.nickName;
-                            email = userInfo.email;
-                            profileUrl = userInfo.profileUrl;
+                    isComplete = true;
 
-                            isComplete = true;
-                            return;
-                        }
-                        i++;
-                    }
 
                 } else {
                     Log.i("Profile_tag", "response.code : " +response.code());
