@@ -4,7 +4,15 @@ import java.util.ArrayList;
 
 public class UserInfoRes {
     public String result;
-    public int myId;
-    public ArrayList<UserInfo> items;
-    public int count;
+    public int id;
+    public int rank;
+    public String nickName;
+    public String email;
+    public String profileUrl;
+    public int level;
+    public int exp;
+    public int boxCount;
+    public String createdAt;
+
+    public ArrayList<Character> items;
 }

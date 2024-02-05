@@ -26,7 +26,6 @@ import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.MyAppUser;
-import com.qooke.levelrunproject.model.UserInfo;
 import com.qooke.levelrunproject.model.UserInfoRes;
 
 import java.util.ArrayList;
@@ -61,9 +60,8 @@ public class ProfileFragment extends Fragment {
     String nickName = null;
     String profileUrl = null;
     boolean isComplete = false;
-    int myId = 0;
     int count = 0;
-    ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
+    ArrayList<Character> items = new ArrayList<>();
 
 
     public ProfileFragment() {
@@ -100,7 +98,6 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_profile, container, false);
-
         imgSetting = rootView.findViewById(R.id.imgSetting);
         imgProfile = rootView.findViewById(R.id.imgProfile);
         txtCount = rootView.findViewById(R.id.txtCount);
@@ -117,14 +114,11 @@ public class ProfileFragment extends Fragment {
                     Toast.makeText(getActivity(), "데이터를 불러오는 중입니다. 잠시후 다시 시도하세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
+                Log.i("ProfileFrgment_tag", profileUrl);
                 MyAppUser myAppUser = new MyAppUser(nickName, email, "", profileUrl);
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 intent.putExtra("myAppUser", myAppUser);
                 getActivity().startActivity(intent);
-
-                Log.i("AAA", "프로필 데이터 : "+ myAppUser.nickName);
-
             }
         });
 
@@ -151,6 +145,7 @@ public class ProfileFragment extends Fragment {
         SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
         token = "Bearer " + token;
+        Log.i("ProfileFragment_tag", "token : " + token);
 
         // 3. api 호출
         Call<UserInfoRes> call = api.getUserInfo(token);
@@ -166,34 +161,27 @@ public class ProfileFragment extends Fragment {
                 // 데이터 베이스에 카카오 로그인 정보가 없을 때
                 if(response.isSuccessful()) {
                     UserInfoRes userInfoRes = response.body();
-                    myId = userInfoRes.myId;
-                    userInfoArrayList.clear();
-                    userInfoArrayList.addAll(userInfoRes.items);
+                    int rank = userInfoRes.rank;
+                    nickName = userInfoRes.nickName;
+                    email = userInfoRes.email;
+                    profileUrl = userInfoRes.profileUrl;
+                    int level = userInfoRes.level;
+                    int exp = userInfoRes.exp;
+                    int boxCount = userInfoRes.boxCount;
+                    items.addAll(userInfoRes.items);
 
                     // 정보 세팅하기
-                    int i = 0;
-                    for (UserInfo userInfo:userInfoArrayList) {
-                        if(userInfo.userId == myId) {
-                            Log.i("Profile_tag", "myRank : " + i);
+                    Glide.with(getActivity()).load(profileUrl).into(imgProfile);
 
-                            Glide.with(getActivity()).load(userInfo.profileUrl).into(imgProfile);
-                            txtCount.setText("보유 상자 " + userInfo.count + " 개");
+                    txtCount.setText("보유 상자 " + boxCount + " 개");
 
-                            txtNickName.setText(userInfo.nickName);
+                    txtNickName.setText(nickName);
+                    txtRank.setText(""+ rank);
+                    txtLevel.setText("" + level);
+                    txtExp.setText("" + exp);
 
-                            txtRank.setText(""+(i+1));
-                            txtLevel.setText(""+userInfo.level);
-                            txtExp.setText(""+userInfo.exp);
+                    isComplete = true;
 
-                            nickName = userInfo.nickName;
-                            email = userInfo.email;
-                            profileUrl = userInfo.profileUrl;
-
-                            isComplete = true;
-                            return;
-                        }
-                        i++;
-                    }
 
                 } else {
                     Log.i("Profile_tag", "response.code : " +response.code());
