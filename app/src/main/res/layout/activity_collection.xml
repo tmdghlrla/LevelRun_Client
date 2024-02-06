@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/test5">
 
     <TextView
         android:id="@+id/textView29"
@@ -15,7 +16,8 @@
         android:text="컬렉션"
         android:textColor="#000000"
         android:textSize="50sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/catCard"
@@ -27,7 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="고양이" />
+            android:text="고양이"
+            android:visibility="gone" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -39,7 +42,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="강아지" />
+            android:text="강아지"
+            android:visibility="gone" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -52,7 +56,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:text="여우" />
+            android:text="여우"
+            android:visibility="gone" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -65,7 +70,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="늑대" />
+            android:text="늑대"
+            android:visibility="gone" />
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>
