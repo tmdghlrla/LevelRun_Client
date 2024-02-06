@@ -36,12 +36,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -55,10 +57,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.PlaceApi;
+import com.qooke.levelrunproject.api.WeatherApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.Place;
 import com.qooke.levelrunproject.model.PlaceList;
 import com.qooke.levelrunproject.model.RandomBox;
+import com.qooke.levelrunproject.model.WeatherRes;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -134,7 +138,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
     private boolean isCounting = false;
     private int stepCount = 0;
     private Calendar selectedDate;
-
+    ImageView imgWeather;
     TextView txtKal;
     TextView txtTime;
     Button btnTest;
@@ -167,6 +171,8 @@ public class MainFragment extends Fragment implements SensorEventListener{
     ArrayList<Integer> randomNumber = new ArrayList<>();
     boolean isAlarm = false;
     SharedPreferences sp;
+    String weatherUrl = "";
+    int insertCount = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -179,29 +185,13 @@ public class MainFragment extends Fragment implements SensorEventListener{
         txtKal = rootView.findViewById(R.id.txtKal);
         txtTime = rootView.findViewById(R.id.txtTime);
         distanceValueTextView = rootView.findViewById(R.id.distanceValue);
-        btnTest = rootView.findViewById(R.id.btnTest);
+        imgWeather = rootView.findViewById(R.id.imgWeather);
 
         getWeatherData();
 
         // 미디어 플레이어 준비
         mp = MediaPlayer.create(getActivity(), R.raw.get_box);
 
-        btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!isLocationReady && getActivity() != null) {
-                    Toast.makeText(getActivity(), "내 위치를 탐색중입니다. 잠시만 기다려주세요.", Toast.LENGTH_SHORT).show();
-                    return;
-
-                }
-
-                if(randomBoxArrayList.size() != 0) {
-                    Toast.makeText(getActivity(), "생성된 보물상자를 모두 획득하고 누르세요.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                getNetworkData();
-            }
-        });
 
         MapsInitializer.initialize(getActivity());
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -218,8 +208,10 @@ public class MainFragment extends Fragment implements SensorEventListener{
                 lng = location.getLongitude();
                 isLocationReady = true;
 
-                txtKal.setText("" + lat);
-                txtTime.setText("" + lng);
+                if(randomBoxArrayList.size() != 10) {
+                    insertCount = 10 - randomBoxArrayList.size();
+                    getNetworkData();
+                }
 
                 Log.i("MainFragment_tag", "위도 : " + lat);
                 Log.i("MainFragment_tag", "경도 : " + lng);
@@ -243,10 +235,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
                         if(distance < 1) {
                             mp.start();
                             randomBoxArrayList.remove(i);
-                            String json = new Gson().toJson(randomBoxArrayList);
-                            SharedPreferences.Editor editor = sp.edit();
-                            editor.putString("boxLocation", json);
-                            editor.apply();
+
                         }
                     }
                 }
@@ -375,52 +364,34 @@ public class MainFragment extends Fragment implements SensorEventListener{
     private void getWeatherData() {
         Retrofit retrofit = NetworkClient.weatherRetrofit(getActivity());
 
-        PlaceApi api = retrofit.create(PlaceApi.class);
+        WeatherApi api = retrofit.create(WeatherApi.class);
 
-        Call<PlaceList> call = api.getPlaceList(
-                lat+","+lng,
-                radius,
-                language,
-                keyword,
-                Config.GOOGLE_API_KEY);
-        call.enqueue(new Callback<PlaceList>() {
+        Call<WeatherRes> call = api.getPlaceList(
+                lat,
+                lng,
+                Config.OPENWEATHERMAP_API_KEY,
+                "metric",
+                "kr");
+        Log.i("MainFragment_tag", "test");
+        call.enqueue(new Callback<WeatherRes>() {
             @Override
-            public void onResponse(Call<PlaceList> call, Response<PlaceList> response) {
+            public void onResponse(Call<WeatherRes> call, Response<WeatherRes> response) {
                 Log.i("MainFragment_tag", ""+response.code());
                 if(response.isSuccessful()){
-                    SharedPreferences.Editor editor = sp.edit();
-                    PlaceList placeList = response.body();
+                    WeatherRes weatherRes = response.body();
 
-                    placeArrayList.clear();
-                    placeArrayList.addAll(placeList.results);
+                    weatherUrl = Config.WEATHER_IMAGE_URL + weatherRes.weather.get(0).icon + "@2x.png";
+                    Log.i("MainFragment_tag", "weatherUrl : " + weatherUrl);
+                    Glide.with(getActivity()).load(weatherUrl).into(imgWeather);
 
-                    // 중복되지 않는 랜덤 난수를 받아온다.
-                    for (int i = 0; i<10; i++) {
-                        randomNumber.add(i, random.nextInt(placeArrayList.size()));
-                        for(int j=0; i<i; j++) {
-                            if(randomNumber.get(i) == randomNumber.get(j)) {
-                                i--;
-                            }
-                        }
-                    }
-                    // 랜덤으로 생성된 좌표값 저장
-                    for(int i = 0; i<10; i++) {
-                        RandomBox randomBox = new RandomBox(
-                                placeArrayList.get(randomNumber.get(i)).geometry.location.lat,
-                                placeArrayList.get(randomNumber.get(i)).geometry.location.lng
-                        );
-                        randomBoxArrayList.add(randomBox);
-                    }
-                    String json = new Gson().toJson(randomBoxArrayList);
-                    editor.putString("boxLocation", json);
-                    editor.apply();
                 }else{
 
                 }
             }
 
             @Override
-            public void onFailure(Call<PlaceList> call, Throwable t) {
+            public void onFailure(Call<WeatherRes> call, Throwable t) {
+
             }
         });
     }
@@ -444,11 +415,12 @@ public class MainFragment extends Fragment implements SensorEventListener{
             public void onResponse(Call<PlaceList> call, Response<PlaceList> response) {
                 Log.i("MainFragment_tag", ""+response.code());
                 if(response.isSuccessful()){
-                    SharedPreferences.Editor editor = sp.edit();
+
                     PlaceList placeList = response.body();
 
                     placeArrayList.clear();
                     placeArrayList.addAll(placeList.results);
+                    randomNumber.clear();
 
                     // 중복되지 않는 랜덤 난수를 받아온다.
                     for (int i = 0; i<10; i++) {
@@ -461,15 +433,22 @@ public class MainFragment extends Fragment implements SensorEventListener{
                     }
                     // 랜덤으로 생성된 좌표값 저장
                     for(int i = 0; i<10; i++) {
-                        RandomBox randomBox = new RandomBox(
-                                placeArrayList.get(randomNumber.get(i)).geometry.location.lat,
-                                placeArrayList.get(randomNumber.get(i)).geometry.location.lng
-                        );
-                        randomBoxArrayList.add(randomBox);
+                        for(int j = 0; j<insertCount; j++) {
+                            if(randomBoxArrayList.size() == 10) {
+                                return;
+                            }
+                            if(randomBoxArrayList.get(i).boxLat != placeArrayList.get(randomNumber.get(i)).geometry.location.lat
+                                || randomBoxArrayList.get(i).boxLng != placeArrayList.get(randomNumber.get(i)).geometry.location.lng) {
+                                RandomBox randomBox = new RandomBox(
+                                        placeArrayList.get(randomNumber.get(i)).geometry.location.lat,
+                                        placeArrayList.get(randomNumber.get(i)).geometry.location.lng
+                                );
+                                randomBoxArrayList.add(randomBox);
+                                j++;
+                            }
+                        }
                     }
                     String json = new Gson().toJson(randomBoxArrayList);
-                    editor.putString("boxLocation", json);
-                    editor.apply();
                 }else{
 
                 }
@@ -496,36 +475,34 @@ public class MainFragment extends Fragment implements SensorEventListener{
         return distance;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
-        String dataList = sp.getString("boxLocation", "");
-
-        Log.i("MainFragment_tag", "dataList : " + dataList);
-        randomBoxArrayList.clear();
-        try {
-            JSONArray jsonArray = new JSONArray(dataList);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                double boxLat = jsonObject.getDouble("boxLat");
-                double boxLng = jsonObject.getDouble("boxLng");
-
-                RandomBox randomBox = new RandomBox(boxLat, boxLng);
-                randomBoxArrayList.add(randomBox);
-                Log.i("MainFragment_tag", ""+i);
-                Log.i("MainFragment_tag", "boxLat : " + randomBoxArrayList.get(i).boxLat + ", boxLng : " + randomBoxArrayList.get(i).boxLng);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        if (isSensorAvailable) {
-            resetDailyCount();
-            sensorManager.registerListener((SensorEventListener) getActivity(), stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        }
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+//        String dataList = sp.getString("boxLocation", "");
+//
+//        randomBoxArrayList.clear();
+//        try {
+//            JSONArray jsonArray = new JSONArray(dataList);
+//            for (int i = 0; i < jsonArray.length(); i++) {
+//                JSONObject jsonObject = jsonArray.getJSONObject(i);
+//
+//                double boxLat = jsonObject.getDouble("boxLat");
+//                double boxLng = jsonObject.getDouble("boxLng");
+//
+//                RandomBox randomBox = new RandomBox(boxLat, boxLng);
+//                randomBoxArrayList.add(randomBox);
+//
+//            }
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        if (isSensorAvailable) {
+//            resetDailyCount();
+//            sensorManager.registerListener((SensorEventListener) getActivity(), stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
+//        }
+//    }
 
     public void onPause() {
         super.onPause();

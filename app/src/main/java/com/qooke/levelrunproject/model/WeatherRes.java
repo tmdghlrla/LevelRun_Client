@@ -1,7 +1,9 @@
 package com.qooke.levelrunproject.model;
 
+import java.util.ArrayList;
+
 public class WeatherRes {
-    public Weather weather;
+    public ArrayList<Weather> weather;
     public String name;
 
 

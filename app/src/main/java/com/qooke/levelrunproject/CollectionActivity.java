@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -14,19 +15,19 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class CollectionActivity extends AppCompatActivity {
-    CardView catCard, dogCard, foxCard, wolfCard;
+    Button btnCat, btnWolf, btnDog, btnFox;
     ArrayList<java.lang.Character> characterArrayList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collection);
 
-        catCard = findViewById(R.id.catCard);
-        dogCard = findViewById(R.id.dogCard);
-        foxCard = findViewById(R.id.foxCard);
-        wolfCard = findViewById(R.id.wolfCard);
+        btnCat = findViewById(R.id.btnCat);
+        btnWolf = findViewById(R.id.btnWolf);
+        btnDog = findViewById(R.id.btnDog);
+        btnFox = findViewById(R.id.btnFox);
 
-        catCard.setOnClickListener(new View.OnClickListener() {
+        btnCat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CollectionActivity.this, CatActivity.class);
@@ -35,7 +36,7 @@ public class CollectionActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        dogCard.setOnClickListener(new View.OnClickListener() {
+        btnDog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CollectionActivity.this, DogActivity.class);
@@ -44,7 +45,7 @@ public class CollectionActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        foxCard.setOnClickListener(new View.OnClickListener() {
+        btnFox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CollectionActivity.this, FoxActivity.class);
@@ -53,7 +54,7 @@ public class CollectionActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        wolfCard.setOnClickListener(new View.OnClickListener() {
+        btnWolf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CollectionActivity.this, WolfActivity.class);
