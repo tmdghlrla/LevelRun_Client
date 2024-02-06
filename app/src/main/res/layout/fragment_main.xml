@@ -308,6 +308,13 @@
         android:src="@drawable/ic_empty_image"
          />
 
+    <ImageView
+        android:id="@+id/imgLoading"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:src="@drawable/loading_run"
+        android:animateLayoutChanges="true"/>
+
     <!-- 날짜 텍스트 뷰 -->
 
 </RelativeLayout>

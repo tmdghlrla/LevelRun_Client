@@ -139,6 +139,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
     private int stepCount = 0;
     private Calendar selectedDate;
     ImageView imgWeather;
+    ImageView imgLoading;
     TextView txtKal;
     TextView txtTime;
     Button btnTest;
@@ -186,6 +187,8 @@ public class MainFragment extends Fragment implements SensorEventListener{
         txtTime = rootView.findViewById(R.id.txtTime);
         distanceValueTextView = rootView.findViewById(R.id.distanceValue);
         imgWeather = rootView.findViewById(R.id.imgWeather);
+        imgLoading = rootView.findViewById(R.id.imgLoading);
+        Glide.with(this).asGif().load(R.drawable.loading_run).into(imgLoading);
 
         getWeatherData();
 
@@ -264,7 +267,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
                     @Override
                     public void onMapReady(@NonNull GoogleMap googleMap) {
                         googleMap.clear();
-
+                        imgLoading.setVisibility(View.GONE);
                         // 구글맵 불러오는데 시간이 걸리기 때문에 구글맵 불러온 뒤 마커를 이미지로 바꾼다.
                         if(lat == 0 || lng == 0) {
                             customIcon = BitmapDescriptorFactory.fromBitmap(bitmapIcon);
@@ -431,24 +434,24 @@ public class MainFragment extends Fragment implements SensorEventListener{
                             }
                         }
                     }
+                    Log.i("MainFragment_tag", "insertCount : " + insertCount);
                     // 랜덤으로 생성된 좌표값 저장
                     for(int i = 0; i<10; i++) {
-                        for(int j = 0; j<insertCount; j++) {
+                        for(int j = 0; j<randomBoxArrayList.size(); j++) {
                             if(randomBoxArrayList.size() == 10) {
                                 return;
                             }
-                            if(randomBoxArrayList.get(i).boxLat != placeArrayList.get(randomNumber.get(i)).geometry.location.lat
-                                || randomBoxArrayList.get(i).boxLng != placeArrayList.get(randomNumber.get(i)).geometry.location.lng) {
+                            if(randomBoxArrayList.get(j).boxLat != placeArrayList.get(randomNumber.get(i)).geometry.location.lat
+                                || randomBoxArrayList.get(j).boxLng != placeArrayList.get(randomNumber.get(i)).geometry.location.lng) {
                                 RandomBox randomBox = new RandomBox(
                                         placeArrayList.get(randomNumber.get(i)).geometry.location.lat,
                                         placeArrayList.get(randomNumber.get(i)).geometry.location.lng
                                 );
                                 randomBoxArrayList.add(randomBox);
-                                j++;
                             }
                         }
                     }
-                    String json = new Gson().toJson(randomBoxArrayList);
+//                    String json = new Gson().toJson(randomBoxArrayList);
                 }else{
 
                 }
