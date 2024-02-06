@@ -181,6 +181,8 @@ public class MainFragment extends Fragment implements SensorEventListener{
         distanceValueTextView = rootView.findViewById(R.id.distanceValue);
         btnTest = rootView.findViewById(R.id.btnTest);
 
+        getWeatherData();
+
         // 미디어 플레이어 준비
         mp = MediaPlayer.create(getActivity(), R.raw.get_box);
 
@@ -370,6 +372,58 @@ public class MainFragment extends Fragment implements SensorEventListener{
         return rootView;
     }
 
+    private void getWeatherData() {
+        Retrofit retrofit = NetworkClient.weatherRetrofit(getActivity());
+
+        PlaceApi api = retrofit.create(PlaceApi.class);
+
+        Call<PlaceList> call = api.getPlaceList(
+                lat+","+lng,
+                radius,
+                language,
+                keyword,
+                Config.GOOGLE_API_KEY);
+        call.enqueue(new Callback<PlaceList>() {
+            @Override
+            public void onResponse(Call<PlaceList> call, Response<PlaceList> response) {
+                Log.i("MainFragment_tag", ""+response.code());
+                if(response.isSuccessful()){
+                    SharedPreferences.Editor editor = sp.edit();
+                    PlaceList placeList = response.body();
+
+                    placeArrayList.clear();
+                    placeArrayList.addAll(placeList.results);
+
+                    // 중복되지 않는 랜덤 난수를 받아온다.
+                    for (int i = 0; i<10; i++) {
+                        randomNumber.add(i, random.nextInt(placeArrayList.size()));
+                        for(int j=0; i<i; j++) {
+                            if(randomNumber.get(i) == randomNumber.get(j)) {
+                                i--;
+                            }
+                        }
+                    }
+                    // 랜덤으로 생성된 좌표값 저장
+                    for(int i = 0; i<10; i++) {
+                        RandomBox randomBox = new RandomBox(
+                                placeArrayList.get(randomNumber.get(i)).geometry.location.lat,
+                                placeArrayList.get(randomNumber.get(i)).geometry.location.lng
+                        );
+                        randomBoxArrayList.add(randomBox);
+                    }
+                    String json = new Gson().toJson(randomBoxArrayList);
+                    editor.putString("boxLocation", json);
+                    editor.apply();
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PlaceList> call, Throwable t) {
+            }
+        });
+    }
 
 
     private void getNetworkData() {
