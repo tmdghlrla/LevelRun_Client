@@ -42,6 +42,19 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".CatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DogActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FoxActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WolfActivity"
+            android:exported="false" />
         <activity
             android:name=".PostEditActivity"
             android:exported="false" />
