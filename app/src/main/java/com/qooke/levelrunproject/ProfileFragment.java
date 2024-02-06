@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.Character;
 import com.qooke.levelrunproject.model.MyAppUser;
 import com.qooke.levelrunproject.model.UserInfoRes;
 

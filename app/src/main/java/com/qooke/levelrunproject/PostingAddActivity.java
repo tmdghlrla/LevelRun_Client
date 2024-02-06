@@ -69,7 +69,6 @@ public class PostingAddActivity extends AppCompatActivity {
     // 사진 파일 멤버변수로 만듬
     private File photoFile;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +97,7 @@ public class PostingAddActivity extends AppCompatActivity {
                 showDialog();
             }
         });
+
 
         // 포스팅 등록 버튼
         btnAddPosting.setOnClickListener(new View.OnClickListener() {

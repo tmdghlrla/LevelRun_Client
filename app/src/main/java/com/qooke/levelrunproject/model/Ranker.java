@@ -18,4 +18,11 @@ public class Ranker implements Serializable {
     public Ranker(String profileUrl) {
         this.profileUrl = profileUrl;
     }
+
+    public Ranker(String nickName, String profileUrl, int level, int ranking) {
+        this.nickName = nickName;
+        this.profileUrl = profileUrl;
+        this.level = level;
+        this.ranking = ranking;
+    }
 }

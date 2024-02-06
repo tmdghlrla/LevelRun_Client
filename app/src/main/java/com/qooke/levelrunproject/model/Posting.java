@@ -23,4 +23,8 @@ public class Posting implements Serializable {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
+    public Posting() {
+
+    }
 }

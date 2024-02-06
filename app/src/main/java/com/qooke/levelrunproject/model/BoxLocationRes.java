@@ -1,13 +1,10 @@
 package com.qooke.levelrunproject.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-
-public class RankerProfile implements Serializable {
-
+public class BoxLocationRes {
     public String result;
-    public ArrayList<Ranker> items;
+    public int myId;
+    public ArrayList<BoxLocation> items;
     public int count;
-
 }

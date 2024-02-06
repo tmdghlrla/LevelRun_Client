@@ -2,35 +2,57 @@ package com.qooke.levelrunproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.qooke.levelrunproject.api.LikeApi;
+import com.qooke.levelrunproject.api.NetworkClient;
+import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.Posting;
+import com.qooke.levelrunproject.model.Ranker;
+import com.qooke.levelrunproject.model.RankerProfile;
+import com.qooke.levelrunproject.model.Res;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class PostDetailActivity extends AppCompatActivity {
 
     ImageView imgBack;
     ImageView imgProfile;
-    TextView txtMyRank;
-    TextView txtMyLevel;
-    TextView txtMyNickname;
+    TextView txtRank;
+    TextView txtLevel;
+    TextView txtNickname;
     ImageView imgShare;
     ImageView imgPhoto;
     ImageView imgLikes;
-    TextView txtNickname;
+    TextView txtLikerNickname;
     TextView txtLikerCnt;
-    TextView txtTag1;
-    TextView txtTag2;
-    TextView txtTag3;
-    TextView txtTag4;
-    TextView txtTag5;
+    TextView txtTag;
     TextView txtContent;
     TextView txtCreateAt;
     LinearLayout btnLayout;
     Button btnChange;
     Button btnDelete;
 
+    // 멤버변수화
+    String nickName;
+    String profileUrl;
+    int level;
+    String imgURL;
+    String content;
+    String createdAt;
+    int likeCnt;
+    int isLike;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,19 +61,15 @@ public class PostDetailActivity extends AppCompatActivity {
 
         imgBack = findViewById(R.id.imgBack);
         imgProfile = findViewById(R.id.imgProfile);
-        txtMyRank = findViewById(R.id.txtMyRank);
-        txtMyLevel = findViewById(R.id.txtMyLevel);
-        txtMyNickname = findViewById(R.id.txtMyNickname);
+        txtRank = findViewById(R.id.txtRank);
+        txtLevel = findViewById(R.id.txtLevel);
+        txtNickname = findViewById(R.id.txtLikerNickname);
         imgShare = findViewById(R.id.imgShare);
         imgPhoto = findViewById(R.id.imgPhoto);
         imgLikes = findViewById(R.id.imgLikes);
-        txtNickname = findViewById(R.id.txtNickname);
+        txtLikerNickname = findViewById(R.id.txtLikerNickname);
         txtLikerCnt = findViewById(R.id.txtLikerCnt);
-        txtTag1 = findViewById(R.id.txtTag1);
-        txtTag2 = findViewById(R.id.txtTag2);
-        txtTag3 = findViewById(R.id.txtTag3);
-        txtTag4 = findViewById(R.id.txtTag4);
-        txtTag5 = findViewById(R.id.txtTag5);
+        txtTag = findViewById(R.id.txtTag);
         txtContent = findViewById(R.id.txtContent);
         txtCreateAt = findViewById(R.id.txtCreateAt);
         btnLayout = findViewById(R.id.btnLayout);
@@ -59,6 +77,94 @@ public class PostDetailActivity extends AppCompatActivity {
         btnDelete = findViewById(R.id.btnDelete);
 
 
+        // 소셜 프레그먼트 랭커 데이터 받아오기
+        Ranker ranker = (Ranker) getIntent().getSerializableExtra("ranker");
+        nickName = ranker.nickName;
+        profileUrl = ranker.profileUrl;
+        level = ranker.level;
+
+        txtNickname.setText(nickName);
+        txtRank.setText(level);
+        Glide.with(PostDetailActivity.this).load(ranker.profileUrl).into(imgProfile);
+
+
+        // 소셜 프레그먼트 포스팅 데이터 받아오기
+        Posting posting = (Posting) getIntent().getSerializableExtra("posting");
+        imgURL = posting.imgURL;
+        content = posting.content;
+        createdAt = posting.createdAt;
+        likeCnt = posting.likeCnt;
+        isLike = posting.isLike;
+
+        txtContent.setText(content);
+        txtCreateAt.setText(createdAt);
+        txtLikerCnt.setText(likeCnt);
+        Glide.with(PostDetailActivity.this).load(posting.imgURL).into(imgPhoto);
+
+
+        // 뒤로가기 이미지 눌렀을때
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+        // 좋아요 처리
+        imgLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Retrofit retrofit = NetworkClient.getRetrofitClient(PostDetailActivity.this);
+                LikeApi api = retrofit.create(LikeApi.class);
+
+                SharedPreferences sp = PostDetailActivity.this.getSharedPreferences(Config.PREFERENCE_NAME, Context.MODE_PRIVATE);
+                String token = sp.getString("token", "");
+                token = "Bearer " + token;
+
+                if (posting.isLike == 0) {
+                    // 좋아요 API
+                    Call<Res> call = api.setLike(posting.id, token);
+                    call.enqueue(new Callback<Res>() {
+                        @Override
+                        public void onResponse(Call<Res> call, Response<Res> response) {
+                            if (response.isSuccessful()) {
+                                posting.isLike = 1;
+                                return;
+
+                            } else {
+
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Res> call, Throwable t) {
+
+                        }
+                    });
+
+                } else {
+                    // 좋아요 해지 API
+                    Call<Res> call = api.deleteLike(posting.id, token);
+                    call.enqueue(new Callback<Res>() {
+                        @Override
+                        public void onResponse(Call<Res> call, Response<Res> response) {
+                            if (response.isSuccessful()) {
+                                posting.isLike = 0;
+                                return;
+
+                            } else {
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Res> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+        });
 
 
 
