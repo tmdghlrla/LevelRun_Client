@@ -9,95 +9,63 @@
         android:id="@+id/textView29"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="20dp"
         android:gravity="center"
         android:text="컬렉션"
         android:textColor="#000000"
         android:textSize="50sp"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/catCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imageView11"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/eevee" />
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="고양이" />
+    </androidx.cardview.widget.CardView>
 
-        <ImageView
-            android:id="@+id/imageView12"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/eevee" />
-
-        <ImageView
-            android:id="@+id/imageView13"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/eevee" />
-
-        <ImageView
-            android:id="@+id/imageView14"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/eevee" />
-
-        <ImageView
-            android:id="@+id/imageView15"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/eevee" />
-    </LinearLayout>
-
-    <LinearLayout
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dogCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imageView16"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/eevee" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="강아지" />
+    </androidx.cardview.widget.CardView>
 
-        <ImageView
-            android:id="@+id/imageView17"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/eevee" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/foxCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imageView18"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/eevee" />
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:text="여우" />
+    </androidx.cardview.widget.CardView>
 
-        <ImageView
-            android:id="@+id/imageView19"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/eevee" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/wolfCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/imageView20"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/eevee" />
-    </LinearLayout>
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="늑대" />
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

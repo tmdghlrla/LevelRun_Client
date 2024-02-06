@@ -13,6 +13,5 @@ public class UserInfoRes {
     public int exp;
     public int boxCount;
     public String createdAt;
-
     public ArrayList<Character> items;
 }

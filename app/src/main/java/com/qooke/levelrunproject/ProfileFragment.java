@@ -10,11 +10,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -22,10 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.qooke.levelrunproject.adapter.CharacterAdapter;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.Character;
+import com.qooke.levelrunproject.model.CharacterUrl;
 import com.qooke.levelrunproject.model.MyAppUser;
 import com.qooke.levelrunproject.model.UserInfoRes;
 
@@ -63,6 +68,7 @@ public class ProfileFragment extends Fragment {
     boolean isComplete = false;
     int count = 0;
     ArrayList<Character> items = new ArrayList<>();
+    ArrayList<CharacterUrl> urlList = new ArrayList<>();
 
 
     public ProfileFragment() {
@@ -94,7 +100,10 @@ public class ProfileFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
+    CharacterAdapter adapter;
+    ArrayList<Character> characterArrayList = new ArrayList<>();
+    RecyclerView recyclerView;
+    Button btnCollection;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -106,7 +115,11 @@ public class ProfileFragment extends Fragment {
         txtRank = rootView.findViewById(R.id.txtRank);
         txtLevel = rootView.findViewById(R.id.txtLevel);
         txtExp = rootView.findViewById(R.id.txtExp);
+        btnCollection = rootView.findViewById(R.id.btnCollection);
 
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         imgSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,6 +136,14 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        btnCollection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CollectionActivity.class);
+                intent.putExtra("charUrl", characterArrayList);
+                startActivity(intent);
+            }
+        });
         //여기서 작업
         return rootView;
     }
@@ -181,7 +202,29 @@ public class ProfileFragment extends Fragment {
                     txtLevel.setText("" + level);
                     txtExp.setText("" + exp);
 
+                    characterArrayList.clear();
+                    characterArrayList.addAll(userInfoRes.items);
+                    urlList.clear();
+                    for (int i = 0; i < characterArrayList.size();) {
+                        CharacterUrl url = new CharacterUrl(
+                                characterArrayList.get(i).imgUrl,
+                                (i+1 < characterArrayList.size()) ? characterArrayList.get(i+1).imgUrl : "",
+                                (i+2 < characterArrayList.size()) ? characterArrayList.get(i+2).imgUrl : "",
+                                (i+3 < characterArrayList.size()) ? characterArrayList.get(i+3).imgUrl : "",
+                                (i+4 < characterArrayList.size()) ? characterArrayList.get(i+4).imgUrl : ""
+                        );
+                        Log.i("ProfileFragment_tag", "url1 : " + url.url1);
+                        Log.i("ProfileFragment_tag", "url2 : " + url.url2);
+                        Log.i("ProfileFragment_tag", "url3 : " + url.url3);
+                        Log.i("ProfileFragment_tag", "url4 : " + url.url4);
+                        Log.i("ProfileFragment_tag", "url5 : " + url.url5);
+                        urlList.add(url);
+                        i = i+5;
+                    }
+
                     isComplete = true;
+                    adapter = new CharacterAdapter(getActivity(), characterArrayList, urlList);
+                    recyclerView.setAdapter(adapter);
 
 
                 } else {

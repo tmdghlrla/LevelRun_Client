@@ -1,6 +1,8 @@
 package com.qooke.levelrunproject.model;
 
-public class Character {
+import java.io.Serializable;
+
+public class Character implements Serializable {
     public int id;
     public int userId;
     public int characterId;

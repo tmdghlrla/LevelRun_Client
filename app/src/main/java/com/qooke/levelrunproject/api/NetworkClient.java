@@ -15,7 +15,6 @@ public class NetworkClient {
 
     public static Retrofit retrofit;
     public static Retrofit placeRetrofit;
-
     public static Retrofit getRetrofitClient(Context context){
         if(retrofit == null){
 
@@ -43,8 +42,8 @@ public class NetworkClient {
         return retrofit;
     }
 
-    public static Retrofit getPlaceRetrofitClient(Context context) {
-        if (placeRetrofit == null) {
+    public static Retrofit getPlaceRetrofitClient(Context context){
+        if(placeRetrofit == null){
 
             // 통신 로그 확인할 때 필요한 코드
             HttpLoggingInterceptor loggingInterceptor =
@@ -69,5 +68,6 @@ public class NetworkClient {
         }
         return placeRetrofit;
     }
+
 
 }

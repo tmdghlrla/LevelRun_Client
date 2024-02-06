@@ -1,5 +1,6 @@
 package com.qooke.levelrunproject.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class MyAppUser implements Serializable {
