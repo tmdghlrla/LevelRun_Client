@@ -9,6 +9,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.adapter.CharacterAdapter;
+import com.qooke.levelrunproject.adapter.RankAdapter;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.RankerApi;
 import com.qooke.levelrunproject.api.UserApi;
@@ -82,6 +85,8 @@ public class RankingFragment extends Fragment {
         }
     }
     TextView txtRank, txtNickName, txtLevel, txtExp;
+    RecyclerView recyclerView;
+    RankAdapter adapter;
     ArrayList<UserInfoRes> userInfoResArrayList = new ArrayList<>();
 
     @Override
@@ -93,11 +98,11 @@ public class RankingFragment extends Fragment {
         txtNickName = rootView.findViewById(R.id.txtNickName);
         txtLevel = rootView.findViewById(R.id.txtLevel);
         txtExp = rootView.findViewById(R.id.txtExp);
-
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return rootView;
-
-
     }
 
     @Override
@@ -145,8 +150,8 @@ public class RankingFragment extends Fragment {
                     txtLevel.setText("" + level);
                     txtExp.setText("" + exp);
 
-//                    adapter = new CharacterAdapter(getActivity(), characterArrayList, urlList);
-//                    recyclerView.setAdapter(adapter);
+                    adapter = new RankAdapter(getActivity(), userInfoResArrayList);
+                    recyclerView.setAdapter(adapter);
 
 
                 } else {
