@@ -1,6 +1,7 @@
 package com.qooke.levelrunproject.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Ranker implements Serializable {
 
@@ -9,6 +10,11 @@ public class Ranker implements Serializable {
     public int level;
     public int exp;
     public int ranking;
+    
+    // 밑에 멤버변수 3개 추가
+    public String result;
+    public ArrayList<UserInfoRes> items;
+    public int myRank;
 
 
     public Ranker() {

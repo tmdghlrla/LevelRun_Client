@@ -21,10 +21,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.adapter.CharacterAdapter;
 import com.qooke.levelrunproject.api.NetworkClient;
+import com.qooke.levelrunproject.api.RankerApi;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.CharacterUrl;
+import com.qooke.levelrunproject.model.Ranker;
 import com.qooke.levelrunproject.model.UserInfoRes;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -78,6 +82,7 @@ public class RankingFragment extends Fragment {
         }
     }
     TextView txtRank, txtNickName, txtLevel, txtExp;
+    ArrayList<UserInfoRes> userInfoResArrayList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,32 +112,33 @@ public class RankingFragment extends Fragment {
         Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
 
         // 2. api 패키지에 있는 interface 생성
-        UserApi api = retrofit.create(UserApi.class);
+        RankerApi api = retrofit.create(RankerApi.class);
 
         // 유저의 토큰 값을 가져온다.
         SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
         token = "Bearer " + token;
-        Log.i("ProfileFragment_tag", "token : " + token);
 
         // 3. api 호출
-        Call<UserInfoRes> call = api.getUserInfo(token);
+        Call<Ranker> call = api.getRanking(token);
 
         // 5. 서버로부터 받은 응답을 처리하는 코드 작성
-        call.enqueue(new Callback<UserInfoRes>() {
+        call.enqueue(new Callback<Ranker>() {
 
             // 성공했을 때
             @Override
-            public void onResponse(Call<UserInfoRes> call, Response<UserInfoRes> response) {
+            public void onResponse(Call<Ranker> call, Response<Ranker> response) {
                 dismissProgress();
                 // 서버에서 보낸 응답이 200 OK 일 때 처리하는 코드
                 // 데이터 베이스에 카카오 로그인 정보가 없을 때
                 if(response.isSuccessful()) {
-                    UserInfoRes userInfoRes = response.body();
-                    int rank = userInfoRes.rank;
-                    String nickName = userInfoRes.nickName;
-                    int level = userInfoRes.level;
-                    int exp = userInfoRes.exp;
+                    Ranker ranker = response.body();
+                    int rank = ranker.myRank;
+                    userInfoResArrayList.addAll(ranker.items);
+
+                    String nickName = userInfoResArrayList.get(rank-1).nickName;
+                    int level = userInfoResArrayList.get(rank-1).level;
+                    int exp = userInfoResArrayList.get(rank-1).exp;
 
                     txtNickName.setText(nickName);
                     txtRank.setText(""+ rank);
@@ -150,7 +156,7 @@ public class RankingFragment extends Fragment {
 
             // 실패 했을 때
             @Override
-            public void onFailure(Call<UserInfoRes> call, Throwable t) {
+            public void onFailure(Call<Ranker> call, Throwable t) {
                 dismissProgress();
                 // 유저한테 네트워크 통신 실패 했다고 알려준다.
                 Toast.makeText(getActivity(), "네트워크 파싱 오류입니다.", Toast.LENGTH_SHORT).show();
