@@ -37,7 +37,7 @@
             <ImageView
                 android:id="@+id/box"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="220dp"
                 android:layout_centerInParent="true"
                 android:onClick="onBoxClicked"
                 android:src="@drawable/gacha" />
@@ -45,7 +45,7 @@
             <ImageView
                 android:id="@+id/mon"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="220dp"
                 android:layout_centerInParent="true"
                 android:src="@drawable/ic_empty_image"
                 android:visibility="invisible" />

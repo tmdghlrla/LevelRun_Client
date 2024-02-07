@@ -154,8 +154,8 @@ public class MainFragment extends Fragment implements SensorEventListener{
     // 동작 처리
     LocationListener locationListener;
     SupportMapFragment mapFragment;
-    BitmapDescriptor customIcon;
-    Bitmap bitmapIcon;
+    BitmapDescriptor customIcon, customIcon2;
+    Bitmap bitmapIcon, bitmapIcon2;
 
     // 지도에 내위치를 가져 왔는지 체크하는 변수
     boolean isLocationReady = false;
@@ -199,7 +199,6 @@ public class MainFragment extends Fragment implements SensorEventListener{
 
         // 현재 날짜와 시간을 가져오기 위해 Calendar 객체 생성
         Calendar calendar = Calendar.getInstance();
-        getBox();
 
         // 현재 날짜 가져오기
         // int year = calendar.get(Calendar.YEAR); 연도 나중에 필요시 사용
@@ -266,15 +265,16 @@ public class MainFragment extends Fragment implements SensorEventListener{
                 }
 
                 // 마커를 만들어서 지도에 표시
-                bitmapIcon = BitmapFactory.decodeResource(getResources(), R.drawable.box_marker);
-
+                bitmapIcon = BitmapFactory.decodeResource(getResources(), R.drawable.my_marker);
+                bitmapIcon2 = BitmapFactory.decodeResource(getResources(), R.drawable.box_marker2);
                 if (bitmapIcon != null) {
                     // 이미지 크기 조절
                     int width = 108;  // 원하는 가로 크기
                     int height = 108; // 원하는 세로 크기
                     bitmapIcon = Bitmap.createScaledBitmap(bitmapIcon, width, height, false);
-
+                    bitmapIcon2 = Bitmap.createScaledBitmap(bitmapIcon2, width, height, false);
                     customIcon = BitmapDescriptorFactory.fromBitmap(bitmapIcon);
+                    customIcon2 = BitmapDescriptorFactory.fromBitmap(bitmapIcon2);
                 } else {
                     // 기본 마커 아이콘 사용
                     customIcon = BitmapDescriptorFactory.defaultMarker();
@@ -302,6 +302,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
 
                                 markerOptions2.position(new LatLng(randomBoxArrayList.get(i).boxLat,
                                         randomBoxArrayList.get(i).boxLng));
+                                markerOptions2.icon(customIcon2);
                                 googleMap.addMarker(markerOptions2).setTag(i);
                                 Log.i("MainFragment_tag", "location : " + randomBoxArrayList.get(i).boxLat + ", " + randomBoxArrayList.get(i).boxLng);
                                 Log.i("MainFragment_tag", "i : " + i);
