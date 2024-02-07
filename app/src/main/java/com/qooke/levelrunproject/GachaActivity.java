@@ -49,9 +49,7 @@ public class GachaActivity extends AppCompatActivity {
         boxEmpty = findViewById(R.id.boxEmpty);
         gachaBack = findViewById(R.id.gachaBack);
 
-        Intent intent = new Intent();
-        int boxCount = intent.getIntExtra("boxCount", 0);
-        Log.i("GachaActivity_tag", "boxCount : " + boxCount);
+        int boxCount = getIntent().getIntExtra("boxCount", 0);
         boxCnt.setText("" + boxCount);
 
         // 흔들기 애니메이션 및 효과음을 초기화
