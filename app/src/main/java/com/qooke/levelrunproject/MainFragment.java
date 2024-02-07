@@ -54,19 +54,19 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
+import com.qooke.levelrunproject.api.BoxApi;
 import com.qooke.levelrunproject.api.NetworkClient;
+import com.qooke.levelrunproject.api.PapagoApi;
 import com.qooke.levelrunproject.api.PlaceApi;
 import com.qooke.levelrunproject.api.WeatherApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.Place;
 import com.qooke.levelrunproject.model.PlaceList;
 import com.qooke.levelrunproject.model.RandomBox;
+import com.qooke.levelrunproject.model.Res;
+import com.qooke.levelrunproject.model.Translate;
+import com.qooke.levelrunproject.model.TranslateRes;
 import com.qooke.levelrunproject.model.WeatherRes;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -124,7 +124,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
         }
     }
     private ToggleButton toggleButton;
-    private TextView stepsTextView;
+    private TextView txtDate;
     private SensorManager sensorManager;
     private Sensor stepSensor;
     private boolean isSensorAvailable = false;
@@ -142,6 +142,8 @@ public class MainFragment extends Fragment implements SensorEventListener{
     ImageView imgLoading;
     TextView txtKal;
     TextView txtTime;
+    TextView txtMinMax, txtTemp;
+    TextView txtLocation;
     Button btnTest;
 
     // 소리관련 처리
@@ -173,7 +175,8 @@ public class MainFragment extends Fragment implements SensorEventListener{
     boolean isAlarm = false;
     SharedPreferences sp;
     String weatherUrl = "";
-    int insertCount = 0;
+    boolean isDuplicate = false;
+    boolean isCamer = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -181,16 +184,30 @@ public class MainFragment extends Fragment implements SensorEventListener{
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main, container, false);
 
         toggleButton = rootView.findViewById(R.id.toggleButton);
-        stepsTextView = rootView.findViewById(R.id.stepsTextView);
+        txtDate = rootView.findViewById(R.id.txtDate);
         stepsValueTextView = rootView.findViewById(R.id.stepsValue);
         txtKal = rootView.findViewById(R.id.txtKal);
         txtTime = rootView.findViewById(R.id.txtTime);
         distanceValueTextView = rootView.findViewById(R.id.distanceValue);
         imgWeather = rootView.findViewById(R.id.imgWeather);
         imgLoading = rootView.findViewById(R.id.imgLoading);
+        txtMinMax = rootView.findViewById(R.id.txtMinMax);
+        txtTemp = rootView.findViewById(R.id.txtTemp);
+        txtLocation = rootView.findViewById(R.id.txtLocation);
+
         Glide.with(this).asGif().load(R.drawable.loading_run).into(imgLoading);
 
-        getWeatherData();
+        // 현재 날짜와 시간을 가져오기 위해 Calendar 객체 생성
+        Calendar calendar = Calendar.getInstance();
+        getBox();
+
+        // 현재 날짜 가져오기
+        // int year = calendar.get(Calendar.YEAR); 연도 나중에 필요시 사용
+        int month = calendar.get(Calendar.MONTH) + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        txtDate.setText(month + "월 " + day + "일");
+        Log.i("MainFragment_tag", txtDate.getText().toString());
 
         // 미디어 플레이어 준비
         mp = MediaPlayer.create(getActivity(), R.raw.get_box);
@@ -211,9 +228,10 @@ public class MainFragment extends Fragment implements SensorEventListener{
                 lng = location.getLongitude();
                 isLocationReady = true;
 
+                Log.i("MainFragment_tag", "size : " + randomBoxArrayList.size());
                 if(randomBoxArrayList.size() != 10) {
-                    insertCount = 10 - randomBoxArrayList.size();
                     getNetworkData();
+                    Log.i("MainFragment_tag", "hahaha");
                 }
 
                 Log.i("MainFragment_tag", "위도 : " + lat);
@@ -226,18 +244,17 @@ public class MainFragment extends Fragment implements SensorEventListener{
                         int distance = (int) DistanceByDegreeAndroid(lat, lng,
                                 randomBoxArrayList.get(i).boxLat,
                                 randomBoxArrayList.get(i).boxLng);
-                        Log.i("MainFragment_tag", "log : " + i);
-                        Log.i("MainFragment_tag", "distance : " + distance);
 
                         // 상자와의 거리가 10m 이하가 되면 메세지 음성으로 안내
-                        if(!isAlarm && distance < 10) {
-
+                        if(!isAlarm && distance < 50) {
+                            
                         }
 
                         // 획득 효과음 실행
-                        if(distance < 1) {
+                        if(distance < 10) {
                             mp.start();
                             randomBoxArrayList.remove(i);
+                            getBox();
 
                         }
                     }
@@ -249,17 +266,17 @@ public class MainFragment extends Fragment implements SensorEventListener{
                 }
 
                 // 마커를 만들어서 지도에 표시
-                bitmapIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_android_black_24dp);
+                bitmapIcon = BitmapFactory.decodeResource(getResources(), R.drawable.box_marker);
 
                 if (bitmapIcon != null) {
                     // 이미지 크기 조절
-                    int width = 24;  // 원하는 가로 크기
-                    int height = 24; // 원하는 세로 크기
+                    int width = 108;  // 원하는 가로 크기
+                    int height = 108; // 원하는 세로 크기
                     bitmapIcon = Bitmap.createScaledBitmap(bitmapIcon, width, height, false);
 
                     customIcon = BitmapDescriptorFactory.fromBitmap(bitmapIcon);
                 } else {
-                    // 기본 마커 아이콘 사용 또는 원하는 다른 처리
+                    // 기본 마커 아이콘 사용
                     customIcon = BitmapDescriptorFactory.defaultMarker();
                 }
 
@@ -267,22 +284,27 @@ public class MainFragment extends Fragment implements SensorEventListener{
                     @Override
                     public void onMapReady(@NonNull GoogleMap googleMap) {
                         googleMap.clear();
-                        imgLoading.setVisibility(View.GONE);
+                        toggleButton.setText(""+ randomBoxArrayList.size());
+                        if(txtMinMax.getText() == "") {
+                            getWeatherData();
+                            imgLoading.setVisibility(View.GONE);
+                        }
+
+
                         // 구글맵 불러오는데 시간이 걸리기 때문에 구글맵 불러온 뒤 마커를 이미지로 바꾼다.
                         if(lat == 0 || lng == 0) {
                             customIcon = BitmapDescriptorFactory.fromBitmap(bitmapIcon);
                         }
 
                         if (randomBoxArrayList.size() != 0) {
-                            for(int i = 1; i<randomBoxArrayList.size()+1; i++) {
+                            for(int i = 0; i<randomBoxArrayList.size(); i++) {
                                 MarkerOptions markerOptions2 = new MarkerOptions();
 
-                                LatLng boxLocation = new LatLng(
-                                        randomBoxArrayList.get(i-1).boxLat,
-                                        randomBoxArrayList.get(i-1).boxLng);
-
-                                markerOptions2.position(boxLocation);
+                                markerOptions2.position(new LatLng(randomBoxArrayList.get(i).boxLat,
+                                        randomBoxArrayList.get(i).boxLng));
                                 googleMap.addMarker(markerOptions2).setTag(i);
+                                Log.i("MainFragment_tag", "location : " + randomBoxArrayList.get(i).boxLat + ", " + randomBoxArrayList.get(i).boxLng);
+                                Log.i("MainFragment_tag", "i : " + i);
                             }
                         }
                         // 맵이 화면에 나타나면 작업하고 싶은 코드를 여기에 작성
@@ -292,7 +314,12 @@ public class MainFragment extends Fragment implements SensorEventListener{
 
                         // 지도의 중심을 내가 정한 위치로 셋팅
                         // zoom 값이 커지면 확대 되고 작아지면 축소된다.
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 17));
+
+                        if(!isCamer) {
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 17));
+                            isCamer = true;
+                        }
+
 
                         MarkerOptions markerOptions = new MarkerOptions();
                         markerOptions.position(myLocation);
@@ -364,8 +391,36 @@ public class MainFragment extends Fragment implements SensorEventListener{
         return rootView;
     }
 
+    private void getBox() {
+        Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
+
+        BoxApi api = retrofit.create(BoxApi.class);
+
+        SharedPreferences sp = getContext().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        Call<Res> call = api.getBox(token);
+        call.enqueue(new Callback<Res>() {
+            @Override
+            public void onResponse(Call<Res> call, Response<Res> response) {
+                Log.i("MainFragment_tag", "Box : " + response.code());
+                if(response.isSuccessful()){
+
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Res> call, Throwable t) {
+
+            }
+        });
+    }
+
     private void getWeatherData() {
-        Retrofit retrofit = NetworkClient.weatherRetrofit(getActivity());
+        Retrofit retrofit = NetworkClient.getWeatherRetrofitClient(getActivity());
 
         WeatherApi api = retrofit.create(WeatherApi.class);
 
@@ -384,8 +439,32 @@ public class MainFragment extends Fragment implements SensorEventListener{
                     WeatherRes weatherRes = response.body();
 
                     weatherUrl = Config.WEATHER_IMAGE_URL + weatherRes.weather.get(0).icon + "@2x.png";
+
+                    String min = "" + weatherRes.main.temp_min;
+                    String max = "" + weatherRes.main.temp_max;
+                    String temp = "" + weatherRes.main.temp;
+                    String location = weatherRes.name;
+
+                    if(location.contains("-")) {
+                        location = location.replace("-", "");
+                    }
+
+                    getTranslatedData(location);
+                    Log.i("MainFragment_tag", "location : " + location);
+
+                    min = min.split("\\.")[0] + "." + min.split("\\.")[1].substring(0, 1);
+                    max = max.split("\\.")[0] + "." + max.split("\\.")[1].substring(0, 1);
+                    temp = temp.split("\\.")[0] + "." + temp.split("\\.")[1].substring(0, 1);
+
                     Log.i("MainFragment_tag", "weatherUrl : " + weatherUrl);
+                    Log.i("MainFragment_tag", "min : " + min);
+                    Log.i("MainFragment_tag", "max : " + max);
+                    Log.i("MainFragment_tag", "temp : " + temp);
+
                     Glide.with(getActivity()).load(weatherUrl).into(imgWeather);
+                    txtMinMax.setText(min + "/" + max);
+                    txtTemp.setText(temp);
+                    txtLocation.setText("");
 
                 }else{
 
@@ -395,6 +474,36 @@ public class MainFragment extends Fragment implements SensorEventListener{
             @Override
             public void onFailure(Call<WeatherRes> call, Throwable t) {
 
+            }
+        });
+    }
+
+    private void getTranslatedData(String location) {
+        // API 호출
+
+        Retrofit retrofit = NetworkClient.getTranslateRetrofitClient(getActivity());
+
+        PapagoApi api = retrofit.create(PapagoApi.class);
+        Translate translate = new Translate("en", "ko", location);
+
+        Call<TranslateRes> call = api.getTranslate(
+                Config.X_NAVER_CLIENT_ID,
+                Config.X_NAVER_CLIENT_SECRET,
+                translate);
+        call.enqueue(new Callback<TranslateRes>() {
+            @Override
+            public void onResponse(Call<TranslateRes> call, Response<TranslateRes> response) {
+                if(response.isSuccessful()){
+                    TranslateRes translateRes = response.body();
+                    txtLocation.setText(translateRes.message.result.translatedText);
+
+                } else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TranslateRes> call, Throwable t) {
             }
         });
     }
@@ -425,34 +534,58 @@ public class MainFragment extends Fragment implements SensorEventListener{
                     placeArrayList.addAll(placeList.results);
                     randomNumber.clear();
 
+                    Log.i("MainFragment_tag", "data_size : " + placeArrayList.size());
                     // 중복되지 않는 랜덤 난수를 받아온다.
                     for (int i = 0; i<10; i++) {
                         randomNumber.add(i, random.nextInt(placeArrayList.size()));
-                        for(int j=0; i<i; j++) {
+                        for(int j=0; j<i; j++) {
                             if(randomNumber.get(i) == randomNumber.get(j)) {
                                 i--;
                             }
                         }
                     }
-                    Log.i("MainFragment_tag", "insertCount : " + insertCount);
-                    // 랜덤으로 생성된 좌표값 저장
-                    for(int i = 0; i<10; i++) {
-                        for(int j = 0; j<randomBoxArrayList.size(); j++) {
-                            if(randomBoxArrayList.size() == 10) {
-                                return;
-                            }
-                            if(randomBoxArrayList.get(j).boxLat != placeArrayList.get(randomNumber.get(i)).geometry.location.lat
-                                || randomBoxArrayList.get(j).boxLng != placeArrayList.get(randomNumber.get(i)).geometry.location.lng) {
-                                RandomBox randomBox = new RandomBox(
-                                        placeArrayList.get(randomNumber.get(i)).geometry.location.lat,
-                                        placeArrayList.get(randomNumber.get(i)).geometry.location.lng
-                                );
-                                randomBoxArrayList.add(randomBox);
+                    for(int i=0; i<randomNumber.size(); i++) {
+                        Log.i("MainFragment_tag", "number : " + randomNumber.get(i));
+                    }
+                    // 처음의 상자정보가 없는 경우에는 상자 좌표를 10개 생성한다.
+                    if(randomBoxArrayList.size() == 0) {
+                        for(int i = 0; i<10; i++) {
+                            RandomBox randomBox = new RandomBox(
+                                    placeArrayList.get(randomNumber.get(i)).geometry.location.lat,
+                                    placeArrayList.get(randomNumber.get(i)).geometry.location.lng
+                            );
+                            randomBoxArrayList.add(randomBox);
+                        }
+                    } else {
+                        // 상자 정보가 10개가 아닌경우
+                        for(int i = 0; i<10; i++) {
+                            isDuplicate = false;
+                            for(int j = 0; j<randomBoxArrayList.size(); j++) {
+                                if(randomBoxArrayList.size() == 10) {
+                                    i = 10;
+                                    Log.i("MainFragment_tag", "size hihi : " + randomBoxArrayList.size());
+                                    return;
+                                }
+                                // 중복된 좌표값이 있는지 확인
+                                if(randomBoxArrayList.get(j).boxLat == placeArrayList.get(randomNumber.get(i)).geometry.location.lat
+                                        && randomBoxArrayList.get(j).boxLng == placeArrayList.get(randomNumber.get(i)).geometry.location.lng) {
+                                    isDuplicate = true;
+                                }
+                                // 이미 생성된 상자 좌표값과 랜덤생성된 좌표값이 중복된 값이 없으면 저장한다.
+                                if(j == randomBoxArrayList.size()-1) {
+                                    if(!isDuplicate) {
+                                        RandomBox randomBox = new RandomBox(
+                                                placeArrayList.get(randomNumber.get(i)).geometry.location.lat,
+                                                placeArrayList.get(randomNumber.get(i)).geometry.location.lng
+                                        );
+                                        randomBoxArrayList.add(randomBox);
+                                    }
+                                }
                             }
                         }
                     }
 //                    String json = new Gson().toJson(randomBoxArrayList);
-                }else{
+                } else{
 
                 }
             }
@@ -601,7 +734,6 @@ public class MainFragment extends Fragment implements SensorEventListener{
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                stepsTextView.setText(" " + stepCount);
                 float calories = calculateCalories(stepCount);
                 String time = calculateTime(stepCount);
                 float distanceValue = calculateDistance(stepCount);
