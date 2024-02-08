@@ -3,8 +3,10 @@ package com.qooke.levelrunproject;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.SENSOR_SERVICE;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -142,9 +144,9 @@ public class MainFragment extends Fragment implements SensorEventListener{
     ImageView imgLoading;
     TextView txtKal;
     TextView txtTime;
-    TextView txtMinMax, txtTemp;
     TextView txtLocation;
-    Button btnTest;
+    TextView txtDetail;
+    TextView txtWeather;
 
     // 소리관련 처리
     MediaPlayer mp;
@@ -191,8 +193,9 @@ public class MainFragment extends Fragment implements SensorEventListener{
         distanceValueTextView = rootView.findViewById(R.id.distanceValue);
         imgWeather = rootView.findViewById(R.id.imgWeather);
         imgLoading = rootView.findViewById(R.id.imgLoading);
-        txtMinMax = rootView.findViewById(R.id.txtMinMax);
-        txtTemp = rootView.findViewById(R.id.txtTemp);
+        txtDetail = rootView.findViewById(R.id.txtDetail);
+        txtWeather = rootView.findViewById(R.id.txtWeather);
+
         txtLocation = rootView.findViewById(R.id.txtLocation);
 
         Glide.with(this).asGif().load(R.drawable.loading_run).into(imgLoading);
@@ -225,11 +228,13 @@ public class MainFragment extends Fragment implements SensorEventListener{
                 lat = location.getLatitude();
                 // (Double)경도 값
                 lng = location.getLongitude();
-                isLocationReady = true;
+                if(!isLocationReady) {
+                    getWeatherData();
+                    isLocationReady = true;
+                }
 
-                Log.i("MainFragment_tag", "size : " + randomBoxArrayList.size());
                 if(randomBoxArrayList.size() != 10) {
-                    Log.i("MainFragment_tag", "hahaha");
+                    getNetworkData();
                 }
 
                 Log.i("MainFragment_tag", "위도 : " + lat);
@@ -245,7 +250,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
 
                         // 상자와의 거리가 10m 이하가 되면 메세지 음성으로 안내
                         if(!isAlarm && distance < 50) {
-                            
+
                         }
 
                         // 획득 효과음 실행
@@ -288,11 +293,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
                     public void onMapReady(@NonNull GoogleMap googleMap) {
                         googleMap.clear();
                         toggleButton.setText(""+ randomBoxArrayList.size());
-                        if(txtMinMax.getText() == "") {
-                            getWeatherData();
-                            imgLoading.setVisibility(View.GONE);
-                        }
-
+                        imgLoading.setVisibility(View.GONE);
 
                         // 구글맵 불러오는데 시간이 걸리기 때문에 구글맵 불러온 뒤 마커를 이미지로 바꾼다.
                         if(lat == 0 || lng == 0) {
@@ -307,8 +308,6 @@ public class MainFragment extends Fragment implements SensorEventListener{
                                         randomBoxArrayList.get(i).boxLng));
                                 markerOptions2.icon(customIcon2);
                                 googleMap.addMarker(markerOptions2).setTag(i);
-                                Log.i("MainFragment_tag", "location : " + randomBoxArrayList.get(i).boxLat + ", " + randomBoxArrayList.get(i).boxLng);
-                                Log.i("MainFragment_tag", "i : " + i);
                             }
                         }
                         // 맵이 화면에 나타나면 작업하고 싶은 코드를 여기에 작성
@@ -382,6 +381,20 @@ public class MainFragment extends Fragment implements SensorEventListener{
                 locationListener
         );
 
+        txtDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isLocationReady) {
+                    Toast.makeText(getActivity(), "위치 정보를 불러오는 중입니다.\n잠시후에 다시 시도하세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                intent.putExtra("lat", lat);
+                intent.putExtra("lng", lng);
+                startActivity(intent);
+            }
+        });
+
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -430,7 +443,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
 
         WeatherApi api = retrofit.create(WeatherApi.class);
 
-        Call<WeatherRes> call = api.getPlaceList(
+        Call<WeatherRes> call = api.getWeather(
                 lat,
                 lng,
                 Config.OPENWEATHERMAP_API_KEY,
@@ -451,7 +464,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
                     String max = "" + weatherRes.main.temp_max;
                     String temp = "" + weatherRes.main.temp;
                     String location = weatherRes.name;
-
+                    txtWeather.setText(weatherRes.weather.get(0).description);
                     if(location.contains("-")) {
                         location = location.replace("-", "");
                     }
@@ -459,19 +472,9 @@ public class MainFragment extends Fragment implements SensorEventListener{
                     getTranslatedData(location);
                     Log.i("MainFragment_tag", "location : " + location);
 
-                    min = min.split("\\.")[0] + "." + min.split("\\.")[1].substring(0, 1);
-                    max = max.split("\\.")[0] + "." + max.split("\\.")[1].substring(0, 1);
-                    temp = temp.split("\\.")[0] + "." + temp.split("\\.")[1].substring(0, 1);
-
-                    Log.i("MainFragment_tag", "weatherUrl : " + weatherUrl);
-                    Log.i("MainFragment_tag", "min : " + min);
-                    Log.i("MainFragment_tag", "max : " + max);
-                    Log.i("MainFragment_tag", "temp : " + temp);
-
                     Glide.with(getActivity()).load(weatherUrl).into(imgWeather);
 
-                    txtMinMax.setText(min + "/" + max);
-                    txtTemp.setText(temp);
+
                     txtLocation.setText("");
 
                 }else{
@@ -544,16 +547,13 @@ public class MainFragment extends Fragment implements SensorEventListener{
 
                     Log.i("MainFragment_tag", "data_size : " + placeArrayList.size());
                     // 중복되지 않는 랜덤 난수를 받아온다.
-                    for (int i = 0; i<10; i++) {
+                    for (int i = 0; i<placeArrayList.size(); i++) {
                         randomNumber.add(i, random.nextInt(placeArrayList.size()));
                         for(int j=0; j<i; j++) {
                             if(randomNumber.get(i) == randomNumber.get(j)) {
                                 i--;
                             }
                         }
-                    }
-                    for(int i=0; i<randomNumber.size(); i++) {
-                        Log.i("MainFragment_tag", "number : " + randomNumber.get(i));
                     }
                     // 처음의 상자정보가 없는 경우에는 상자 좌표를 10개 생성한다.
                     if(randomBoxArrayList.size() == 0) {
@@ -566,12 +566,11 @@ public class MainFragment extends Fragment implements SensorEventListener{
                         }
                     } else {
                         // 상자 정보가 10개가 아닌경우
-                        for(int i = 0; i<10; i++) {
+                        for(int i = 0; i<placeArrayList.size(); i++) {
                             isDuplicate = false;
                             for(int j = 0; j<randomBoxArrayList.size(); j++) {
                                 if(randomBoxArrayList.size() == 10) {
                                     i = 10;
-                                    Log.i("MainFragment_tag", "size hihi : " + randomBoxArrayList.size());
                                     return;
                                 }
                                 // 중복된 좌표값이 있는지 확인
@@ -619,10 +618,17 @@ public class MainFragment extends Fragment implements SensorEventListener{
         return distance;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onResume() {
         super.onResume();
         isCamer = false;
+        isLocationReady = false;
+        if (locationManager != null && locationListener != null) {
+            // 위치 리스너를 다시 등록합니다.
+            // 여기서 locationManager와 locationListener는 이전에 생성 및 초기화된 객체여야 합니다.
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        }
 
     }
 
@@ -633,6 +639,10 @@ public class MainFragment extends Fragment implements SensorEventListener{
         }
         SharedPreferences preferences = getActivity().getPreferences(MODE_PRIVATE);
         preferences.edit().putInt("initialStepCount", stepCount).apply();
+
+        if (locationManager != null && locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+        }
     }
 
     @Override

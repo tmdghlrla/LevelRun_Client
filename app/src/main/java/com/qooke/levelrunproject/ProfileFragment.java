@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -115,7 +114,7 @@ public class ProfileFragment extends Fragment {
         txtCount = rootView.findViewById(R.id.txtCount);
         txtNickName = rootView.findViewById(R.id.txtNickName);
         txtRank = rootView.findViewById(R.id.txtRank);
-        txtLevel = rootView.findViewById(R.id.txtLevel);
+        txtLevel = rootView.findViewById(R.id.txtAirLevel);
         txtExp = rootView.findViewById(R.id.txtExp);
         btnCollection = rootView.findViewById(R.id.btnCollection);
         imgBox = rootView.findViewById(R.id.imgBox);

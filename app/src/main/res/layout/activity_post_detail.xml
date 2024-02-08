@@ -79,7 +79,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txtLevel"
+                        android:id="@+id/txtAirLevel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/textView11"

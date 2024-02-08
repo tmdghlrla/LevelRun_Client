@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -64,7 +63,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.ViewHolder> {
             super(itemView);
             txtRank = itemView.findViewById(R.id.txtRank);
             txtNickName = itemView.findViewById(R.id.txtNickName);
-            txtLevel = itemView.findViewById(R.id.txtLevel);
+            txtLevel = itemView.findViewById(R.id.txtAirLevel);
             txtExp = itemView.findViewById(R.id.txtExp);
         }
     }

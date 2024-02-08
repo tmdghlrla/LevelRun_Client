@@ -84,61 +84,35 @@
                             android:id="@+id/imgWeather"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:layout_marginRight="10dp"
                             android:src="@drawable/ic_empty_image" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/txtDate2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:text="최저/최고"
-                                android:textColor="#45474B"
-                                android:textSize="15sp" />
-
-                            <TextView
-                                android:id="@+id/txtMinMax"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:textColor="#45474B"
-                                android:textSize="15sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/txtDate3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:text="온도"
-                                android:textColor="#45474B"
-                                android:textSize="15sp" />
-
-                            <TextView
-                                android:id="@+id/txtTemp"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:textColor="#45474B"
-                                android:textSize="15sp" />
-                        </LinearLayout>
                     </LinearLayout>
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtWeather"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/txtDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="자세히 보기"
+                        android:textColor="#000000"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <ToggleButton
@@ -156,7 +130,9 @@
                     android:textOff="시작\n하기"
                     android:textOn="일시 중지"
                     android:textSize="20sp" />
+
             </LinearLayout>
+
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView

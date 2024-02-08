@@ -61,7 +61,7 @@ public class PostDetailActivity extends AppCompatActivity {
         imgBack = findViewById(R.id.imgBack);
         imgProfile = findViewById(R.id.imgProfile);
         txtRank = findViewById(R.id.txtRank);
-        txtLevel = findViewById(R.id.txtLevel);
+        txtLevel = findViewById(R.id.txtAirLevel);
         txtNickname = findViewById(R.id.txtNickName);
         imgShare = findViewById(R.id.imgShare);
         imgPhoto = findViewById(R.id.imgPhoto);

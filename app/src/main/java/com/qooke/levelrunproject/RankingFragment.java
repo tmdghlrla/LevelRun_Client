@@ -20,14 +20,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.qooke.levelrunproject.adapter.CharacterAdapter;
 import com.qooke.levelrunproject.adapter.RankAdapter;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.RankerApi;
-import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
-import com.qooke.levelrunproject.model.CharacterUrl;
 import com.qooke.levelrunproject.model.Ranker;
 import com.qooke.levelrunproject.model.UserInfoRes;
 
@@ -96,7 +92,7 @@ public class RankingFragment extends Fragment {
 
         txtRank = rootView.findViewById(R.id.txtRank);
         txtNickName = rootView.findViewById(R.id.txtNickName);
-        txtLevel = rootView.findViewById(R.id.txtLevel);
+        txtLevel = rootView.findViewById(R.id.txtAirLevel);
         txtExp = rootView.findViewById(R.id.txtExp);
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
