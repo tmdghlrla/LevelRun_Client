@@ -13,15 +13,14 @@
 
         <TextView
             android:id="@+id/textView7"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="118dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="118dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginBottom="50dp"
             android:gravity="center"
             android:text="실시간 유저 랭킹"
-            android:textSize="25sp"
+            android:textSize="35sp"
             android:textStyle="bold" />
 
         <androidx.cardview.widget.CardView
@@ -91,13 +90,13 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="500dp">
+                    android:layout_height="400dp">
 
                 </androidx.recyclerview.widget.RecyclerView>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="130dp"
                     app:cardBackgroundColor="#F6F2DF"
                     app:cardCornerRadius="20dp"
                     app:cardMaxElevation="20dp">
@@ -105,6 +104,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_margin="10dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -121,6 +121,7 @@
                             android:id="@+id/linearLayout2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
                             android:orientation="horizontal">
 
                             <LinearLayout
@@ -134,6 +135,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:layout_marginBottom="10dp"
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:text="랭킹"
@@ -164,6 +166,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:layout_marginBottom="10dp"
                                     android:layout_weight="3"
                                     android:gravity="center"
                                     android:text="닉네임"
@@ -193,6 +196,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:layout_marginBottom="10dp"
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:text="레벨"
@@ -222,6 +226,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
+                                    android:layout_marginBottom="10dp"
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:text="경험치"

@@ -62,13 +62,13 @@ public class GachaActivity extends AppCompatActivity {
                 if (Integer.parseInt(boxCnt.getText().toString()) > 0) {
                     v.startAnimation(shakeAnimation);
                     playSound();
-                    // 2초 후에 API 호출
+                    // 1초 후에 API 호출
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             getNetWorkData();
                         }
-                    }, 2000);
+                    }, 1000);
                     // box를 비활성화하여 여러 번 눌리지 않도록 함
                     box.setEnabled(false);
                 }
@@ -143,14 +143,14 @@ public class GachaActivity extends AppCompatActivity {
             boxEmpty.setVisibility(View.INVISIBLE);
         }
 
-        // 몬스터 이미지뷰를 보여주고 3초 뒤에 다시 상자를 보여줌
+        // 몬스터 이미지뷰를 보여주고 1.5초 뒤에 다시 상자를 보여줌
         mon.setVisibility(View.VISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 resetBox();
             }
-        }, 3000);
+        }, 1500);
     }
 
     // 효과음을 재생하는 메서드

@@ -229,7 +229,6 @@ public class MainFragment extends Fragment implements SensorEventListener{
 
                 Log.i("MainFragment_tag", "size : " + randomBoxArrayList.size());
                 if(randomBoxArrayList.size() != 10) {
-                    getNetworkData();
                     Log.i("MainFragment_tag", "hahaha");
                 }
 
@@ -255,6 +254,10 @@ public class MainFragment extends Fragment implements SensorEventListener{
                             randomBoxArrayList.remove(i);
                             getBox();
 
+                        }
+                        // 상자가 내위치 기준해서 범위 밖으로 나가면 삭제한다.
+                        if(distance > radius) {
+                            randomBoxArrayList.remove(i);
                         }
                     }
                 }
@@ -317,6 +320,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
                         // zoom 값이 커지면 확대 되고 작아지면 축소된다.
 
                         if(!isCamer) {
+                            getNetworkData();
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 17));
                             isCamer = true;
                         }
@@ -421,6 +425,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
     }
 
     private void getWeatherData() {
+        showProgress();
         Retrofit retrofit = NetworkClient.getWeatherRetrofitClient(getActivity());
 
         WeatherApi api = retrofit.create(WeatherApi.class);
@@ -435,6 +440,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
         call.enqueue(new Callback<WeatherRes>() {
             @Override
             public void onResponse(Call<WeatherRes> call, Response<WeatherRes> response) {
+                dismissProgress();
                 Log.i("MainFragment_tag", ""+response.code());
                 if(response.isSuccessful()){
                     WeatherRes weatherRes = response.body();
@@ -463,6 +469,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
                     Log.i("MainFragment_tag", "temp : " + temp);
 
                     Glide.with(getActivity()).load(weatherUrl).into(imgWeather);
+
                     txtMinMax.setText(min + "/" + max);
                     txtTemp.setText(temp);
                     txtLocation.setText("");
@@ -474,7 +481,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
 
             @Override
             public void onFailure(Call<WeatherRes> call, Throwable t) {
-
+                dismissProgress();
             }
         });
     }
@@ -612,34 +619,12 @@ public class MainFragment extends Fragment implements SensorEventListener{
         return distance;
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
-//        String dataList = sp.getString("boxLocation", "");
-//
-//        randomBoxArrayList.clear();
-//        try {
-//            JSONArray jsonArray = new JSONArray(dataList);
-//            for (int i = 0; i < jsonArray.length(); i++) {
-//                JSONObject jsonObject = jsonArray.getJSONObject(i);
-//
-//                double boxLat = jsonObject.getDouble("boxLat");
-//                double boxLng = jsonObject.getDouble("boxLng");
-//
-//                RandomBox randomBox = new RandomBox(boxLat, boxLng);
-//                randomBoxArrayList.add(randomBox);
-//
-//            }
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        if (isSensorAvailable) {
-//            resetDailyCount();
-//            sensorManager.registerListener((SensorEventListener) getActivity(), stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
-//        }
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        isCamer = false;
+
+    }
 
     public void onPause() {
         super.onPause();

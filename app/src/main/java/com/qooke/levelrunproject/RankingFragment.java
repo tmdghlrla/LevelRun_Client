@@ -139,6 +139,7 @@ public class RankingFragment extends Fragment {
                 if(response.isSuccessful()) {
                     Ranker ranker = response.body();
                     int rank = ranker.myRank;
+                    userInfoResArrayList.clear();
                     userInfoResArrayList.addAll(ranker.items);
 
                     String nickName = userInfoResArrayList.get(rank-1).nickName;
