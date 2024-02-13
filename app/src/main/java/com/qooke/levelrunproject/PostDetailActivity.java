@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -80,6 +81,9 @@ public class PostDetailActivity extends AppCompatActivity {
 
 
         // 소셜 프레그먼트 랭커 데이터 받아오기
+
+        Log.i("AAA", "랭커 받아온 데이터 : " + ranker);
+
         if(ranker != null) {
             ranker = (Ranker) getIntent().getSerializableExtra("ranker");
             nickName = ranker.nickName;

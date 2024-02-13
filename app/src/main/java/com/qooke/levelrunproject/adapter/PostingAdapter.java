@@ -2,6 +2,7 @@ package com.qooke.levelrunproject.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,9 @@ public class PostingAdapter extends RecyclerView.Adapter<PostingAdapter.ViewHold
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("index", index);
                     intent.putExtra("posting", posting);
+
+                    Log.i("AAA", "포스팅 데이터 확인 : " + posting.content);
+
                     context.startActivity(intent);
 
                 }
