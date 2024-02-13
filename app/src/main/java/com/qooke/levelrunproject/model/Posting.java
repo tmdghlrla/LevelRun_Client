@@ -3,7 +3,6 @@ package com.qooke.levelrunproject.model;
 import java.io.Serializable;
 
 public class Posting implements Serializable {
-
     public int id;
     public String imgURL;
     public String content;
