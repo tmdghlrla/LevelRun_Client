@@ -14,4 +14,10 @@ public class UserInfoRes {
     public int boxCount;
     public String createdAt;
     public ArrayList<Character> items;
+
+    public UserInfoRes(String nickName, int level, int exp) {
+        this.nickName = nickName;
+        this.level = level;
+        this.exp = exp;
+    }
 }

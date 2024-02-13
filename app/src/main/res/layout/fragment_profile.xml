@@ -53,7 +53,7 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView7"
+                    android:id="@+id/imgBox"
                     android:layout_width="180dp"
                     android:layout_height="140dp"
                     android:layout_gravity="right"
@@ -149,7 +149,7 @@
                     android:textSize="22sp" />
 
                 <TextView
-                    android:id="@+id/txtLevel"
+                    android:id="@+id/txtAirLevel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -200,7 +200,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="220dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
             android:background="@android:color/transparent" />

@@ -17,7 +17,6 @@ import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.Ranker;
-import com.qooke.levelrunproject.model.RankerProfile;
 import com.qooke.levelrunproject.model.Res;
 
 import retrofit2.Call;
@@ -65,12 +64,12 @@ public class PostDetailActivity extends AppCompatActivity {
         imgBack = findViewById(R.id.imgBack);
         imgProfile = findViewById(R.id.imgProfile);
         txtRank = findViewById(R.id.txtRank);
-        txtLevel = findViewById(R.id.txtLevel);
-        txtNickname = findViewById(R.id.txtLikerNickname);
+        txtLevel = findViewById(R.id.txtAirLevel);
+        txtNickname = findViewById(R.id.txtNickName);
         imgShare = findViewById(R.id.imgShare);
         imgPhoto = findViewById(R.id.imgPhoto);
         imgLikes = findViewById(R.id.imgLikes);
-        txtLikerNickname = findViewById(R.id.txtLikerNickname);
+        txtLikerNickname = findViewById(R.id.txtNickName);
         txtLikerCnt = findViewById(R.id.txtLikerCnt);
         txtTag = findViewById(R.id.txtTag);
         txtContent = findViewById(R.id.txtContent);

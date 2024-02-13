@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -67,6 +66,7 @@ public class ProfileFragment extends Fragment {
     String profileUrl = null;
     boolean isComplete = false;
     int count = 0;
+    int boxCount;
     ArrayList<Character> items = new ArrayList<>();
     ArrayList<CharacterUrl> urlList = new ArrayList<>();
 
@@ -104,6 +104,7 @@ public class ProfileFragment extends Fragment {
     ArrayList<Character> characterArrayList = new ArrayList<>();
     RecyclerView recyclerView;
     Button btnCollection;
+    ImageView imgBox;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -113,9 +114,10 @@ public class ProfileFragment extends Fragment {
         txtCount = rootView.findViewById(R.id.txtCount);
         txtNickName = rootView.findViewById(R.id.txtNickName);
         txtRank = rootView.findViewById(R.id.txtRank);
-        txtLevel = rootView.findViewById(R.id.txtLevel);
+        txtLevel = rootView.findViewById(R.id.txtAirLevel);
         txtExp = rootView.findViewById(R.id.txtExp);
         btnCollection = rootView.findViewById(R.id.btnCollection);
+        imgBox = rootView.findViewById(R.id.imgBox);
 
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -141,6 +143,16 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), CollectionActivity.class);
                 intent.putExtra("charUrl", characterArrayList);
+                startActivity(intent);
+            }
+        });
+
+        imgBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), GachaActivity.class);
+                intent.putExtra("boxCount", boxCount);
+                Log.i("ProfileFragment_tag", "boxCount : " + boxCount);
                 startActivity(intent);
             }
         });
@@ -189,7 +201,7 @@ public class ProfileFragment extends Fragment {
                     profileUrl = userInfoRes.profileUrl;
                     int level = userInfoRes.level;
                     int exp = userInfoRes.exp;
-                    int boxCount = userInfoRes.boxCount;
+                    boxCount = userInfoRes.boxCount;
                     items.addAll(userInfoRes.items);
 
                     // 정보 세팅하기
