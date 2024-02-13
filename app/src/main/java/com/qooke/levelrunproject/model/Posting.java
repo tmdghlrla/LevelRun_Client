@@ -9,6 +9,7 @@ public class Posting implements Serializable {
     public String content;
     public int userId;
     public String email;
+    public String tags;
     public String createdAt;
     public String updatedAt;
     public int likeCnt;
@@ -26,5 +27,11 @@ public class Posting implements Serializable {
 
     public Posting() {
 
+    }
+
+    public Posting(String imgURL, String content, String tags) {
+        this.imgURL = imgURL;
+        this.content = content;
+        this.tags = tags;
     }
 }

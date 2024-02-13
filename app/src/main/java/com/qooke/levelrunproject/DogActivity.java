@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -13,7 +14,7 @@ import com.qooke.levelrunproject.model.Character;
 import java.util.ArrayList;
 
 public class DogActivity extends AppCompatActivity {
-    ImageView imgDog1, imgDog2, imgDog3, imgDog4, imgDog5, imgDog6, imgDog7, imgDog8, imgDog9;
+    ImageView imgDog1, imgDog2, imgDog3, imgDog4, imgDog5, imgDog6, imgDog7, imgDog8, imgDog9, dogBack;
     ArrayList<Character> characterArrayList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +30,18 @@ public class DogActivity extends AppCompatActivity {
         imgDog7 = findViewById(R.id.imgDog7);
         imgDog8 = findViewById(R.id.imgDog8);
         imgDog9 = findViewById(R.id.imgDog9);
+        dogBack = findViewById(R.id.dogBack);
 
         Intent intent = new Intent();
         characterArrayList = (ArrayList<Character>) getIntent().getSerializableExtra("charUrl");
+
+        dogBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 액티비티 종료
+                finish();
+            }
+        });
 
         for (Character character: characterArrayList) {
             Log.i("Collection_tag", "id : " + character.id);
