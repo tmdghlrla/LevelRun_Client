@@ -82,33 +82,34 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // 소셜 프레그먼트 랭커 데이터 받아오기
 
+
+
+        ranker = (Ranker) getIntent().getSerializableExtra("ranker");
+        nickName = ranker.nickName;
+        profileUrl = ranker.profileUrl;
+        level = ranker.level;
+
         Log.i("AAA", "랭커 받아온 데이터 : " + ranker);
 
-        if(ranker != null) {
-            ranker = (Ranker) getIntent().getSerializableExtra("ranker");
-            nickName = ranker.nickName;
-            profileUrl = ranker.profileUrl;
-            level = ranker.level;
+        txtNickname.setText(nickName);
+        txtRank.setText(level);
+        Glide.with(PostDetailActivity.this).load(ranker.profileUrl).into(imgProfile);
 
-            txtNickname.setText(nickName);
-            txtRank.setText(level);
-            Glide.with(PostDetailActivity.this).load(ranker.profileUrl).into(imgProfile);
-        }
 
         // 소셜 프레그먼트 포스팅 데이터 받아오기
-        if (posting != null) {
-            posting = (Posting) getIntent().getSerializableExtra("posting");
-            imgURL = posting.imgURL;
-            content = posting.content;
-            createdAt = posting.createdAt;
-            likeCnt = posting.likeCnt;
-            isLike = posting.isLike;
 
-            txtContent.setText(content);
-            txtCreateAt.setText(createdAt);
-            txtLikerCnt.setText(likeCnt);
-            Glide.with(PostDetailActivity.this).load(posting.imgURL).into(imgPhoto);
-        }
+        posting = (Posting) getIntent().getSerializableExtra("posting");
+        imgURL = posting.imgURL;
+        content = posting.content;
+        createdAt = posting.createdAt;
+        likeCnt = posting.likeCnt;
+        isLike = posting.isLike;
+
+        txtContent.setText(content);
+        txtCreateAt.setText(createdAt);
+        txtLikerCnt.setText(likeCnt);
+        Glide.with(PostDetailActivity.this).load(posting.imgURL).into(imgPhoto);
+
 
 
         // 뒤로가기 이미지 눌렀을때
