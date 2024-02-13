@@ -29,6 +29,7 @@ public class PostingAdapter extends RecyclerView.Adapter<PostingAdapter.ViewHold
         this.postingArrayList = postingArrayList;
     }
 
+
     @NonNull
     @Override
     public PostingAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

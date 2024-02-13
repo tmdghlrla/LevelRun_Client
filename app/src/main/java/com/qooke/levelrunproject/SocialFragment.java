@@ -9,7 +9,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,7 +30,6 @@ import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.PostingApi;
 import com.qooke.levelrunproject.api.RankerApi;
 import com.qooke.levelrunproject.config.Config;
-import com.qooke.levelrunproject.model.MyAppUser;
 import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.PostingList;
 import com.qooke.levelrunproject.model.Ranker;
@@ -100,10 +98,7 @@ public class SocialFragment extends Fragment {
     ImageView imgBack;
     Switch switchFilter;
     ProgressBar progressBar;
-    CardView cardViewRanker;
-    CardView cardViewPost;
 
-    int index;
 
     // 페이징 관련 처리 함수
     int offset;
@@ -131,8 +126,6 @@ public class SocialFragment extends Fragment {
         imgBack = rootView.findViewById(R.id.imgBack);
         switchFilter = rootView.findViewById(R.id.switchFilter);
         progressBar = rootView.findViewById(R.id.progressBar);
-        cardViewRanker = rootView.findViewById(R.id.cardViewRanker);
-        cardViewPost = rootView.findViewById(R.id.cardViewPost);
 
 
         // 랭커 리사이클러뷰 처리하는 함수
@@ -192,35 +185,44 @@ public class SocialFragment extends Fragment {
         switchFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(switchFilter.isChecked()) {
+                if(switchFilter.isChecked()) {  // 인기순 정렬
+                    Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
+                    PostingApi postingApi = retrofit.create(PostingApi.class);
+
+                    SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+                    String token = sp.getString("token", "");
+                    token = "Bearer " + token;
+
+                    Call<PostingList> api = postingApi.popularityPosting(token, offset, limit);
+                    api.enqueue(new Callback<PostingList>() {
+                        @Override
+                        public void onResponse(Call<PostingList> call, Response<PostingList> response) {
+                            progressBar.setVisibility(View.GONE);
+
+                            if (response.isSuccessful()) {
+
+                                offset = 0;
+                                count = 0;
+
+                                PostingList postingList = response.body();
+                                postingArrayList.clear();
+                                postingArrayList.addAll(postingList.items);
+                                count = postingList.count;
+
+                                postingAdapter = new PostingAdapter(getActivity(), postingArrayList);
+                                recyclerviewPosting.setAdapter(postingAdapter);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<PostingList> call, Throwable t) {
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
 
                 } else {
 
                 }
-            }
-        });
-
-        // 랭커 이미지 눌렀을때
-        cardViewRanker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Ranker ranker = new Ranker();
-                Intent intent = new Intent(getActivity(), PostDetailActivity.class);
-                intent.putExtra("index", index);
-                intent.putExtra("ranker", ranker);
-                getActivity().startActivity(intent);
-            }
-        });
-
-        // 포스팅 이미지 눌렀을때
-        cardViewPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Posting posting = new Posting();
-                Intent intent = new Intent(getActivity(), PostDetailActivity.class);
-                intent.putExtra("index", index);
-                intent.putExtra("posting", posting);
-                getActivity().startActivity(intent);
             }
         });
 
@@ -379,4 +381,3 @@ public class SocialFragment extends Fragment {
         });
     }
 }
-

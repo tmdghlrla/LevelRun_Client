@@ -1,8 +1,6 @@
 package com.qooke.levelrunproject;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import static android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -10,13 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,11 +24,9 @@ import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
@@ -47,9 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.kakao.sdk.user.model.User;
 import com.qooke.levelrunproject.api.NetworkClient;
-import com.qooke.levelrunproject.api.PostingApi;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.MyAppUser;
@@ -90,6 +80,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     String nickName;
     String profileUrl;
+    String email;
+    int type;
 
 
     Context context;
@@ -113,10 +105,13 @@ public class SettingsActivity extends AppCompatActivity {
         MyAppUser myAppUser = (MyAppUser) getIntent().getSerializableExtra("myAppUser");
         profileUrl = myAppUser.profileUrl;
         nickName = myAppUser.nickName;
+        email = myAppUser.email;
+        type = myAppUser.type;
 
         Log.i("AAA", "데이터 : "+myAppUser.profileUrl);
         Log.i("AAA", "데이터 : "+myAppUser.nickName);
 
+        txtEmail.setText(email);
         editNickname.setText(nickName);
         Glide.with(SettingsActivity.this).load(myAppUser.profileUrl).into(imgChange);
 
@@ -138,6 +133,14 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        // 로그인 타입 표시
+        if (type == 0) {
+            txtLoginType.setText("EMAIL 로그인");
+            imgLoginType.setImageResource(R.drawable.icon_kakaotalk);
+        } else if (type == 1) {
+            txtLoginType.setText("KAKAO 로그인");
+            imgLoginType.setImageResource(R.drawable.icon_email);
+        }
 
         // 프로필 변경 저장 버튼
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +163,7 @@ public class SettingsActivity extends AppCompatActivity {
                 String token = sp.getString("token", "");
                 token = "Bearer " + token;
 
-                // 보낼 파일
+                // 보낼 데이터
                 RequestBody fileBody = RequestBody.create(photoFile, MediaType.parse("image/jpeg"));
                 MultipartBody.Part image = MultipartBody.Part.createFormData("image", photoFile.getName(), fileBody);
                 RequestBody textBody = RequestBody.create(nickName, MediaType.parse("text/plain"));
@@ -172,11 +175,15 @@ public class SettingsActivity extends AppCompatActivity {
                         dismissProgress();
 
                         if(response.isSuccessful()) {
-
+                            Intent intent = new Intent(SettingsActivity.this, ProfileFragment.class);
+                            startActivity(intent);
                             finish();
 
                         } else if (response.code() == 500) {
                             Toast.makeText(SettingsActivity.this, "데이터 베이스에 문제가 있습니다.", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else if (response.code() == 406) {
+                            Toast.makeText(SettingsActivity.this, "중복된 닉네임이 있습니다.", Toast.LENGTH_SHORT).show();
                             return;
                         } else {
                             Toast.makeText(SettingsActivity.this, "잠시후 다시 이용하세요.", Toast.LENGTH_SHORT).show();
@@ -414,7 +421,7 @@ public class SettingsActivity extends AppCompatActivity {
                 OutputStream os;
                 try {
                     os = new FileOutputStream(photoFile);
-                    photo.compress(Bitmap.CompressFormat.JPEG, 60, os);
+                    photo.compress(Bitmap.CompressFormat.JPEG, 50, os);
                     os.flush();
                     os.close();
                 } catch (Exception e) {

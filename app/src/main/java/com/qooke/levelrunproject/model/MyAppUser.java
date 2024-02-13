@@ -8,6 +8,7 @@ public class MyAppUser implements Serializable {
     public String email;
     public String password;
     public String profileUrl;
+    public int type;
 
     public MyAppUser() {
     }
@@ -28,5 +29,12 @@ public class MyAppUser implements Serializable {
         this.email = email;
         this.password = password;
         this.profileUrl = profileUrl;
+    }
+
+    public MyAppUser(String nickName, String email, String profileUrl, int type) {
+        this.nickName = nickName;
+        this.email = email;
+        this.profileUrl = profileUrl;
+        this.type = type;
     }
 }
