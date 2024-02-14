@@ -14,7 +14,7 @@ import com.qooke.levelrunproject.model.Character;
 import java.util.ArrayList;
 
 public class DogActivity extends AppCompatActivity {
-    ImageView imgDog1, imgDog2, imgDog3, imgDog4, imgDog5, imgDog6, imgDog7, imgDog8, imgDog9, dogBack;
+    ImageView imgDog1, imgDog2, imgDog3, imgDog4, imgDog5, imgDog6, imgDog7, imgDog8, imgDog9, back;
     ArrayList<Character> characterArrayList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +30,12 @@ public class DogActivity extends AppCompatActivity {
         imgDog7 = findViewById(R.id.imgDog7);
         imgDog8 = findViewById(R.id.imgDog8);
         imgDog9 = findViewById(R.id.imgDog9);
-        dogBack = findViewById(R.id.dogBack);
+        back = findViewById(R.id.back);
 
         Intent intent = new Intent();
         characterArrayList = (ArrayList<Character>) getIntent().getSerializableExtra("charUrl");
 
-        dogBack.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 액티비티 종료

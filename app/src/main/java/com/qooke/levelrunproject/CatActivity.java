@@ -14,7 +14,7 @@ import com.qooke.levelrunproject.model.Character;
 import java.util.ArrayList;
 
 public class CatActivity extends AppCompatActivity {
-    ImageView imgCat1, imgCat2, imgCat3, imgCat4, imgCat5, imgCat6, imgCat7, imgCat8, imgCat9, catBack;
+    ImageView imgCat1, imgCat2, imgCat3, imgCat4, imgCat5, imgCat6, imgCat7, imgCat8, imgCat9, back;
     ArrayList<Character> characterArrayList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +30,12 @@ public class CatActivity extends AppCompatActivity {
         imgCat7 = findViewById(R.id.imgCat7);
         imgCat8 = findViewById(R.id.imgCat8);
         imgCat9 = findViewById(R.id.imgCat9);
-        catBack = findViewById(R.id.catBack);
+        back = findViewById(R.id.back);
 
         Intent intent = new Intent();
         characterArrayList = (ArrayList<Character>) getIntent().getSerializableExtra("charUrl");
 
-        catBack.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 액티비티 종료
