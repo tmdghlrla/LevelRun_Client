@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@drawable/box2"
     android:orientation="vertical">
 
     <LinearLayout
@@ -21,29 +21,18 @@
             android:layout_height="wrap_content"
             android:src="@drawable/baseline_arrow_back_ios_24" />
 
-        <TextView
-            android:id="@+id/textView20"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:layout_marginBottom="0dp"
-            android:gravity="center"
-            android:text="뽑기"
-            android:textColor="#000000"
-            android:textSize="50sp"
-            android:textStyle="bold" />
-
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="436dp">
 
             <ImageView
                 android:id="@+id/box"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:layout_centerInParent="true"
+                android:layout_marginTop="240dp"
                 android:onClick="onBoxClicked"
-                android:src="@drawable/gacha" />
+                android:src="@drawable/gachabox2" />
 
             <ImageView
                 android:id="@+id/mon"
@@ -63,11 +52,10 @@
 
             <TextView
                 android:id="@+id/textView11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="22dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:text="남은 상자 갯수 : "
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -75,7 +63,7 @@
             <TextView
                 android:id="@+id/boxCnt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="46dp"
                 android:layout_weight="1"
                 android:textColor="#000000"
                 android:textSize="20sp"
@@ -87,21 +75,9 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/boxClick"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:gravity="center"
-                android:text="상자를 눌러 보상을 획득하세요!"
-                android:textColor="#000000"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/boxEmpty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
                 android:gravity="center"
                 android:text="보유한 상자가 없습니다."
                 android:textColor="#000000"
