@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="15dp"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context=".PostingAddActivity">
 
@@ -23,6 +24,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
+        android:scaleType="fitXY"
         android:src="@drawable/baseline_add_box_24" />
 
     <EditText
@@ -39,6 +41,8 @@
         android:paddingTop="9dp"
         android:paddingRight="5dp"
         android:paddingBottom="9dp"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
         android:textSize="20sp" />
 
     <EditText
@@ -57,6 +61,8 @@
         android:selectAllOnFocus="false"
         android:singleLine="false"
         android:textAlignment="viewStart"
+        android:textColor="#000000"
+        android:textColorHint="#000000"
         android:textSize="18sp" />
 
     <android.widget.Button

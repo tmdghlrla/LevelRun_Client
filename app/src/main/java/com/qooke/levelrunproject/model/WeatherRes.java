@@ -29,7 +29,7 @@ public class WeatherRes {
     }
     public class AirMain {
         public int aqi;
-        double temp;
+        public double temp;
 
     }
 }

@@ -5,65 +5,52 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/collection">
+    android:background="@drawable/collection1">
 
-    <Button
-        android:id="@+id/btnCat"
-        android:layout_width="116dp"
-        android:layout_height="315dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="85dp"
-        android:layout_marginEnd="128dp"
-        android:layout_marginBottom="1dp"
-        android:background="#00FFFFFF"
-        android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/btnDog"
-        app:layout_constraintEnd_toStartOf="@+id/btnFox"
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="366dp"
+        android:src="@drawable/baseline_arrow_back_ios_24"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/btnCat"
+        android:layout_width="146dp"
+        android:layout_height="159dp"
+        android:background="#00FFFFFF"
+        android:backgroundTint="#00FFFFFF"
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="267dp" />
 
     <Button
         android:id="@+id/btnWolf"
-        android:layout_width="132dp"
-        android:layout_height="312dp"
-        android:layout_marginStart="150dp"
-        android:layout_marginTop="51dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="25dp"
+        android:layout_width="145dp"
+        android:layout_height="166dp"
         android:background="#00FFFFFF"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/btnFox"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnCat"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteX="226dp"
+        tools:layout_editor_absoluteY="165dp" />
 
     <Button
         android:id="@+id/btnDog"
-        android:layout_width="128dp"
-        android:layout_height="265dp"
-        android:layout_marginStart="93dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="26dp"
-        android:layout_marginBottom="65dp"
+        android:layout_width="138dp"
+        android:layout_height="173dp"
         android:background="#00FFFFFF"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnFox"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCat" />
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="488dp" />
 
     <Button
         android:id="@+id/btnFox"
-        android:layout_width="116dp"
-        android:layout_height="264dp"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="79dp"
+        android:layout_width="139dp"
+        android:layout_height="165dp"
         android:background="#00FFFFFF"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnDog"
-        app:layout_constraintTop_toBottomOf="@+id/btnWolf" />
+        tools:layout_editor_absoluteX="230dp"
+        tools:layout_editor_absoluteY="411dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

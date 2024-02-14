@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -13,7 +14,7 @@ import com.qooke.levelrunproject.model.Character;
 import java.util.ArrayList;
 
 public class FoxActivity extends AppCompatActivity {
-    ImageView imgFox1, imgFox2, imgFox3, imgFox4, imgFox5, imgFox6, imgFox7, imgFox8, imgFox9;
+    ImageView imgFox1, imgFox2, imgFox3, imgFox4, imgFox5, imgFox6, imgFox7, imgFox8, imgFox9, foxBack;
     ArrayList<Character> characterArrayList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,15 @@ public class FoxActivity extends AppCompatActivity {
         imgFox7 = findViewById(R.id.imgFox7);
         imgFox8 = findViewById(R.id.imgFox8);
         imgFox9 = findViewById(R.id.imgFox9);
+        foxBack = findViewById(R.id.foxBack);
+
+        foxBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 액티비티 종료
+                finish();
+            }
+        });
 
         Intent intent = new Intent();
         characterArrayList = (ArrayList<Character>) getIntent().getSerializableExtra("charUrl");

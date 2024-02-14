@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -13,7 +14,7 @@ import com.qooke.levelrunproject.model.Character;
 import java.util.ArrayList;
 
 public class WolfActivity extends AppCompatActivity {
-    ImageView imgWolf1, imgWolf2, imgWolf3, imgWolf4, imgWolf5, imgWolf6, imgWolf7, imgWolf8, imgWolf9;
+    ImageView imgWolf1, imgWolf2, imgWolf3, imgWolf4, imgWolf5, imgWolf6, imgWolf7, imgWolf8, imgWolf9, wolfBack;
     ArrayList<Character> characterArrayList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,15 @@ public class WolfActivity extends AppCompatActivity {
         imgWolf7 = findViewById(R.id.imgWolf7);
         imgWolf8 = findViewById(R.id.imgWolf8);
         imgWolf9 = findViewById(R.id.imgWolf9);
+        wolfBack = findViewById(R.id.wolfBack);
+
+        wolfBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 액티비티 종료
+                finish();
+            }
+        });
 
         Intent intent = new Intent();
         characterArrayList = (ArrayList<Character>) getIntent().getSerializableExtra("charUrl");

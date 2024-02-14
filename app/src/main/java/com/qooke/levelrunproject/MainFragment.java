@@ -22,15 +22,18 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.content.Context;
 import android.Manifest;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,7 +90,7 @@ import retrofit2.Retrofit;
  * Use the {@link MainFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends Fragment implements SensorEventListener{
+public class MainFragment extends Fragment implements SensorEventListener, TextToSpeech.OnInitListener {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -179,6 +182,7 @@ public class MainFragment extends Fragment implements SensorEventListener{
     String weatherUrl = "";
     boolean isDuplicate = false;
     boolean isCamer = false;
+    public TextToSpeech tts;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -250,11 +254,24 @@ public class MainFragment extends Fragment implements SensorEventListener{
 
                         // 상자와의 거리가 10m 이하가 되면 메세지 음성으로 안내
                         if(!isAlarm && distance < 50) {
+                            isAlarm = true;
+                            tts = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+                                @Override
+                                public void onInit(int status) {
+                                    if (status == TextToSpeech.SUCCESS) {
+                                        // 초기화 성공 시 작업 수행
+                                        speakOut();
+                                    } else {
+                                        // 초기화 실패 시 작업 수행
+                                    }
+                                }
+                            });
 
                         }
 
                         // 획득 효과음 실행
                         if(distance < 10) {
+                            isAlarm = false;
                             mp.start();
                             randomBoxArrayList.remove(i);
                             getBox();
@@ -651,6 +668,43 @@ public class MainFragment extends Fragment implements SensorEventListener{
         // 프래그먼트가 detached 될 때 위치 업데이트 리스너를 해제
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void speakOut(){
+        String voice = "근처에 상자가 있습니다.";
+        CharSequence text = voice;
+        tts.setPitch((float)1.0); // 음성 톤 높이 지정
+        tts.setSpeechRate((float)1.0); // 음성 속도 지정
+
+        // 첫 번째 매개변수: 음성 출력을 할 텍스트
+        // 두 번째 매개변수: 1. TextToSpeech.QUEUE_FLUSH - 진행중인 음성 출력을 끊고 이번 TTS의 음성 출력
+        //                 2. TextToSpeech.QUEUE_ADD - 진행중인 음성 출력이 끝난 후에 이번 TTS의 음성 출력
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "id1");
+    }
+    @Override
+    public void onDestroy() {
+        if(tts!=null){ // 사용한 TTS객체 제거
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onDestroy();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onInit(int status) { // OnInitListener를 통해서 TTS 초기화
+        if(status == TextToSpeech.SUCCESS){
+            int result = tts.setLanguage(Locale.KOREA); // TTS언어 한국어로 설정
+
+            if(result == TextToSpeech.LANG_NOT_SUPPORTED || result == TextToSpeech.LANG_MISSING_DATA){
+                Log.e("TTS", "This Language is not supported");
+            }else{
+                speakOut();// onInit에 음성출력할 텍스트를 넣어줌
+            }
+        }else{
+            Log.e("TTS", "Initialization Failed!");
         }
     }
 

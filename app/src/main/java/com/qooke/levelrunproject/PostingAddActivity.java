@@ -35,10 +35,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.qooke.levelrunproject.api.AutoTagApi;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.PostingApi;
 import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.Res;
+import com.qooke.levelrunproject.model.TagRes;
 
 import org.apache.commons.io.IOUtils;
 
@@ -68,6 +71,8 @@ public class PostingAddActivity extends AppCompatActivity {
 
     // 사진 파일 멤버변수로 만듬
     private File photoFile;
+    String fileUrl;
+    String tags = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,61 +108,53 @@ public class PostingAddActivity extends AppCompatActivity {
         btnAddPosting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tag = editTag.getText().toString().toLowerCase().trim();
-                if (tag.contains(",")) {
-                    tag.replace(",", "");
+                addPosting();
+            }
+        });
+    }
+
+    private void addPosting() {
+        String tag = editTag.getText().toString().toLowerCase().trim();
+        String content = editContent.getText().toString().trim();
+
+        if (fileUrl.isEmpty() || content.isEmpty()) {
+            Toast.makeText(PostingAddActivity.this, "사진과 내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        showProgress();
+
+        // 네트워크로 API 호출
+        Retrofit retrofit = NetworkClient.getRetrofitClient(PostingAddActivity.this);
+        PostingApi api = retrofit.create(PostingApi.class);
+
+        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME,MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        Posting posting = new Posting(fileUrl, content, tag);
+
+        Call<Res> call = api.addPosting(token, posting);
+        call.enqueue(new Callback<Res>() {
+            @Override
+            public void onResponse(Call<Res> call, Response<Res> response) {
+                dismissProgress();
+
+                if(response.isSuccessful()) {
+                    finish();
+                } else if (response.code() == 500) {
+                    Toast.makeText(PostingAddActivity.this, "데이터 베이스에 문제가 있습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    Toast.makeText(PostingAddActivity.this, "잠시후 다시 이용하세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String content = editContent.getText().toString().trim();
+            }
 
-                if (photoFile == null || content.isEmpty()) {
-                    Toast.makeText(PostingAddActivity.this, "사진과 내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                showProgress();
-
-                // 네트워크로 API 호출
-                Retrofit retrofit = NetworkClient.getRetrofitClient(PostingAddActivity.this);
-                PostingApi api = retrofit.create(PostingApi.class);
-
-                SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME,MODE_PRIVATE);
-                String token = sp.getString("token", "");
-                token = "Bearer " + token;
-
-                // 보낼 파일
-                RequestBody fileBody = RequestBody.create(photoFile, MediaType.parse("image/jpeg"));
-                MultipartBody.Part image = MultipartBody.Part.createFormData("image", photoFile.getName(), fileBody);
-                RequestBody textBody = RequestBody.create(content, MediaType.parse("text/plain"));
-
-                Call<Res> call = api.addPosting(token, image, textBody);
-                call.enqueue(new Callback<Res>() {
-                    @Override
-                    public void onResponse(Call<Res> call, Response<Res> response) {
-                        dismissProgress();
-
-                        if(response.isSuccessful()) {
-
-                            finish();
-
-                        } else if (response.code() == 500) {
-                            Toast.makeText(PostingAddActivity.this, "데이터 베이스에 문제가 있습니다.", Toast.LENGTH_SHORT).show();
-                            return;
-                        } else {
-                            Toast.makeText(PostingAddActivity.this, "잠시후 다시 이용하세요.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Res> call, Throwable t) {
-                        dismissProgress();
-                        Toast.makeText(PostingAddActivity.this, "네트워크 연결 오류", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                });
-
-
+            @Override
+            public void onFailure(Call<Res> call, Throwable t) {
+                dismissProgress();
+                Toast.makeText(PostingAddActivity.this, "네트워크 연결 오류", Toast.LENGTH_SHORT).show();
+                return;
             }
         });
     }
@@ -321,7 +318,8 @@ public class PostingAddActivity extends AppCompatActivity {
                 }
 
                 imgAddPhoto.setImageBitmap(photo);
-                imgAddPhoto.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                getTag();
+//                imgAddPhoto.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
 //                imageView.setImageBitmap( getBitmapAlbum( imageView, albumUri ) );
 
@@ -332,6 +330,65 @@ public class PostingAddActivity extends AppCompatActivity {
             // 네트워크로 데이터 보낼 필요가 있으면 여기에 코드 작성
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void getTag() {
+        showProgress();
+
+        Retrofit retrofit = NetworkClient.getRetrofitClient(PostingAddActivity.this);
+        AutoTagApi api = retrofit.create(AutoTagApi.class);
+
+        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        // 보낼 파일
+        // 서버에 jpg 형식으로 보낸다. 또는 다른 형식으로 보낸다.
+        // 파일은 용량이 커서 쪼개서 보낸다.
+        RequestBody fileBody = RequestBody.create(photoFile, MediaType.parse("image/jpg"));
+        MultipartBody.Part image = MultipartBody.Part.createFormData("image", photoFile.getName(), fileBody);
+
+        Call<TagRes> call = api.autoTag(token, image);
+
+        // 5. 서버로부터 받은 응답을 처리하는 코드 작성
+
+        call.enqueue(new Callback<TagRes>() {
+            @Override
+            public void onResponse(Call<TagRes> call, Response<TagRes> response) {
+                dismissProgress();
+
+                if(response.isSuccessful()){
+                    TagRes tagRes = response.body();
+                    fileUrl = tagRes.fileUrl;
+
+                    for(int i = 0; i < tagRes.tagList.size(); i++) {
+                        if(i == 0) {
+                            tags = tagRes.tagList.get(i);
+                        } else {
+                            tags = tags + ", " + tagRes.tagList.get(i);
+                        }
+
+                        if(i == 5) {
+                            return;
+                        }
+                    }
+                    if(tags.contains(".")) {
+                        tags = tags.replace(".", "");
+                    }
+                    editTag.setText(tags);
+
+                }else{
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<TagRes> call, Throwable t) {
+                dismissProgress();
+            }
+        });
+
     }
 
     // 사진 찍은거 회전해주는 함수

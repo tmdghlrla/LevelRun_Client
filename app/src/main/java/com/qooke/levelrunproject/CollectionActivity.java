@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class CollectionActivity extends AppCompatActivity {
     Button btnCat, btnWolf, btnDog, btnFox;
     ArrayList<java.lang.Character> characterArrayList = new ArrayList<>();
+    ImageView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +27,15 @@ public class CollectionActivity extends AppCompatActivity {
         btnWolf = findViewById(R.id.btnWolf);
         btnDog = findViewById(R.id.btnDog);
         btnFox = findViewById(R.id.btnFox);
+        back = findViewById(R.id.back);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 액티비티 종료
+                finish();
+            }
+        });
 
         btnCat.setOnClickListener(new View.OnClickListener() {
             @Override
