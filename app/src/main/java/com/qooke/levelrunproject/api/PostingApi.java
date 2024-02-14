@@ -2,6 +2,7 @@ package com.qooke.levelrunproject.api;
 
 
 import com.qooke.levelrunproject.model.Posting;
+import com.qooke.levelrunproject.model.PostingDetail;
 import com.qooke.levelrunproject.model.PostingList;
 import com.qooke.levelrunproject.model.Res;
 
@@ -9,7 +10,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -39,8 +39,8 @@ public interface PostingApi {
 
     // 포스팅 상세정보
     @GET("/posting/{postingId}")
-    Call<PostingList> postDetail(@Path("postingId") int postingId,
-                                 @Header("Authorization") String token);
+    Call<PostingDetail> postDetail(@Path("postingId") int postingId,
+                                   @Header("Authorization") String token);
 
 
 
@@ -50,8 +50,5 @@ public interface PostingApi {
                                         @Query("offset") int offset,
                                         @Query("limit") int limit);
 
-    // 포스팅 삭제
-    @DELETE("/posting/{postingId}")
-    Call<Res> deletePost(@Path("postingId") int postingId,
-                         @Header("Authorization") String token);
+
 }
