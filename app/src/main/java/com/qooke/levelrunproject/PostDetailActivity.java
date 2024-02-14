@@ -312,7 +312,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     if(likeCnt <= 0) {
                         txtLikers.setText("");
                     } else if (likeCnt == 1) {
-                        txtLikerNickname.setText("");
+                        txtLikerNickname.setText(postingDetail.item.likerList.get(0));
                         txtLikers.setText("님이");
                         txtLikerCnt.setText("");
                         txtLike.setText("레벨업을 눌렀습니다.");
