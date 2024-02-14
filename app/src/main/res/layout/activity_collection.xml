@@ -18,39 +18,48 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btnCat"
         android:layout_width="146dp"
         android:layout_height="159dp"
+        android:layout_marginTop="121dp"
+        android:layout_marginEnd="42dp"
         android:background="#00FFFFFF"
         android:backgroundTint="#00FFFFFF"
-        tools:layout_editor_absoluteX="38dp"
-        tools:layout_editor_absoluteY="267dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnWolf"
         android:layout_width="145dp"
         android:layout_height="166dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginBottom="119dp"
         android:background="#00FFFFFF"
         android:backgroundTint="#00FFFFFF"
-        tools:layout_editor_absoluteX="226dp"
-        tools:layout_editor_absoluteY="165dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnDog"
         android:layout_width="138dp"
         android:layout_height="173dp"
+        android:layout_marginEnd="41dp"
+        android:layout_marginBottom="211dp"
         android:background="#00FFFFFF"
         android:backgroundTint="#00FFFFFF"
-        tools:layout_editor_absoluteX="38dp"
-        tools:layout_editor_absoluteY="488dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/btnFox"
         android:layout_width="139dp"
         android:layout_height="165dp"
+        android:layout_marginStart="37dp"
+        android:layout_marginTop="177dp"
         android:background="#00FFFFFF"
         android:backgroundTint="#00FFFFFF"
-        tools:layout_editor_absoluteX="230dp"
-        tools:layout_editor_absoluteY="411dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/back" />
 </androidx.constraintlayout.widget.ConstraintLayout>
