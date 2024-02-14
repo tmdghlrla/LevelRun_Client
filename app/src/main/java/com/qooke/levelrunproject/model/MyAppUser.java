@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 public class MyAppUser implements Serializable {
+    public int id;
     public String nickName;
     public String email;
     public String password;

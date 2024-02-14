@@ -4,6 +4,7 @@ import static android.media.CamcorderProfile.get;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,9 @@ public class RankerSocialAdapter extends RecyclerView.Adapter<RankerSocialAdapte
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("index", index);
                     intent.putExtra("ranker", ranker);
+
+                    Log.i("AAA", "랭커 데이터 확인 : " + ranker.nickName);
+
                     context.startActivity(intent);
                 }
             });

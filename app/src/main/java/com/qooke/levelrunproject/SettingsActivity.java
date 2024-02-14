@@ -136,10 +136,10 @@ public class SettingsActivity extends AppCompatActivity {
         // 로그인 타입 표시
         if (type == 0) {
             txtLoginType.setText("EMAIL 로그인");
-            imgLoginType.setImageResource(R.drawable.icon_kakaotalk);
+            imgLoginType.setImageResource(R.drawable.icon_email);
         } else if (type == 1) {
             txtLoginType.setText("KAKAO 로그인");
-            imgLoginType.setImageResource(R.drawable.icon_email);
+            imgLoginType.setImageResource(R.drawable.icon_kakaotalk);
         }
 
         // 프로필 변경 저장 버튼
@@ -229,6 +229,10 @@ public class SettingsActivity extends AppCompatActivity {
         // 저장된 토큰을 삭제하고 로그아웃처리(로그인 액티비티로 이동)
         Retrofit retrofit = NetworkClient.getRetrofitClient(SettingsActivity.this);
         UserApi api = retrofit.create(UserApi.class);
+
+        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME,MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
 
         Call<Res> call = api.logout(token);
         call.enqueue(new Callback<Res>() {

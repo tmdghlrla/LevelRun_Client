@@ -71,7 +71,7 @@ public class PostingAdapter extends RecyclerView.Adapter<PostingAdapter.ViewHold
                     intent.putExtra("index", index);
                     intent.putExtra("posting", posting);
 
-                    Log.i("AAA", "포스팅 데이터 확인 : " + posting.content);
+                    Log.i("AAA", "포스팅 데이터 확인 : " + posting.userId);
 
                     context.startActivity(intent);
 

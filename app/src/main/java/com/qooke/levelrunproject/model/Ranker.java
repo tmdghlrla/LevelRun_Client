@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class Ranker implements Serializable {
 
+    public int id;
     public String nickName;
     public String profileUrl;
     public int level;
