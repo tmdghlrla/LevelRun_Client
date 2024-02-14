@@ -95,7 +95,6 @@ public class SocialFragment extends Fragment {
 
 
     FloatingActionButton fbtnPostingAdd;
-    ImageView imgBack;
     Switch switchFilter;
     ProgressBar progressBar;
 
@@ -123,7 +122,6 @@ public class SocialFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_social, container, false);
 
         fbtnPostingAdd = rootView.findViewById(R.id.fbtnPostingAdd);
-        imgBack = rootView.findViewById(R.id.imgBack);
         switchFilter = rootView.findViewById(R.id.switchFilter);
         progressBar = rootView.findViewById(R.id.progressBar);
 

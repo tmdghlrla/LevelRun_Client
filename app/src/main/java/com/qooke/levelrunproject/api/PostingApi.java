@@ -2,6 +2,7 @@ package com.qooke.levelrunproject.api;
 
 
 import com.qooke.levelrunproject.model.Posting;
+import com.qooke.levelrunproject.model.PostingDetail;
 import com.qooke.levelrunproject.model.PostingList;
 import com.qooke.levelrunproject.model.Res;
 
@@ -14,6 +15,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface PostingApi {
@@ -37,7 +39,8 @@ public interface PostingApi {
 
     // 포스팅 상세정보
     @GET("/posting/{postingId}")
-    Call<PostingList> postDetail(@Header("Authorization") String token);
+    Call<PostingDetail> postDetail(@Path("postingId") int postingId,
+                                   @Header("Authorization") String token);
 
 
 

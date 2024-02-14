@@ -11,6 +11,7 @@ public class UserInfoRes {
     public String profileUrl;
     public int level;
     public int exp;
+    public int userId;
     public int boxCount;
     public String createdAt;
     public ArrayList<Character> items;

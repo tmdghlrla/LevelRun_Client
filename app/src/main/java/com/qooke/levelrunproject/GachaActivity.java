@@ -31,7 +31,7 @@ public class GachaActivity extends AppCompatActivity {
     private ImageView mon;
     private Animation shakeAnimation;
     private MediaPlayer mediaPlayer;
-    private TextView boxCnt, boxClick, boxEmpty;
+    private TextView boxCnt;
 
     private boolean isShowingMonster = false;
 
@@ -45,8 +45,6 @@ public class GachaActivity extends AppCompatActivity {
         box = findViewById(R.id.box);
         mon = findViewById(R.id.mon);
         boxCnt = findViewById(R.id.boxCnt);
-        boxClick = findViewById(R.id.boxClick);
-        boxEmpty = findViewById(R.id.boxEmpty);
         gachaBack = findViewById(R.id.gachaBack);
 
         int boxCount = getIntent().getIntExtra("boxCount", 0);
@@ -127,21 +125,13 @@ public class GachaActivity extends AppCompatActivity {
     private void displayGachaData(GachaData gachaData) {
         // 획득한 몬스터 이미지를 화면에 표시
         String imgUrl = gachaData.items.get(0).imgUrl;
-        Log.i("GachaActivity_tag", "imgUrl : " + imgUrl);
-        mon.setVisibility(View.VISIBLE);
+
+        box.setVisibility(View.GONE);
+
+
         Glide.with(GachaActivity.this).load(imgUrl).into(mon);
         // 남은 상자 갯수를 업데이트
         boxCnt.setText(String.valueOf(gachaData.boxCount));
-
-        // 남은 상자 갯수가 0일 때의 처리
-        if (gachaData.boxCount == 0) {
-            boxClick.setVisibility(View.INVISIBLE); // boxClick 안 보이게
-            boxEmpty.setVisibility(View.VISIBLE); // boxEmpty 보이게
-        } else {
-            // 상자를 보이게 함
-            boxClick.setVisibility(View.VISIBLE);
-            boxEmpty.setVisibility(View.INVISIBLE);
-        }
 
         // 몬스터 이미지뷰를 보여주고 1.5초 뒤에 다시 상자를 보여줌
         mon.setVisibility(View.VISIBLE);
