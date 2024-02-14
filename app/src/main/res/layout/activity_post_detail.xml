@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="15dp"
+    android:background="#FFFFFF"
     tools:context=".ProfileFragment">
 
     <ImageView
@@ -116,7 +117,7 @@
 
             <ImageView
                 android:id="@+id/imgPhoto"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"

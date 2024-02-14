@@ -103,7 +103,9 @@ public class PostDetailActivity extends AppCompatActivity {
             createdAt = posting.createdAt;
             likeCnt = posting.likeCnt;
             isLike = posting.isLike;
-
+            if(createdAt.contains("T")) {
+                createdAt = createdAt.replace("T", " ");
+            }
             txtContent.setText(content);
             txtCreateAt.setText(createdAt);
             txtLikerCnt.setText("" + likeCnt);
