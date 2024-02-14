@@ -45,7 +45,6 @@ public class GachaActivity extends AppCompatActivity {
         box = findViewById(R.id.box);
         mon = findViewById(R.id.mon);
         boxCnt = findViewById(R.id.boxCnt);
-        boxClick = findViewById(R.id.boxClick);
         boxEmpty = findViewById(R.id.boxEmpty);
         gachaBack = findViewById(R.id.gachaBack);
 

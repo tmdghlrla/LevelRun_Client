@@ -2,7 +2,10 @@ package com.qooke.levelrunproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,10 +18,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.api.LikeApi;
 import com.qooke.levelrunproject.api.NetworkClient;
+import com.qooke.levelrunproject.api.PostingApi;
 import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.MyAppUser;
 import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.Ranker;
 import com.qooke.levelrunproject.model.Res;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,7 +62,12 @@ public class PostDetailActivity extends AppCompatActivity {
     int likeCnt;
     int isLike;
 //    Ranker ranker;
-//    Posting posting;
+
+    int index;
+    Posting posting;
+    MyAppUser myAppUser;
+    ArrayList<Posting> postingArrayList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +197,66 @@ public class PostDetailActivity extends AppCompatActivity {
         });
 
 
+        if (posting.userId == myAppUser.id) {
+            btnLayout.setVisibility(View.VISIBLE);
 
+            // 포스팅 수정 버튼
+            btnChange.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(PostDetailActivity.this, PostEditActivity.class);
+                    startActivity(intent);
+                }
+            });
 
+            // 포스팅 삭제 버튼
+            btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showAlertDialog();
+                }
+            });
+        }
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostDetailActivity.this);
+        builder.setCancelable(false);
+        builder.setTitle("삭제");
+        builder.setMessage("정말 삭제하시겠습니까?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                int postingId = posting.id;
+
+                SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+                String token = sp.getString("token", "");
+                token = "Bearer " + token;
+
+                Retrofit retrofit = NetworkClient.getRetrofitClient(PostDetailActivity.this);
+                PostingApi api = retrofit.create(PostingApi.class);
+
+                Call<Res> call = api.deletePost(postingId, token);
+                call.enqueue(new Callback<Res>() {
+                    @Override
+                    public void onResponse(Call<Res> call, Response<Res> response) {
+                        if (response.isSuccessful()) {
+                            postingArrayList.remove(index);
+                            finish();
+                            startActivity(getIntent());
+                        } else {
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Res> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+        builder.show();
     }
 }

@@ -185,7 +185,7 @@ public class SocialFragment extends Fragment {
         switchFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(switchFilter.isChecked()) {  // 인기순 정렬
+                if (switchFilter.isChecked()) {  // 인기순 정렬
                     Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
                     PostingApi postingApi = retrofit.create(PostingApi.class);
 
@@ -221,11 +221,41 @@ public class SocialFragment extends Fragment {
                     });
 
                 } else {
+                    Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
+                    PostingApi postingApi = retrofit.create(PostingApi.class);
 
+                    SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+                    String token = sp.getString("token", "");
+                    token = "Bearer " + token;
+
+                    Call<PostingList> api = postingApi.getAllPosting(token, offset, limit);
+                    api.enqueue(new Callback<PostingList>() {
+                        @Override
+                        public void onResponse(Call<PostingList> call, Response<PostingList> response) {
+                            progressBar.setVisibility(View.GONE);
+
+                            if (response.isSuccessful()) {
+
+                                offset = 0;
+                                count = 0;
+
+                                PostingList postingList = response.body();
+                                postingArrayList.clear();
+                                postingArrayList.addAll(postingList.items);
+                                count = postingList.count;
+
+                                postingAdapter = new PostingAdapter(getActivity(), postingArrayList);
+                                recyclerviewPosting.setAdapter(postingAdapter);
+                            }
+                        }
+                        @Override
+                        public void onFailure (Call < PostingList > call, Throwable t){
+
+                        }
+                    });
                 }
             }
         });
-
         return rootView;
     }
 
