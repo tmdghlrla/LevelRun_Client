@@ -40,6 +40,7 @@ public class PostDetailActivity extends AppCompatActivity {
     TextView txtTag;
     TextView txtContent;
     TextView txtCreateAt;
+    TextView txtLikers;
     LinearLayout btnLayout;
     Button btnChange;
     Button btnDelete;
@@ -70,6 +71,7 @@ public class PostDetailActivity extends AppCompatActivity {
         imgPhoto = findViewById(R.id.imgPhoto);
         imgLikes = findViewById(R.id.imgLikes);
         txtLikerNickname = findViewById(R.id.txtLikerNickname);
+        txtLikers = findViewById(R.id.txtLikers);
         txtLikerCnt = findViewById(R.id.txtLikerCnt);
         txtTag = findViewById(R.id.txtTag);
         txtContent = findViewById(R.id.txtContent);
@@ -103,9 +105,14 @@ public class PostDetailActivity extends AppCompatActivity {
             createdAt = posting.createdAt;
             likeCnt = posting.likeCnt;
             isLike = posting.isLike;
+            if(likeCnt == 0) {
+                txtLikers.setText("");
+            }
             if(createdAt.contains("T")) {
                 createdAt = createdAt.replace("T", " ");
             }
+
+            txtTag.setText(posting.tags);
             txtContent.setText(content);
             txtCreateAt.setText(createdAt);
             txtLikerCnt.setText("" + likeCnt);
