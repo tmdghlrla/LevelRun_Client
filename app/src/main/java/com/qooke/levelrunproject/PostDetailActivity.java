@@ -2,8 +2,11 @@ package com.qooke.levelrunproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -79,6 +82,8 @@ public class PostDetailActivity extends AppCompatActivity {
     Posting posting;
     ArrayList<UserInfoRes> userInfoResArrayList = new ArrayList<>();
 
+    ArrayList<Posting> postingArrayList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +153,22 @@ public class PostDetailActivity extends AppCompatActivity {
 
         });
 
+        // 포스팅 수정 버튼
+        btnChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PostDetailActivity.this, PostEditActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // 포스팅 삭제 버튼
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAlertDialog();
+            }
+        });
     }
 
     private void likeHandler() {
@@ -296,9 +317,8 @@ public class PostDetailActivity extends AppCompatActivity {
                                 userId = userInfoResArrayList.get(i).userId;
                                 Log.i("PostDetailActivity_tag", "userId : " + userId);
                             }
-                            if(posting.userId != userId) {
-                                btnChange.setVisibility(View.GONE);
-                                btnDelete.setVisibility(View.GONE);
+                            if(posting.userId == userId) {
+                                btnLayout.setVisibility(View.VISIBLE);
                             }
                             return;
                         }
@@ -341,12 +361,12 @@ public class PostDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<PostingDetail> call, Response<PostingDetail> response) {
                 // 서버에서 보낸 응답이 200 OK 일 때 처리하는 코드
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     PostingDetail postingDetail = response.body();
                     Glide.with(PostDetailActivity.this).load(postingDetail.item.profileUrl).into(imgProfile);
 
-                    for(int i = 0; i<postingDetail.tagList.size(); i++) {
-                        if(i==0) {
+                    for (int i = 0; i < postingDetail.tagList.size(); i++) {
+                        if (i == 0) {
                             tags = postingDetail.tagList.get(i);
                         } else {
                             tags = tags + ", " + postingDetail.tagList.get(i);
@@ -359,19 +379,18 @@ public class PostDetailActivity extends AppCompatActivity {
                     txtContent.setText(postingDetail.item.content);
                     createdAt = postingDetail.item.createdAt;
 
-                    if(createdAt.contains("T")) {
+                    if (createdAt.contains("T")) {
                         createdAt = createdAt.replace("T", " ");
                     }
 
                     txtCreatedAt.setText(createdAt);
 
 
-
                     Glide.with(PostDetailActivity.this).load(postingDetail.item.postingUrl).into(imgPhoto);
                     getRank();
                     likeCnt = postingDetail.item.likerList.size();
 
-                    if(likeCnt == 0) {
+                    if (likeCnt == 0) {
                         txtLikerNickname.setText("");
                         txtLikers.setText("");
                         txtLikerCnt.setText("");
@@ -384,10 +403,10 @@ public class PostDetailActivity extends AppCompatActivity {
                     } else {
                         txtLikerNickname.setText(postingDetail.item.likerList.get(0));
                         txtLikers.setText("님 외");
-                        txtLikerCnt.setText("" + (likeCnt-1));
+                        txtLikerCnt.setText("" + (likeCnt - 1));
                         txtLike.setText("명이 레벨업을 눌렀습니다.");
                     }
-                }else if (response.code() == 500) {
+                } else if (response.code() == 500) {
                     return;
                 }
 
@@ -400,6 +419,55 @@ public class PostDetailActivity extends AppCompatActivity {
                 Toast.makeText(PostDetailActivity.this, "네트워크 파싱 오류입니다.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PostDetailActivity.this);
+        builder.setCancelable(false);
+        builder.setTitle("삭제");
+        builder.setMessage("정말 삭제하시겠습니까?");
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                return;
+            }
+        });
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                int postingId = posting.id;
+
+                SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+                String token = sp.getString("token", "");
+                token = "Bearer " + token;
+
+                Retrofit retrofit = NetworkClient.getRetrofitClient(PostDetailActivity.this);
+                PostingApi api = retrofit.create(PostingApi.class);
+
+                Call<Res> call = api.deletePost(postingId, token);
+                call.enqueue(new Callback<Res>() {
+                    @Override
+                    public void onResponse(Call<Res> call, Response<Res> response) {
+                        if (response.isSuccessful()) {
+                            postingArrayList.remove(index);
+                            finish();
+                            startActivity(getIntent());
+
+                        } else {
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Res> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+        builder.show();
     }
 
     Dialog dialog;
