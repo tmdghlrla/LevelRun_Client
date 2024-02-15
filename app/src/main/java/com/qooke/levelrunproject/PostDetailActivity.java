@@ -258,12 +258,14 @@ public class PostDetailActivity extends AppCompatActivity {
                 if(response.isSuccessful()) {
                     LikeRes likeRes = response.body();
                     isLike = likeRes.isLike;
-                    Log.i("PostDetailActivity_tag", "isLike : " + isLike);
+
 
                     if(isLike == 1) {
                         imgLikes.setImageResource(R.drawable.is_like);
+                        getTag();
                     } else {
                         imgLikes.setImageResource(R.drawable.dis_like);
+                        getTag();
                     }
 
 
@@ -395,10 +397,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
                     Glide.with(PostDetailActivity.this).load(postingDetail.item.get(0).postingUrl).into(imgPhoto);
                     getRank();
-                    if(postingDetail.item.get(0).likerList == null) {
+                    if(postingDetail.likerList.size() == 0) {
                         likeCnt = 0;
                     } else {
-                        likeCnt = postingDetail.item.get(0).likerList.size();
+                        likeCnt = postingDetail.likerList.size();
                     }
 
                     if (likeCnt == 0) {
@@ -407,12 +409,12 @@ public class PostDetailActivity extends AppCompatActivity {
                         txtLikerCnt.setText("");
                         txtLike.setText("0명이 레벨업을 눌렀습니다.");
                     } else if (likeCnt == 1) {
-                        txtLikerNickname.setText(postingDetail.item.get(0).likerList.get(0));
+                        txtLikerNickname.setText(postingDetail.likerList.get(0));
                         txtLikers.setText("님이");
                         txtLikerCnt.setText("");
                         txtLike.setText("레벨업을 눌렀습니다.");
                     } else {
-                        txtLikerNickname.setText(postingDetail.item.get(0).likerList.get(0));
+                        txtLikerNickname.setText(postingDetail.likerList.get(0));
                         txtLikers.setText("님 외");
                         txtLikerCnt.setText("" + (likeCnt - 1));
                         txtLike.setText("명이 레벨업을 눌렀습니다.");
