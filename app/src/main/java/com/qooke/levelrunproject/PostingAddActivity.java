@@ -110,7 +110,11 @@ public class PostingAddActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tag = editTag.getText().toString().toLowerCase().trim();
-                if(!(tag.contains("#"))) {
+                tag = tag.trim();
+                tag = tag.replace(" ", "");
+                Log.i("PostingAddActivity_tag", "tag : " + tag);
+
+                if(!(tag.equals("")) && !(tag.contains("#"))) {
                     Toast.makeText(PostingAddActivity.this, "해시 태그 형식이 아닙니다. \nex) #근력운동 #운동 #다이어트", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -371,15 +375,12 @@ public class PostingAddActivity extends AppCompatActivity {
                         if(i == 0) {
                             tags = tagRes.tagList.get(i);
                         } else {
-                            tags = tags + ", " + tagRes.tagList.get(i);
+                            tags = tags + " " + tagRes.tagList.get(i);
                         }
 
                         if(i == 5) {
                             return;
                         }
-                    }
-                    if(tags.contains(".")) {
-                        tags = tags.replace(".", "");
                     }
                     editTag.setText(tags);
 
