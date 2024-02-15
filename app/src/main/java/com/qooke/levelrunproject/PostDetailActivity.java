@@ -86,6 +86,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     ArrayList<Posting> postingArrayList = new ArrayList<>();
     ArrayList<Ranker> rankerArrayList = new ArrayList<>();
+    PostingDetail postingDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +141,8 @@ public class PostDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PostDetailActivity.this, PostEditActivity.class);
+                intent.putExtra("postingDetail", postingDetail);
+                intent.putExtra("tags", tags);
                 startActivity(intent);
             }
         });
@@ -325,13 +328,13 @@ public class PostDetailActivity extends AppCompatActivity {
                             txtRank.setText("" + index);
                             Log.i("PostDetailActivity_tag", "posting.userId : " + posting.userId);
 
-
                             if(myIndex == i) {
                                 userId = userInfoResArrayList.get(i).userId;
                                 Log.i("PostDetailActivity_tag", "userId : " + userId);
                             }
-                            if(posting.userId == userId) {
-                                btnLayout.setVisibility(View.VISIBLE);
+                            if(posting.userId != userId) {
+                                btnChange.setVisibility(View.GONE);
+                                btnDelete.setVisibility(View.GONE);
                             }
                             return;
                         }
@@ -375,7 +378,8 @@ public class PostDetailActivity extends AppCompatActivity {
             public void onResponse(Call<PostingDetail> call, Response<PostingDetail> response) {
                 // 서버에서 보낸 응답이 200 OK 일 때 처리하는 코드
                 if (response.isSuccessful()) {
-                    PostingDetail postingDetail = response.body();
+                    postingDetail = response.body();
+
                     Glide.with(PostDetailActivity.this).load(postingDetail.item.get(0).profileUrl).into(imgProfile);
 
                     for (int i = 0; i < postingDetail.tagList.size(); i++) {

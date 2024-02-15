@@ -1,8 +1,9 @@
 package com.qooke.levelrunproject.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Post {
+public class Post implements Serializable {
     public int postingId;
     public String profileUrl;
     public String nickName;

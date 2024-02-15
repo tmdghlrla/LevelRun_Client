@@ -20,9 +20,10 @@
 
         <ImageView
             android:id="@+id/imgPhoto"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="80dp"
+            android:scaleType="fitXY"
             app:srcCompat="@drawable/river" />
 
         <ImageView
@@ -43,47 +44,12 @@
 
             <TextView
                 android:id="@+id/txtTag"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="#한강"
-                android:textColor="#BDBDBD"
+                android:textColor="#000000"
                 android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/txtTag2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="#인증샷"
-                android:textColor="#BDBDBD"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/txtTag3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="#걷기"
-                android:textColor="#BDBDBD"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/txtTag4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="#레벨런"
-                android:textColor="#BDBDBD"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/txtTag5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="#따운"
-                android:textColor="#BDBDBD"
-                android:textSize="12sp" />
         </LinearLayout>
 
         <TextView
@@ -94,7 +60,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="20dp"
             android:text="오랜만에 한강을 걸으니까 기분이 좋네요. 여러분도 레벨런 다운 받고 같이 운동해요! 레벨이 올라갈수록 동기부여가 된답니다~"
-            android:textColor="#BDBDBD"
+            android:textColor="#000000"
             android:textSize="19sp" />
 
         <TextView
@@ -104,11 +70,11 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="5dp"
             android:text="2024년 1월 18일"
-            android:textColor="#BDBDBD"
+            android:textColor="#000000"
             android:textSize="12sp" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btnUpdate"
             android:layout_width="120dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
