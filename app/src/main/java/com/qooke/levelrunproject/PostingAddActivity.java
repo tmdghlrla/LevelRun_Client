@@ -73,6 +73,7 @@ public class PostingAddActivity extends AppCompatActivity {
     private File photoFile;
     String fileUrl;
     String tags = "";
+    String tag = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,13 +109,18 @@ public class PostingAddActivity extends AppCompatActivity {
         btnAddPosting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tag = editTag.getText().toString().toLowerCase().trim();
+                if(!(tag.contains("#"))) {
+                    Toast.makeText(PostingAddActivity.this, "해시 태그 형식이 아닙니다. \nex) #근력운동 #운동 #다이어트", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 addPosting();
+
             }
         });
     }
 
     private void addPosting() {
-        String tag = editTag.getText().toString().toLowerCase().trim();
         String content = editContent.getText().toString().trim();
 
         if (fileUrl.isEmpty() || content.isEmpty()) {
