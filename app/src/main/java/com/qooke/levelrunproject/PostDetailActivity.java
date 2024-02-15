@@ -116,31 +116,6 @@ public class PostDetailActivity extends AppCompatActivity {
         ranker = (Ranker) getIntent().getSerializableExtra("ranker");
         posting = (Posting) getIntent().getSerializableExtra("posting");
 
-        if(ranker != null) {
-            nickName = ranker.nickName;
-            profileUrl = ranker.profileUrl;
-            level = ranker.level;
-            ranking = ranker.ranking;
-            getTag();
-            isConfirmed();
-
-            txtNickname.setText(nickName);
-            txtRank.setText("" + ranking);
-            txtLevel.setText("" + level);
-            Glide.with(PostDetailActivity.this).load(profileUrl).into(imgProfile);
-        }
-
-        if(posting != null) {
-            // 소셜 프레그먼트 포스팅 데이터 받아오기
-            postingId = posting.id;
-            getTag();
-            isConfirmed();
-            content = posting.content;
-            createdAt = posting.createdAt;
-            likeCnt = posting.likeCnt;
-            isLike = posting.isLike;
-        }
-
 
         // 뒤로가기 이미지 눌렀을때
         imgBack.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +151,35 @@ public class PostDetailActivity extends AppCompatActivity {
                 showAlertDialog();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(ranker != null) {
+            nickName = ranker.nickName;
+            profileUrl = ranker.profileUrl;
+            level = ranker.level;
+            ranking = ranker.ranking;
+            getTag();
+            isConfirmed();
+
+            txtNickname.setText(nickName);
+            txtRank.setText("" + ranking);
+            txtLevel.setText("" + level);
+            Glide.with(PostDetailActivity.this).load(profileUrl).into(imgProfile);
+        }
+
+        if(posting != null) {
+            // 소셜 프레그먼트 포스팅 데이터 받아오기
+            postingId = posting.id;
+            getTag();
+            isConfirmed();
+            content = posting.content;
+            createdAt = posting.createdAt;
+            likeCnt = posting.likeCnt;
+            isLike = posting.isLike;
+        }
     }
 
     private void likeHandler() {
