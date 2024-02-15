@@ -3,6 +3,23 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- 미션 -->
+    <string name="quest_experience_button">경험치 수령 버튼</string>
+    <string name="exp_100">100exp</string>
+    <string name="exp_300">300exp</string>
+    <string name="exp_500">500exp</string>
+    <string name="exp_1000">1000exp</string>
+    <string name="exp_2000">2000exp</string>
+    <string name="today_mission">오늘의 임무</string>
+    <string name="daily_quest_1000_steps">[일일] 1,000보 걷기</string>
+    <string name="daily_quest_3000_steps">[일일] 3,000보 걷기</string>
+    <string name="daily_quest_5000_steps">[일일] 5,000보 걷기</string>
+    <string name="daily_quest_10000_steps">[일일] 10,000보 걷기</string>
+    <string name="weekly_quest_10000_steps">[주간] 10,000보 걷기</string>
+    <string name="quest_image_description">퀘스트 이미지</string>
+    <string name="back_button_description">뒤로 가기 버튼</string>
+    <string name="exp_format">%d EXP</string>
+
     <string name="txt_register">회원가입</string>
     <string name="txt_line_register"><u>회원가입</u></string>
     <string name="txt_login">로그인</string>
@@ -38,6 +55,3 @@
     <string name="today_button_label">오늘</string>
     <string name="today_record">오늘의 기록</string>
 </resources>
-
-
-
