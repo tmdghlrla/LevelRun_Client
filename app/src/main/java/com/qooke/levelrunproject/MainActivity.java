@@ -28,10 +28,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         // 토큰 확인하고 없으면 로그인 액티비티 띄우기
         SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
         Log.i("getKeyHash", ""+getKeyHash(MainActivity.this));
+        Log.i("MainActivity_tag", "token : " + token);
         if (token.isEmpty()) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);

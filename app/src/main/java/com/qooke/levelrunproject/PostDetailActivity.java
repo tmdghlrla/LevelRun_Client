@@ -2,11 +2,8 @@ package com.qooke.levelrunproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -30,7 +27,7 @@ import com.qooke.levelrunproject.api.RankerApi;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.CharacterUrl;
-import com.qooke.levelrunproject.model.MyAppUser;
+import com.qooke.levelrunproject.model.LikeRes;
 import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.PostingDetail;
 import com.qooke.levelrunproject.model.Ranker;
@@ -82,9 +79,6 @@ public class PostDetailActivity extends AppCompatActivity {
     Posting posting;
     ArrayList<UserInfoRes> userInfoResArrayList = new ArrayList<>();
 
-    MyAppUser myAppUser;
-    ArrayList<Posting> postingArrayList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,15 +122,11 @@ public class PostDetailActivity extends AppCompatActivity {
             // 소셜 프레그먼트 포스팅 데이터 받아오기
             postingId = posting.id;
             getTag();
-
+            isConfirmed();
             content = posting.content;
             createdAt = posting.createdAt;
             likeCnt = posting.likeCnt;
             isLike = posting.isLike;
-
-            if(createdAt.contains("T")) {
-                createdAt = createdAt.replace("T", " ");
-            }
         }
 
 
@@ -153,125 +143,116 @@ public class PostDetailActivity extends AppCompatActivity {
         imgLikes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Retrofit retrofit = NetworkClient.getRetrofitClient(PostDetailActivity.this);
-                LikeApi api = retrofit.create(LikeApi.class);
-
-                SharedPreferences sp = PostDetailActivity.this.getSharedPreferences(Config.PREFERENCE_NAME, Context.MODE_PRIVATE);
-                String token = sp.getString("token", "");
-                token = "Bearer " + token;
-
-                if (posting.isLike == 0) {
-                    // 좋아요 API
-                    Call<Res> call = api.setLike(posting.id, token);
-                    call.enqueue(new Callback<Res>() {
-                        @Override
-                        public void onResponse(Call<Res> call, Response<Res> response) {
-                            if (response.isSuccessful()) {
-                                posting.isLike = 1;
-                                return;
-
-                            } else {
-
-                            }
-                        }
-                        @Override
-                        public void onFailure(Call<Res> call, Throwable t) {
-
-                        }
-                    });
-
-                } else {
-                    // 좋아요 해지
-                    Call<Res> call = api.deleteLike(posting.id, token);
-                    call.enqueue(new Callback<Res>() {
-                        @Override
-                        public void onResponse(Call<Res> call, Response<Res> response) {
-                            if (response.isSuccessful()) {
-                                posting.isLike = 0;
-                                return;
-
-                            } else {
-
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Res> call, Throwable t) {
-
-                        }
-                    });
-                }
+                likeHandler();
             }
+
         });
 
-        SharedPreferences sp = PostDetailActivity.this.getSharedPreferences(Config.PREFERENCE_NAME, Context.MODE_PRIVATE);
+    }
+
+    private void likeHandler() {
+        // 1. retrofit 변수 생성
+        Retrofit retrofit = NetworkClient.getRetrofitClient(PostDetailActivity.this);
+
+        // 2. api 패키지에 있는 interface 생성
+        LikeApi api = retrofit.create(LikeApi.class);
+
+        // 유저의 토큰 값을 가져온다.
+        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
         token = "Bearer " + token;
 
+        // 3. api 호출
+        Call<Res> call = api.setLike(token, postingId);
 
-        if (token == sp.getString("token", "")) {
-            btnLayout.setVisibility(View.VISIBLE);
+        // 5. 서버로부터 받은 응답을 처리하는 코드 작성
+        call.enqueue(new Callback<Res>() {
 
-            // 포스팅 수정 버튼
-            btnChange.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(PostDetailActivity.this, PostEditActivity.class);
-                    startActivity(intent);
-                }
-            });
-
-            // 포스팅 삭제 버튼
-            btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showAlertDialog();
-                }
-            });
-        }
-    }
-
-    private void showAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PostDetailActivity.this);
-        builder.setCancelable(false);
-        builder.setTitle("삭제");
-        builder.setMessage("정말 삭제하시겠습니까?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            // 성공했을 때
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                int postingId = posting.id;
-
-                SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
-                String token = sp.getString("token", "");
-                token = "Bearer " + token;
-
-                Retrofit retrofit = NetworkClient.getRetrofitClient(PostDetailActivity.this);
-                PostingApi api = retrofit.create(PostingApi.class);
-
-                Call<Res> call = api.deletePost(postingId, token);
-                call.enqueue(new Callback<Res>() {
-                    @Override
-                    public void onResponse(Call<Res> call, Response<Res> response) {
-                        if (response.isSuccessful()) {
-                            postingArrayList.remove(index);
-                            finish();
-                            startActivity(getIntent());
-                        } else {
-
-                        }
+            public void onResponse(Call<Res> call, Response<Res> response) {
+                dismissProgress();
+                // 서버에서 보낸 응답이 200 OK 일 때 처리하는 코드
+                // 데이터 베이스에 카카오 로그인 정보가 없을 때
+                if(response.isSuccessful()) {
+                    if(isLike == 1) {
+                        isLike = 0;
+                        imgLikes.setImageResource(R.drawable.dis_like);
+                        getTag();
+                        return;
+                    } else {
+                        isLike = 1;
+                        imgLikes.setImageResource(R.drawable.is_like);
+                        getTag();
+                        return;
                     }
 
-                    @Override
-                    public void onFailure(Call<Res> call, Throwable t) {
 
-                    }
-                });
+                } else {
+                    Log.i("PostDetailActivity_tag", "response.code : " +response.code());
+                }
+            }
+
+            // 실패 했을 때
+            @Override
+            public void onFailure(Call<Res> call, Throwable t) {
+                dismissProgress();
+                // 유저한테 네트워크 통신 실패 했다고 알려준다.
+                Toast.makeText(PostDetailActivity.this, "네트워크 파싱 오류입니다.", Toast.LENGTH_SHORT).show();
             }
         });
-        builder.show();
     }
 
+    private void isConfirmed() {
+        // 1. retrofit 변수 생성
+        Retrofit retrofit = NetworkClient.getRetrofitClient(PostDetailActivity.this);
+
+        // 2. api 패키지에 있는 interface 생성
+        LikeApi api = retrofit.create(LikeApi.class);
+
+        // 유저의 토큰 값을 가져온다.
+        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        // 3. api 호출
+        Call<LikeRes> call = api.getLike(token, postingId);
+
+        // 5. 서버로부터 받은 응답을 처리하는 코드 작성
+        call.enqueue(new Callback<LikeRes>() {
+
+            // 성공했을 때
+            @Override
+            public void onResponse(Call<LikeRes> call, Response<LikeRes> response) {
+                dismissProgress();
+                // 서버에서 보낸 응답이 200 OK 일 때 처리하는 코드
+                // 데이터 베이스에 카카오 로그인 정보가 없을 때
+                if(response.isSuccessful()) {
+                    LikeRes likeRes = response.body();
+                    isLike = likeRes.isLike;
+                    Log.i("PostDetailActivity_tag", "isLike : " + isLike);
+
+                    if(isLike == 1) {
+                        imgLikes.setImageResource(R.drawable.is_like);
+                    } else {
+                        imgLikes.setImageResource(R.drawable.dis_like);
+                    }
+
+
+                } else {
+                    Log.i("PostDetailActivity_tag", "response.code : " +response.code());
+                }
+            }
+
+            // 실패 했을 때
+            @Override
+            public void onFailure(Call<LikeRes> call, Throwable t) {
+                dismissProgress();
+                // 유저한테 네트워크 통신 실패 했다고 알려준다.
+                Toast.makeText(PostDetailActivity.this, "네트워크 파싱 오류입니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void getRank() {
         // 1. retrofit 변수 생성
@@ -309,10 +290,11 @@ public class PostDetailActivity extends AppCompatActivity {
 
                             txtRank.setText("" + index);
                             Log.i("PostDetailActivity_tag", "posting.userId : " + posting.userId);
-                            Log.i("PostDetailActivity_tag", "userId : " + userId);
+
 
                             if(myIndex == i) {
                                 userId = userInfoResArrayList.get(i).userId;
+                                Log.i("PostDetailActivity_tag", "userId : " + userId);
                             }
                             if(posting.userId != userId) {
                                 btnChange.setVisibility(View.GONE);
@@ -375,22 +357,35 @@ public class PostDetailActivity extends AppCompatActivity {
                     nickName = postingDetail.item.nickName;
                     txtNickname.setText(nickName);
                     txtContent.setText(postingDetail.item.content);
-                    txtCreatedAt.setText(postingDetail.item.createdAt);
+                    createdAt = postingDetail.item.createdAt;
+
+                    if(createdAt.contains("T")) {
+                        createdAt = createdAt.replace("T", " ");
+                    }
+
+                    txtCreatedAt.setText(createdAt);
+
+
+
                     Glide.with(PostDetailActivity.this).load(postingDetail.item.postingUrl).into(imgPhoto);
                     getRank();
-                    likeCnt = postingDetail.item.likerList.size() -1;
+                    likeCnt = postingDetail.item.likerList.size();
 
-                    if(likeCnt <= 0) {
-                        txtLikers.setText("");
-                    } else if (likeCnt == 1) {
+                    if(likeCnt == 0) {
                         txtLikerNickname.setText("");
+                        txtLikers.setText("");
+                        txtLikerCnt.setText("");
+                        txtLike.setText("0명이 레벨업을 눌렀습니다.");
+                    } else if (likeCnt == 1) {
+                        txtLikerNickname.setText(postingDetail.item.likerList.get(0));
                         txtLikers.setText("님이");
                         txtLikerCnt.setText("");
                         txtLike.setText("레벨업을 눌렀습니다.");
                     } else {
                         txtLikerNickname.setText(postingDetail.item.likerList.get(0));
-                        txtLikerCnt.setText("" + likeCnt);
-
+                        txtLikers.setText("님 외");
+                        txtLikerCnt.setText("" + (likeCnt-1));
+                        txtLike.setText("명이 레벨업을 눌렀습니다.");
                     }
                 }else if (response.code() == 500) {
                     return;
