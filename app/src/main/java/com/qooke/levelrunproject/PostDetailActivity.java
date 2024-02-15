@@ -189,7 +189,7 @@ public class PostDetailActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
         token = "Bearer " + token;
-
+        Log.i("PostDetailActivity_tag", "token : " + token);
         // 3. api 호출
         Call<Res> call = api.setLike(token, postingId);
 
@@ -370,21 +370,21 @@ public class PostDetailActivity extends AppCompatActivity {
                 // 서버에서 보낸 응답이 200 OK 일 때 처리하는 코드
                 if (response.isSuccessful()) {
                     PostingDetail postingDetail = response.body();
-                    Glide.with(PostDetailActivity.this).load(postingDetail.item.profileUrl).into(imgProfile);
+                    Glide.with(PostDetailActivity.this).load(postingDetail.item.get(0).profileUrl).into(imgProfile);
 
                     for (int i = 0; i < postingDetail.tagList.size(); i++) {
                         if (i == 0) {
-                            tags = postingDetail.tagList.get(i);
+                            tags = "#" + postingDetail.tagList.get(i);
                         } else {
-                            tags = tags + ", " + postingDetail.tagList.get(i);
+                            tags = tags + " #" + postingDetail.tagList.get(i);
                         }
                     }
                     txtTag.setText(tags);
-                    txtLevel.setText("" + postingDetail.item.level);
-                    nickName = postingDetail.item.nickName;
+                    txtLevel.setText("" + postingDetail.item.get(0).level);
+                    nickName = postingDetail.item.get(0).nickName;
                     txtNickname.setText(nickName);
-                    txtContent.setText(postingDetail.item.content);
-                    createdAt = postingDetail.item.createdAt;
+                    txtContent.setText(postingDetail.item.get(0).content);
+                    createdAt = postingDetail.item.get(0).createdAt;
 
                     if (createdAt.contains("T")) {
                         createdAt = createdAt.replace("T", " ");
@@ -393,9 +393,13 @@ public class PostDetailActivity extends AppCompatActivity {
                     txtCreatedAt.setText(createdAt);
 
 
-                    Glide.with(PostDetailActivity.this).load(postingDetail.item.postingUrl).into(imgPhoto);
+                    Glide.with(PostDetailActivity.this).load(postingDetail.item.get(0).postingUrl).into(imgPhoto);
                     getRank();
-                    likeCnt = postingDetail.item.likerList.size();
+                    if(postingDetail.item.get(0).likerList == null) {
+                        likeCnt = 0;
+                    } else {
+                        likeCnt = postingDetail.item.get(0).likerList.size();
+                    }
 
                     if (likeCnt == 0) {
                         txtLikerNickname.setText("");
@@ -403,12 +407,12 @@ public class PostDetailActivity extends AppCompatActivity {
                         txtLikerCnt.setText("");
                         txtLike.setText("0명이 레벨업을 눌렀습니다.");
                     } else if (likeCnt == 1) {
-                        txtLikerNickname.setText(postingDetail.item.likerList.get(0));
+                        txtLikerNickname.setText(postingDetail.item.get(0).likerList.get(0));
                         txtLikers.setText("님이");
                         txtLikerCnt.setText("");
                         txtLike.setText("레벨업을 눌렀습니다.");
                     } else {
-                        txtLikerNickname.setText(postingDetail.item.likerList.get(0));
+                        txtLikerNickname.setText(postingDetail.item.get(0).likerList.get(0));
                         txtLikers.setText("님 외");
                         txtLikerCnt.setText("" + (likeCnt - 1));
                         txtLike.setText("명이 레벨업을 눌렀습니다.");
