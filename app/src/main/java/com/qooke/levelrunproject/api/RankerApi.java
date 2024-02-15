@@ -1,8 +1,7 @@
 package com.qooke.levelrunproject.api;
 
 import com.qooke.levelrunproject.model.Ranker;
-import com.qooke.levelrunproject.model.RankerList;
-import com.qooke.levelrunproject.model.RankerProfile;
+import com.qooke.levelrunproject.model.RankerRes;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -14,9 +13,9 @@ public interface RankerApi {
     @GET("/rankerlist")
     Call<Ranker> rankerList(@Header("Authorization") String token);
 
-    // 소셜 랭커 프로필 사진 가져오기
+    // 소셜 랭커 정보 가져오기
     @GET("/ranker")
-    Call<RankerProfile> rankerimg(@Header("Authorization") String token);
+    Call<RankerRes> rankerimg(@Header("Authorization") String token);
     
     // 추가 부분
     @GET("/rankingList")

@@ -11,6 +11,10 @@ public class Ranker implements Serializable {
     public int level;
     public int exp;
     public int ranking;
+    public String imgURL;
+    public String content;
+    public String createdAt;
+
     
     // 밑에 멤버변수 3개 추가
     public String result;

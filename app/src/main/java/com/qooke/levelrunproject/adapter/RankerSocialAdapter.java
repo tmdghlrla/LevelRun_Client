@@ -17,9 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.PostDetailActivity;
 import com.qooke.levelrunproject.R;
-import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.Ranker;
-import com.qooke.levelrunproject.model.RankerProfile;
 
 import java.util.ArrayList;
 

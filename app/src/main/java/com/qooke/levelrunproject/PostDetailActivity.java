@@ -34,6 +34,7 @@ import com.qooke.levelrunproject.model.LikeRes;
 import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.PostingDetail;
 import com.qooke.levelrunproject.model.Ranker;
+import com.qooke.levelrunproject.model.RankerRes;
 import com.qooke.levelrunproject.model.Res;
 import com.qooke.levelrunproject.model.UserInfoRes;
 
@@ -69,6 +70,7 @@ public class PostDetailActivity extends AppCompatActivity {
     String nickName = "";
     String profileUrl = "";
     int level = 0;
+    int ranking;
     String imgURL = "";
     String content = "";
     String createdAt = "";
@@ -82,7 +84,8 @@ public class PostDetailActivity extends AppCompatActivity {
     Posting posting;
     ArrayList<UserInfoRes> userInfoResArrayList = new ArrayList<>();
 
-    ArrayList<Posting> postingArrayList;
+    ArrayList<Posting> postingArrayList = new ArrayList<>();
+    ArrayList<Ranker> rankerArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,9 +120,13 @@ public class PostDetailActivity extends AppCompatActivity {
             nickName = ranker.nickName;
             profileUrl = ranker.profileUrl;
             level = ranker.level;
+            ranking = ranker.ranking;
+            getTag();
+            isConfirmed();
 
             txtNickname.setText(nickName);
-            txtRank.setText("" + level);
+            txtRank.setText("" + ranking);
+            txtLevel.setText("" + level);
             Glide.with(PostDetailActivity.this).load(profileUrl).into(imgProfile);
         }
 
@@ -451,10 +458,10 @@ public class PostDetailActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Res> call, Response<Res> response) {
                         if (response.isSuccessful()) {
-                            postingArrayList.remove(index);
-                            finish();
-                            startActivity(getIntent());
-
+                            if (index >= 0 && index < postingArrayList.size()) {
+                                postingArrayList.remove(index);
+                            }
+                                finish();
                         } else {
 
                         }

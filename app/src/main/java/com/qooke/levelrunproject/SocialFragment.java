@@ -2,13 +2,11 @@ package com.qooke.levelrunproject;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,11 +16,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.qooke.levelrunproject.adapter.PostingAdapter;
 import com.qooke.levelrunproject.adapter.RankerSocialAdapter;
@@ -33,13 +29,9 @@ import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.PostingList;
 import com.qooke.levelrunproject.model.Ranker;
-import com.qooke.levelrunproject.model.RankerProfile;
+import com.qooke.levelrunproject.model.RankerRes;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -304,17 +296,17 @@ public class SocialFragment extends Fragment {
         });
 
         // 랭커 프로필
-        Call<RankerProfile> rankerCall = rankerApi.rankerimg(token);
-        rankerCall.enqueue(new Callback<RankerProfile>() {
+        Call<RankerRes> rankerCall = rankerApi.rankerimg(token);
+        rankerCall.enqueue(new Callback<RankerRes>() {
             @Override
-            public void onResponse(Call<RankerProfile> rankerCall, Response<RankerProfile> response) {
+            public void onResponse(Call<RankerRes> rankerCall, Response<RankerRes> response) {
                 progressBar.setVisibility(View.GONE);
 
                 if (response.isSuccessful()) {
-                    RankerProfile rankerProfile = response.body();
+                    RankerRes rankerRes = response.body();
                     rankerArrayList.clear();
-                    rankerArrayList.addAll(rankerProfile.items);
-                    count = rankerProfile.count;
+                    rankerArrayList.addAll(rankerRes.items);
+                    count = rankerRes.count;
 
                     Log.i("AAA", "어레이 리스트 : "+postingArrayList);
 
@@ -324,7 +316,7 @@ public class SocialFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<RankerProfile> call, Throwable t) {
+            public void onFailure(Call<RankerRes> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
             }
         });
@@ -384,17 +376,17 @@ public class SocialFragment extends Fragment {
 
         offset = offset + count;
 
-        Call<RankerProfile> call = api.rankerimg(token);
-        call.enqueue(new Callback<RankerProfile>() {
+        Call<RankerRes> call = api.rankerimg(token);
+        call.enqueue(new Callback<RankerRes>() {
             @Override
-            public void onResponse(Call<RankerProfile> call, Response<RankerProfile> response) {
+            public void onResponse(Call<RankerRes> call, Response<RankerRes> response) {
                 progressBar.setVisibility(View.GONE);
 
                 if(response.isSuccessful()) {
 
-                    RankerProfile rankerProfile = response.body();
-                    rankerArrayList.addAll(rankerProfile.items);
-                    count = rankerProfile.count;
+                    RankerRes rankerRes = response.body();
+                    rankerArrayList.addAll(rankerRes.items);
+                    count = rankerRes.count;
                     rankerSocialAdapter.notifyDataSetChanged();
 
                 } else {
@@ -403,7 +395,7 @@ public class SocialFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<RankerProfile> call, Throwable t) {
+            public void onFailure(Call<RankerRes> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
             }
         });
