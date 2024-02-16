@@ -848,22 +848,18 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
                     if(minutes < 10) {
                         txtTime.setText("0" + hour + ": 0" + minutes);
                         time = txtTime.getText().toString().trim() + ":00";
-                        excerciseRecord();
                         return;
                     }
                     txtTime.setText("0" + hour + ": " + minutes);
                     time = txtTime.getText().toString().trim() + ":00";
-                    excerciseRecord();
                 } else {
                     if(minutes < 10) {
                         txtTime.setText(hour + ": 0" + minutes);
                         time = txtTime.getText().toString().trim() + ":00";
-                        excerciseRecord();
                         return;
                     }
                     txtTime.setText(hour + ": " + minutes);
                     time = txtTime.getText().toString().trim() + ":00";
-                    excerciseRecord();
                 }
             }
 
