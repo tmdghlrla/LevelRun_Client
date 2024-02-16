@@ -1,6 +1,8 @@
 package com.qooke.levelrunproject.model;
 
 public class Excercise {
+    public int id;
+    public int userId;
     public double distance;
     public double cal;
     public String time;
