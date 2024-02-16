@@ -113,23 +113,30 @@
                         android:text="자세히 보기"
                         android:textColor="#000000"
                         android:textSize="16sp" />
+
                 </LinearLayout>
 
-                <ToggleButton
-                    android:id="@+id/toggleButton"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_centerHorizontal="false"
-                    android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/toggle_button_rounded"
                     android:backgroundTint="#F6F2DF"
-                    android:checked="false"
-                    android:textColor="#000000"
-                    android:textOff="시작\n하기"
-                    android:textOn="일시 중지"
-                    android:textSize="20sp" />
+                    app:cardCornerRadius="10dp"
+                    app:cardMaxElevation="10dp">
+
+                    <Button
+                        android:id="@+id/btnStart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="false"
+                        android:layout_gravity="center"
+                        android:background="#00FFFFFF"
+                        android:backgroundTint="#00F6F2DF"
+                        android:checked="false"
+                        android:text="시작\n하기"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 
@@ -235,7 +242,7 @@
                 android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/distanceValue"
+                    android:id="@+id/txtDistance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_vertical"
@@ -252,7 +259,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/txtKal"
+                    android:id="@+id/txtCal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_vertical"
@@ -278,7 +285,7 @@
                     android:layout_marginBottom="5dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="0h 0m"
+                    android:text="0m 0s"
                     android:textColor="#45474B"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -287,7 +294,7 @@
                     app:layout_constraintVertical_bias="0.461" />
 
                 <TextView
-                    android:id="@+id/stepsValue"
+                    android:id="@+id/txtSteps"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|center_vertical"

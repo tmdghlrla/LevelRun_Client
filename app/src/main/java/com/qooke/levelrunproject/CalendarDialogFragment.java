@@ -33,6 +33,6 @@ public class CalendarDialogFragment extends DialogFragment implements DatePicker
         selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
         // 선택한 날짜로 걸음 수 업데이트
-        ((MainFragment) requireParentFragment()).updateStepCount(selectedDate);
+//        getActivity().updateStepCount(selectedDate);
     }
 }

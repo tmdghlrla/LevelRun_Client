@@ -1,10 +1,9 @@
 package com.qooke.levelrunproject;
 
 import static android.content.Context.MODE_PRIVATE;
-import static android.content.Context.SENSOR_SERVICE;
 
 import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +15,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -28,9 +26,10 @@ import android.content.Context;
 import android.Manifest;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.DialogFragment;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.speech.tts.TextToSpeech;
@@ -39,14 +38,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -60,11 +58,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.qooke.levelrunproject.api.BoxApi;
+import com.qooke.levelrunproject.api.ExcerciseApi;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.PapagoApi;
 import com.qooke.levelrunproject.api.PlaceApi;
 import com.qooke.levelrunproject.api.WeatherApi;
 import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.Excercise;
 import com.qooke.levelrunproject.model.Place;
 import com.qooke.levelrunproject.model.PlaceList;
 import com.qooke.levelrunproject.model.RandomBox;
@@ -73,6 +73,7 @@ import com.qooke.levelrunproject.model.Translate;
 import com.qooke.levelrunproject.model.TranslateRes;
 import com.qooke.levelrunproject.model.WeatherRes;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,7 +91,7 @@ import retrofit2.Retrofit;
  * Use the {@link MainFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends Fragment implements SensorEventListener, TextToSpeech.OnInitListener {
+public class MainFragment extends Fragment  implements SensorEventListener, TextToSpeech.OnInitListener {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -128,25 +129,15 @@ public class MainFragment extends Fragment implements SensorEventListener, TextT
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-    private ToggleButton toggleButton;
+    private Button btnStart;
     private TextView txtDate;
-    private SensorManager sensorManager;
-    private Sensor stepSensor;
     private boolean isSensorAvailable = false;
-
-    private TextView stepsValueTextView;
-    private TextView caloriesValueTextView;
-    private TextView timeValueTextView;
-    private TextView distanceValueTextView;
+    // 기록 정보
+    TextView txtDistance, txtCal, txtTime, txtSteps;
     private final int[] stepDataByDay = {5000, 8000, 6000, 7000, 7500, 9000, 4000};
-
     private boolean isCounting = false;
-    private int stepCount = 0;
-    private Calendar selectedDate;
     ImageView imgWeather;
     ImageView imgLoading;
-    TextView txtKal;
-    TextView txtTime;
     TextView txtLocation;
     TextView txtDetail;
     TextView txtWeather;
@@ -183,18 +174,30 @@ public class MainFragment extends Fragment implements SensorEventListener, TextT
     boolean isDuplicate = false;
     boolean isCamer = false;
     public TextToSpeech tts;
+    double calories = 0;
+    double distance = 0;
+    int steps = 0;
+    String time = "";
+    int seconds = 0;
+    int minutes = 0;
+    int hour = 0;
+    int isStart = 0;
+
+    // 자이로센서 변수
+    private SensorManager sensorManager;
+    private Sensor stepSensor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main, container, false);
 
-        toggleButton = rootView.findViewById(R.id.toggleButton);
+        btnStart = rootView.findViewById(R.id.btnStart);
         txtDate = rootView.findViewById(R.id.txtDate);
-        stepsValueTextView = rootView.findViewById(R.id.stepsValue);
-        txtKal = rootView.findViewById(R.id.txtKal);
+        txtSteps = rootView.findViewById(R.id.txtSteps);
+        txtCal = rootView.findViewById(R.id.txtCal);
         txtTime = rootView.findViewById(R.id.txtTime);
-        distanceValueTextView = rootView.findViewById(R.id.distanceValue);
+        txtDistance = rootView.findViewById(R.id.txtDistance);
         imgWeather = rootView.findViewById(R.id.imgWeather);
         imgLoading = rootView.findViewById(R.id.imgLoading);
         txtDetail = rootView.findViewById(R.id.txtDetail);
@@ -232,6 +235,9 @@ public class MainFragment extends Fragment implements SensorEventListener, TextT
                 lat = location.getLatitude();
                 // (Double)경도 값
                 lng = location.getLongitude();
+                if(isStart == 1) {
+                    excerciseRecord();
+                }
                 if(!isLocationReady) {
                     getWeatherData();
                     isLocationReady = true;
@@ -309,7 +315,6 @@ public class MainFragment extends Fragment implements SensorEventListener, TextT
                     @Override
                     public void onMapReady(@NonNull GoogleMap googleMap) {
                         googleMap.clear();
-                        toggleButton.setText(""+ randomBoxArrayList.size());
                         imgLoading.setVisibility(View.GONE);
 
                         // 구글맵 불러오는데 시간이 걸리기 때문에 구글맵 불러온 뒤 마커를 이미지로 바꾼다.
@@ -398,6 +403,13 @@ public class MainFragment extends Fragment implements SensorEventListener, TextT
                 locationListener
         );
 
+        // 활동 퍼미션 체크
+        if(ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
+
+            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
+        }
+
         txtDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -412,18 +424,45 @@ public class MainFragment extends Fragment implements SensorEventListener, TextT
             }
         });
 
-        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        // 시작 버튼 눌렀을 때
+        btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    startCounting();
-                } else {
-                    pauseCounting();
-                }
+            public void onClick(View v) {
+                excerciseRecord();
             }
         });
 
+
+
         return rootView;
+    }
+
+    // 운동정보를 db에 기록
+    private void excerciseRecord() {
+        Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
+
+        ExcerciseApi api = retrofit.create(ExcerciseApi.class);
+
+        sp = getContext().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+        Excercise excercise = new Excercise(distance, calories, time, steps);
+        Call<Res> call = api.setRecord(token, excercise);
+        call.enqueue(new Callback<Res>() {
+            @Override
+            public void onResponse(Call<Res> call, Response<Res> response) {
+                if(response.isSuccessful()){
+                    isStart = 1;
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Res> call, Throwable t) {
+
+            }
+        });
     }
 
     private void getBox() {
@@ -431,7 +470,7 @@ public class MainFragment extends Fragment implements SensorEventListener, TextT
 
         BoxApi api = retrofit.create(BoxApi.class);
 
-        SharedPreferences sp = getContext().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        sp = getContext().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
         token = "Bearer " + token;
 
@@ -646,19 +685,30 @@ public class MainFragment extends Fragment implements SensorEventListener, TextT
             // 여기서 locationManager와 locationListener는 이전에 생성 및 초기화된 객체여야 합니다.
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
+        // 걸음 센서 세팅
+        // * 옵션
+        // - TYPE_STEP_DETECTOR:  리턴 값이 무조건 1, 앱이 종료되면 다시 0부터 시작
+        // - TYPE_STEP_COUNTER : 앱 종료와 관계없이 계속 기존의 값을 가지고 있다가 1씩 증가한 값을 리턴
+        //
+        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
+        // 디바이스에 걸음 센서의 존재 여부 체크
+        if (stepSensor == null) {
+            Toast.makeText(getActivity(), "센서가 제대로 연결되지 않았습니다.", Toast.LENGTH_SHORT).show();
+        }
+        sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     public void onPause() {
         super.onPause();
-        if (isSensorAvailable) {
-            sensorManager.unregisterListener((SensorListener) getActivity());
-        }
-        SharedPreferences preferences = getActivity().getPreferences(MODE_PRIVATE);
-        preferences.edit().putInt("initialStepCount", stepCount).apply();
 
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
+        }
+        // 센서 리스너 해제
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(this);
         }
     }
 
@@ -708,149 +758,6 @@ public class MainFragment extends Fragment implements SensorEventListener, TextT
         }
     }
 
-    // 텍스트뷰를 클릭했을 때 호출되는 메서드
-    public void openCalendarDialog(View view) {
-        // 현재 날짜를 기본값으로 설정
-        final Calendar currentDate = Calendar.getInstance();
-        // DatePickerDialog 생성 및 설정
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        // 사용자가 날짜를 선택했을 때 호출되는 콜백 메서드
-                        Calendar selectedDate = Calendar.getInstance();
-                        selectedDate.set(Calendar.YEAR, year);
-                        selectedDate.set(Calendar.MONTH, monthOfYear);
-                        selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                        // 선택한 날짜로 걸음 수 업데이트
-                        updateStepCount(selectedDate);
-                    }
-                },
-                currentDate.get(Calendar.YEAR),
-                currentDate.get(Calendar.MONTH),
-                currentDate.get(Calendar.DAY_OF_MONTH)
-        );
-
-        // 다이얼로그 표시
-        datePickerDialog.show();
-    }
-
-    private void initStepCounter() {
-        sensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
-        stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-
-        resetDailyCount();
-    }
-
-    private void startCounting() {
-        isCounting = true;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (isCounting) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    stepCount++;
-                    updateStepsTextView();
-                }
-            }
-        }).start();
-    }
-
-    private void pauseCounting() {
-        isCounting = false;
-    }
-
-    private void resetDailyCount() {
-        SharedPreferences preferences = getActivity().getPreferences(MODE_PRIVATE);
-        String savedDate = preferences.getString("lastResetDate", "");
-
-        if (!getCurrentDate().equals(savedDate)) {
-            stepCount = 0;
-            preferences.edit().putString("lastResetDate", getCurrentDate()).apply();
-        }
-    }
-
-    private String getCurrentDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
-        return sdf.format(new Date());
-    }
-
-    private void updateStepsTextView() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                float calories = calculateCalories(stepCount);
-                String time = calculateTime(stepCount);
-                float distanceValue = calculateDistance(stepCount);
-
-                stepsValueTextView.setText(String.valueOf(stepCount));
-                caloriesValueTextView.setText(String.valueOf(calories));
-                timeValueTextView.setText(time);
-                distanceValueTextView.setText(String.format("%.2f km", distanceValue / 1000));
-            }
-        });
-    }
-
-    private float calculateDistance(float steps) {
-        return steps * 0.7f / 1000;
-    }
-
-    private void showCalendarDialog() {
-        // CalendarDialogFragment를 띄웁니다.
-        DialogFragment calendarDialogFragment = new CalendarDialogFragment();
-        calendarDialogFragment.show(getActivity().getSupportFragmentManager(), "calendar_dialog");
-    }
-
-    protected void updateStepCount(Calendar selectedDate) {
-        int steps = getDummyStepCountByDate(selectedDate);
-        stepCount = steps;
-        updateStepsTextView();
-    }
-
-
-    private int getDummyStepCountByDate(Calendar selectedDate) {
-        int dayOfWeek = (selectedDate.get(Calendar.DAY_OF_WEEK) + 5) % 7;
-        return stepDataByDay[dayOfWeek];
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        float steps = event.values[0];
-        updateStepsTextView();
-        float calories = calculateCalories(steps);
-        String time = calculateTime(steps);
-        float distanceValue = calculateDistance(steps);
-        String distance = String.format("%.2f km", distanceValue / 1000);
-
-        stepsValueTextView.setText(String.valueOf(steps));
-        txtKal.setText(String.valueOf(calories));
-        txtTime.setText(time);
-        distanceValueTextView.setText(distance);
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // 센서 정확도 변경 시 호출되는 메서드
-    }
-
-    private float calculateCalories(float steps) {
-        return steps * 0.05f;
-    }
-
-    private String calculateTime(float steps) {
-        int seconds = (int) (steps * 0.75);
-        int minutes = seconds / 60;
-        seconds = seconds % 60;
-
-        return String.format("%d분 %02d초", minutes, seconds);
-    }
-
-
     Dialog dialog;
     private void showProgress(){
         dialog = new Dialog(getActivity());
@@ -863,5 +770,51 @@ public class MainFragment extends Fragment implements SensorEventListener, TextT
 
     private void dismissProgress(){
         dialog.dismiss();
+    }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+            if(event.values[0]==1.0f) {
+                DecimalFormat df = new DecimalFormat("#.##");
+                seconds = (int) (steps * 0.65);
+                minutes = seconds / 60;
+                hour = minutes / 60;
+
+                steps++;
+                calories = Double.parseDouble(df.format(calories + 0.04));
+                distance = Double.parseDouble(df.format(distance + 0.001));
+                txtSteps.setText("" + steps);
+                txtCal.setText("" + calories);
+                txtDistance.setText("" + distance);
+                if(hour < 10) {
+                    if(minutes < 10) {
+                        txtTime.setText("0" + hour + "시 0" + minutes + "분" );
+                        return;
+                    }
+                    txtTime.setText("0" + hour + "시 " + minutes + "분" );
+                } else {
+                    if(minutes < 10) {
+                        txtTime.setText(hour + "시 0" + minutes + "분" );
+                        return;
+                    }
+                    txtTime.setText(hour + "시 " + minutes + "분" );
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // 정확도 변경 시 처리
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // SensorManager 및 걸음 수 센서 초기화
+        sensorManager = (SensorManager) requireActivity().getSystemService(Context.SENSOR_SERVICE);
+        stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
     }
 }
