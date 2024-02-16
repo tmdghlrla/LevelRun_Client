@@ -43,9 +43,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -57,6 +54,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.qooke.levelrunproject.api.BoxApi;
 import com.qooke.levelrunproject.api.ExcerciseApi;
 import com.qooke.levelrunproject.api.NetworkClient;
@@ -64,7 +63,7 @@ import com.qooke.levelrunproject.api.PapagoApi;
 import com.qooke.levelrunproject.api.PlaceApi;
 import com.qooke.levelrunproject.api.WeatherApi;
 import com.qooke.levelrunproject.config.Config;
-import com.qooke.levelrunproject.model.Excercise;
+import com.qooke.levelrunproject.model.Exercise;
 import com.qooke.levelrunproject.model.ExcerciseRes;
 import com.qooke.levelrunproject.model.Place;
 import com.qooke.levelrunproject.model.PlaceList;
@@ -75,10 +74,8 @@ import com.qooke.levelrunproject.model.TranslateRes;
 import com.qooke.levelrunproject.model.WeatherRes;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
@@ -134,7 +131,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     private TextView txtDate;
     private boolean isSensorAvailable = false;
     // 기록 정보
-    TextView txtDistance, txtCal, txtTime, txtSteps;
+    TextView txtDistance, txtKcal, txtTime, txtSteps;
     private final int[] stepDataByDay = {5000, 8000, 6000, 7000, 7500, 9000, 4000};
     private boolean isCounting = false;
     ImageView imgWeather;
@@ -171,6 +168,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     ArrayList<Integer> randomNumber = new ArrayList<>();
     boolean isAlarm = false;
     SharedPreferences sp;
+    SharedPreferences.Editor editor;
     String weatherUrl = "";
     boolean isDuplicate = false;
     boolean isCamer = false;
@@ -183,6 +181,8 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     int minutes = 0;
     int hour = 0;
     int isStart = 0;
+    Exercise exercise;
+    Gson gson;
 
     // 자이로센서 변수
     private SensorManager sensorManager;
@@ -196,7 +196,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         btnStart = rootView.findViewById(R.id.btnStart);
         txtDate = rootView.findViewById(R.id.txtDate);
         txtSteps = rootView.findViewById(R.id.txtSteps);
-        txtCal = rootView.findViewById(R.id.txtCal);
+        txtKcal = rootView.findViewById(R.id.txtKcal);
         txtTime = rootView.findViewById(R.id.txtTime);
         txtDistance = rootView.findViewById(R.id.txtDistance);
         imgWeather = rootView.findViewById(R.id.imgWeather);
@@ -222,6 +222,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         // 미디어 플레이어 준비
         mp = MediaPlayer.create(getActivity(), R.raw.get_box);
 
+        sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
 
         MapsInitializer.initialize(getActivity());
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -430,6 +431,15 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
                 if(isStart == 1) {
                     return;
                 }
+                sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+                stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+
+                // 디바이스에 걸음 센서의 존재 여부 체크
+                if (stepSensor == null) {
+                    Toast.makeText(getActivity(), "센서가 연결되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                }
+                sensorManager.registerListener(MainFragment.this, stepSensor, SensorManager.SENSOR_DELAY_FASTEST);
+
                 excerciseRecord();
             }
         });
@@ -448,13 +458,20 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         sp = getContext().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
         token = "Bearer " + token;
-        Excercise excercise = new Excercise(distance, calories, time, steps);
+        Exercise excercise = new Exercise(distance, calories, time, steps);
         Call<Res> call = api.setRecord(token, excercise);
         call.enqueue(new Callback<Res>() {
             @Override
             public void onResponse(Call<Res> call, Response<Res> response) {
                 if(response.isSuccessful()){
                     isStart = 1;
+
+                    sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+                    editor = sp.edit();
+
+                    editor.remove("exercise");
+                    editor.commit();
+
                 }else{
 
                 }
@@ -679,7 +696,47 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     @Override
     public void onResume() {
         super.onResume();
-        getRecord();
+
+        sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        gson = new GsonBuilder().create();
+        String values = sp.getString("exercise","");
+
+        // 앱내 저장소에 값이 저장되어 있는 경우
+        if(!values.equals("")){
+            exercise = gson.fromJson(values, Exercise.class);
+            calories = exercise.kcal;
+            distance = exercise.distance;
+            time = exercise.time;
+            steps = exercise.steps;
+
+            excerciseRecord();
+
+            txtKcal.setText("" + calories);
+            txtDistance.setText("" + distance);
+            txtTime.setText(time);
+            txtSteps.setText("" + steps);
+
+            // 운동 정보가 있는경우
+            if(steps != 0) {
+                sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+                stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+
+                // 디바이스에 걸음 센서의 존재 여부 체크
+                if (stepSensor == null) {
+                    Toast.makeText(getActivity(), "센서가 연결되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                }
+                sensorManager.registerListener(MainFragment.this, stepSensor, SensorManager.SENSOR_DELAY_FASTEST);
+            }
+            // 운동 정보가 없는 경우 db를 조회한다.
+            else {
+                getRecord();
+            }
+        }
+        // 저장되어 있는 값이 없을 때 db를 조회한다.
+        else {
+            getRecord();
+        }
+
         isCamer = false;
         isLocationReady = false;
         if (locationManager != null && locationListener != null) {
@@ -693,7 +750,6 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         // - TYPE_STEP_COUNTER : 앱 종료와 관계없이 계속 기존의 값을 가지고 있다가 1씩 증가한 값을 리턴
 
         // 운동기록도 없고 버튼을 클릭하지 않으면 리스너를 할당하지 않는다.
-        Log.i("MainFragment_tag", "steps : " + steps);
         if(isStart != 1 && steps == 0) {
             return;
         }
@@ -730,10 +786,10 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
 
                     steps = excerciseRes.items.get(0).steps;
                     distance = excerciseRes.items.get(0).distance;
-                    calories = excerciseRes.items.get(0).cal;
+                    calories = excerciseRes.items.get(0).kcal;
                     txtSteps.setText("" + steps);
                     txtDistance.setText("" + distance);
-                    txtCal.setText("" + calories);
+                    txtKcal.setText("" + calories);
                     if(steps != 0) {
                         sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
                         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
@@ -841,30 +897,51 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
                 steps++;
                 calories = Double.parseDouble(df.format(calories + 0.04));
                 distance = Double.parseDouble(df.format(distance + 0.001));
+
                 txtSteps.setText("" + steps);
-                txtCal.setText("" + calories);
+                txtKcal.setText("" + calories);
                 txtDistance.setText("" + distance);
                 if(hour < 10) {
                     if(minutes < 10) {
                         txtTime.setText("0" + hour + ": 0" + minutes);
                         time = txtTime.getText().toString().trim() + ":00";
+
+                        save();
                         return;
                     }
                     txtTime.setText("0" + hour + ": " + minutes);
                     time = txtTime.getText().toString().trim() + ":00";
+
+                    save();
+
                 } else {
                     if(minutes < 10) {
                         txtTime.setText(hour + ": 0" + minutes);
                         time = txtTime.getText().toString().trim() + ":00";
+
+                        save();
                         return;
                     }
                     txtTime.setText(hour + ": " + minutes);
                     time = txtTime.getText().toString().trim() + ":00";
+                    save();
                 }
             }
 
         }
     }
+
+    private void save() {
+        exercise = new Exercise(distance, calories, time, steps);
+        editor = sp.edit();
+
+        gson = new GsonBuilder().create();
+        String value = gson.toJson(exercise);
+
+        editor.putString("exercise", value);
+        editor.commit();
+    }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {

@@ -1,20 +1,20 @@
 package com.qooke.levelrunproject.model;
 
-public class Excercise {
+public class Exercise {
     public int id;
     public int userId;
     public double distance;
-    public double cal;
+    public double kcal;
     public String time;
     public int steps;
 
 
-    public Excercise() {
+    public Exercise() {
     }
 
-    public Excercise(double distance, double cal, String time, int steps) {
+    public Exercise(double distance, double kcal, String time, int steps) {
         this.distance = distance;
-        this.cal = cal;
+        this.kcal = kcal;
         this.time = time;
         this.steps = steps;
     }
