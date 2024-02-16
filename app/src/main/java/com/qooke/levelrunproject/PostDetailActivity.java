@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,20 +20,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.qooke.levelrunproject.adapter.CharacterAdapter;
-import com.qooke.levelrunproject.adapter.RankAdapter;
 import com.qooke.levelrunproject.api.LikeApi;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.PostingApi;
 import com.qooke.levelrunproject.api.RankerApi;
-import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
-import com.qooke.levelrunproject.model.CharacterUrl;
 import com.qooke.levelrunproject.model.LikeRes;
 import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.PostingDetail;
 import com.qooke.levelrunproject.model.Ranker;
-import com.qooke.levelrunproject.model.RankerRes;
 import com.qooke.levelrunproject.model.Res;
 import com.qooke.levelrunproject.model.UserInfoRes;
 
@@ -104,8 +98,8 @@ public class PostDetailActivity extends AppCompatActivity {
         txtLikerNickname = findViewById(R.id.txtLikerNickname);
         txtLikers = findViewById(R.id.txtLikers);
         txtLikerCnt = findViewById(R.id.txtLikerCnt);
-        txtTag = findViewById(R.id.txtTag);
-        txtContent = findViewById(R.id.txtContent);
+        txtTag = findViewById(R.id.editTag);
+        txtContent = findViewById(R.id.editContent);
         txtCreatedAt = findViewById(R.id.txtCreatedAt);
         btnLayout = findViewById(R.id.btnLayout);
         btnChange = findViewById(R.id.btnChange);
