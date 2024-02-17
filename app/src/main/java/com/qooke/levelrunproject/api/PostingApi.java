@@ -15,6 +15,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -31,6 +32,12 @@ public interface PostingApi {
 //    Call<PostingList> getRankerPost(@Header("Authorization") String token,
 //                                    @Query("offset") int offset,
 //                                    @Query("limit") int limit);
+
+    // 포스팅 수정
+    @PUT("/posting/{postingId}")
+    Call<Res> editPosting(@Path("postingId") int postingId,
+                          @Header("Authorization") String token,
+                          @Body Posting tags);
 
     // 전체 포스팅 가져오기(최신순)
     @GET("/posting")

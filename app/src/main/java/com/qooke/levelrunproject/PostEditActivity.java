@@ -38,8 +38,11 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.api.AutoTagApi;
 import com.qooke.levelrunproject.api.NetworkClient;
+import com.qooke.levelrunproject.api.PostingApi;
 import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.Posting;
 import com.qooke.levelrunproject.model.PostingDetail;
+import com.qooke.levelrunproject.model.Res;
 import com.qooke.levelrunproject.model.TagRes;
 
 import org.apache.commons.io.IOUtils;
@@ -64,13 +67,15 @@ public class PostEditActivity extends AppCompatActivity {
     TextView txtCreatedAt;
     EditText editTag, editContent;
     Button btnUpdate;
-    ImageView imgBack, imgPhoto;
+    ImageView imgBack, imgPhoto, imgPhotoAdd;
     PostingDetail postingDetail;
     File photoFile;
     String createdAt = "";
     String postingUrl = "";
     String fileUrl = "";
     String tags = "";
+    String content = "";
+    int postingId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,17 +86,20 @@ public class PostEditActivity extends AppCompatActivity {
         txtCreatedAt = findViewById(R.id.txtCreatedAt);
         imgBack = findViewById(R.id.imgBack);
         imgPhoto = findViewById(R.id.imgPhoto);
+        imgPhotoAdd = findViewById(R.id.imgPhotoAdd);
         btnUpdate = findViewById(R.id.btnUpdate);
 
         postingDetail = (PostingDetail) getIntent().getSerializableExtra("postingDetail");
-        String tags = getIntent().getStringExtra("tags");
+        tags = getIntent().getStringExtra("tags");
 
         postingUrl = postingDetail.item.get(0).postingUrl;
         createdAt = postingDetail.item.get(0).createdAt;
+        postingId = postingDetail.item.get(0).postingId;
 
         if (createdAt.contains("T")) {
             createdAt = createdAt.replace("T", " ");
         }
+        content = postingDetail.item.get(0).content;
 
         Glide.with(PostEditActivity.this).load(postingUrl).into(imgPhoto);
         editTag.setText(tags);
@@ -101,6 +109,73 @@ public class PostEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tags = editTag.getText().toString().trim();
+                content = editContent.getText().toString().trim();
+                if(!(tags.equals("")) && !(tags.contains("#"))) {
+                    Toast.makeText(PostEditActivity.this, "해시 태그 형식이 아닙니다. \nex) #근력운동 #운동 #다이어트", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(content.equals("")) {
+                    Toast.makeText(PostEditActivity.this, "내용을 입력 하세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                editPosting();
+            }
+        });
+
+        imgPhotoAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+    }
+
+    private void editPosting() {
+        showProgress();
+
+        Retrofit retrofit = NetworkClient.getRetrofitClient(PostEditActivity.this);
+        PostingApi api = retrofit.create(PostingApi.class);
+
+        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        Log.i("PostEditActivity_tag", "postingId : " + postingId);
+        Log.i("PostEditActivity_tag", "content : " + content);
+        Log.i("PostEditActivity_tag", "tags : " + tags);
+        Posting posting = new Posting(postingUrl, content, tags);
+
+
+
+        Call<Res> call = api.editPosting(postingId, token, posting);
+
+        // 5. 서버로부터 받은 응답을 처리하는 코드 작성
+
+        call.enqueue(new Callback<Res>() {
+            @Override
+            public void onResponse(Call<Res> call, Response<Res> response) {
+                dismissProgress();
+
+                if(response.isSuccessful()){
+                    finish();
+
+                } else{
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Res> call, Throwable t) {
+                dismissProgress();
             }
         });
     }
@@ -262,7 +337,7 @@ public class PostEditActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
                 }
-
+                // todo:
                 imgPhoto.setImageBitmap(photo);
                 getTag();
 //                imgAddPhoto.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -409,7 +484,7 @@ public class PostEditActivity extends AppCompatActivity {
 
                 if(response.isSuccessful()){
                     TagRes tagRes = response.body();
-                    fileUrl = tagRes.fileUrl;
+                    postingUrl = tagRes.fileUrl;
 
                     for(int i = 0; i < tagRes.tagList.size(); i++) {
                         if(i == 0) {
