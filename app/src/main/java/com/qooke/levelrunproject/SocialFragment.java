@@ -16,8 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.qooke.levelrunproject.adapter.PostingAdapter;
@@ -95,6 +97,7 @@ public class SocialFragment extends Fragment {
     int offset;
     int limit = 15;
     int count;
+    Boolean isSwitchOn = false;
 
 
     // 리사이클러뷰 관련 멤버변수
@@ -140,7 +143,7 @@ public class SocialFragment extends Fragment {
             }
         });
 
-
+        getNetworkData();
         // 포스팅 리사이클러뷰 페이징 처리하는 함수
         recyclerviewPosting = rootView.findViewById(R.id.recyclerviewPosting);
         recyclerviewPosting.setHasFixedSize(true);
@@ -171,89 +174,113 @@ public class SocialFragment extends Fragment {
             }
         });
 
-        // 최신순, 인기순 버튼 선택시
-        switchFilter.setOnClickListener(new View.OnClickListener() {
+
+
+        switchFilter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (switchFilter.isChecked()) {  // 인기순 정렬
-                    Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
-                    PostingApi postingApi = retrofit.create(PostingApi.class);
-
-                    SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
-                    String token = sp.getString("token", "");
-                    token = "Bearer " + token;
-
-                    Call<PostingList> api = postingApi.popularityPosting(token, offset, limit);
-                    api.enqueue(new Callback<PostingList>() {
-                        @Override
-                        public void onResponse(Call<PostingList> call, Response<PostingList> response) {
-                            progressBar.setVisibility(View.GONE);
-
-                            if (response.isSuccessful()) {
-
-                                offset = 0;
-                                count = 0;
-
-                                PostingList postingList = response.body();
-                                postingArrayList.clear();
-                                postingArrayList.addAll(postingList.items);
-                                count = postingList.count;
-
-                                postingAdapter = new PostingAdapter(getActivity(), postingArrayList);
-                                recyclerviewPosting.setAdapter(postingAdapter);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<PostingList> call, Throwable t) {
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    });
-
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    // 스위치가 On인 경우 인기순
+                    isSwitchOn = true;
+                    getPopular();
                 } else {
-                    Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
-                    PostingApi postingApi = retrofit.create(PostingApi.class);
+                    // 스위치가 Off인 경우 최신순
+                    isSwitchOn = false;
+                    getRecent();
 
-                    SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
-                    String token = sp.getString("token", "");
-                    token = "Bearer " + token;
-
-                    Call<PostingList> api = postingApi.getAllPosting(token, offset, limit);
-                    api.enqueue(new Callback<PostingList>() {
-                        @Override
-                        public void onResponse(Call<PostingList> call, Response<PostingList> response) {
-                            progressBar.setVisibility(View.GONE);
-
-                            if (response.isSuccessful()) {
-
-                                offset = 0;
-                                count = 0;
-
-                                PostingList postingList = response.body();
-                                postingArrayList.clear();
-                                postingArrayList.addAll(postingList.items);
-                                count = postingList.count;
-
-                                postingAdapter = new PostingAdapter(getActivity(), postingArrayList);
-                                recyclerviewPosting.setAdapter(postingAdapter);
-                            }
-                        }
-                        @Override
-                        public void onFailure (Call < PostingList > call, Throwable t){
-
-                        }
-                    });
                 }
             }
         });
         return rootView;
     }
 
+    private void getRecent() {
+        Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
+        PostingApi postingApi = retrofit.create(PostingApi.class);
+
+        SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        Call<PostingList> api = postingApi.getAllPosting(token, offset, limit);
+        api.enqueue(new Callback<PostingList>() {
+            @Override
+            public void onResponse(Call<PostingList> call, Response<PostingList> response) {
+                progressBar.setVisibility(View.GONE);
+
+                if (response.isSuccessful()) {
+
+                    offset = 0;
+                    count = 0;
+
+                    PostingList postingList = response.body();
+                    postingArrayList.clear();
+                    postingArrayList.addAll(postingList.items);
+                    count = postingList.count;
+
+                    postingAdapter = new PostingAdapter(getActivity(), postingArrayList);
+                    recyclerviewPosting.setAdapter(postingAdapter);
+                }
+            }
+            @Override
+            public void onFailure (Call < PostingList > call, Throwable t){
+
+            }
+        });
+    }
+
+    // 인기순
+    private void getPopular() {
+        Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
+        PostingApi postingApi = retrofit.create(PostingApi.class);
+
+        SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        Call<PostingList> api = postingApi.popularityPosting(token, offset, limit);
+        api.enqueue(new Callback<PostingList>() {
+            @Override
+            public void onResponse(Call<PostingList> call, Response<PostingList> response) {
+                progressBar.setVisibility(View.GONE);
+
+                if (response.isSuccessful()) {
+
+                    offset = 0;
+                    count = 0;
+
+                    PostingList postingList = response.body();
+                    postingArrayList.clear();
+                    postingArrayList.addAll(postingList.items);
+                    count = postingList.count;
+
+                    postingAdapter = new PostingAdapter(getActivity(), postingArrayList);
+                    recyclerviewPosting.setAdapter(postingAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PostingList> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
-        getNetworkData();
+        if(isSwitchOn) {
+            // 스위치가 On인 경우 인기순
+            isSwitchOn = true;
+            getPopular();
+        } else {
+            // 스위치가 Off인 경우 최신순
+            isSwitchOn = false;
+            getRecent();
+
+        }
+        switchFilter.setChecked(isSwitchOn);
     }
 
     // 포스팅 작성 후 새로고침
