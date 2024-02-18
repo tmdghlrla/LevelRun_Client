@@ -1,12 +1,34 @@
 package com.qooke.levelrunproject;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+
+import com.qooke.levelrunproject.adapter.ExerciseAdapter;
+import com.qooke.levelrunproject.api.ExerciseApi;
+import com.qooke.levelrunproject.api.NetworkClient;
+import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.ExerciseRes;
+import com.qooke.levelrunproject.model.Exercise;
+
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,11 +76,75 @@ public class RecordFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+    RecyclerView recyclerView;
+    ExerciseAdapter adapter;
+    ArrayList<Exercise> exerciseArrayList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_record, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_record, container, false);
+
+        recyclerView = rootView.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getNetworkData();
+    }
+
+    private void getNetworkData() {
+        showProgress();
+        Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
+
+        ExerciseApi api = retrofit.create(ExerciseApi.class);
+
+        SharedPreferences sp = getContext().getSharedPreferences(Config.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        Call<ExerciseRes> call = api.getRecordList(token);
+        call.enqueue(new Callback<ExerciseRes>() {
+            @Override
+            public void onResponse(Call<ExerciseRes> call, Response<ExerciseRes> response) {
+                dismissProgress();
+                if(response.isSuccessful()){
+                    ExerciseRes exerciseRes = response.body();
+                    exerciseArrayList.clear();
+                    exerciseArrayList.addAll(exerciseRes.items);
+
+                    adapter = new ExerciseAdapter(getActivity(), exerciseArrayList);
+                    recyclerView.setAdapter(adapter);
+
+
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ExerciseRes> call, Throwable t) {
+                dismissProgress();
+            }
+        });
+    }
+
+    Dialog dialog;
+    private void showProgress(){
+        dialog = new Dialog(getActivity());
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(new ProgressBar(getActivity()));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
+    private void dismissProgress(){
+        dialog.dismiss();
     }
 }

@@ -19,7 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottom_menu;
-    Fragment missionFragment;
+    Fragment recordFragment;
     Fragment rankingFragment;
     Fragment mainFragment;
     Fragment socialFragment;
@@ -42,12 +42,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         bottom_menu = findViewById(R.id.bottom_menu);
-        missionFragment = new RecordFragment();
+        recordFragment = new RecordFragment();
         rankingFragment = new RankingFragment();
         mainFragment = new MainFragment();
         socialFragment = new SocialFragment();
         profileFragment = new ProfileFragment();
+
         loadFragment(mainFragment);
+        bottom_menu.setSelectedItemId(R.id.mainFragment);
 
         // 바텀 네비게이션뷰 눌렀을때
         bottom_menu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 int itemId = item.getItemId();
                 Fragment fragment = null;
                 if (itemId == R.id.recordFragment) {
-                    fragment = missionFragment;
+                    fragment = recordFragment;
                 } else if (itemId == R.id.rankingFragment) {
                     fragment = rankingFragment;
                 } else if (itemId == R.id.mainFragment) {

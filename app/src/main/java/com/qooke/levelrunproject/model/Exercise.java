@@ -5,8 +5,10 @@ public class Exercise {
     public int userId;
     public double distance;
     public double kcal;
-    public String time;
+    public int seconds;
     public int steps;
+    public String time;
+    public String createdAt;
 
 
     public Exercise() {

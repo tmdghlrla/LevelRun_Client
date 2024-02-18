@@ -7,59 +7,32 @@
     tools:context=".RecordFragment">
 
     <!-- 추가 정보를 표시할 레이아웃 -->
-    <TextView
-        android:id="@+id/textView30"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center|center_horizontal"
-        android:text="오늘의 기록"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="24dp" />
 
     <LinearLayout
-        android:id="@+id/additionalInfoLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <!-- 선택된 날짜에 대한 추가 정보를 표시할 TextView -->
         <TextView
-            android:id="@+id/additionalInfoTextView"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView30"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text=""
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            android:layout_marginTop="24dp"
+            android:gravity="center|center_horizontal"
+            android:text="오늘의 기록"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </LinearLayout>
-
-    <CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/additionalInfoLayout"
-        android:layout_centerInParent="true"
-        android:headerBackground="#3F51B5"
-        android:minDate="01/23/2024" />
-
-    <Button
-        android:id="@+id/todayButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/today_button_label"
-        android:layout_below="@id/calendarView"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="16dp"
-        android:onClick="goToToday" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
 
 </RelativeLayout>

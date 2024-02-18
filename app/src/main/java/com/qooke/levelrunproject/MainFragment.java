@@ -57,14 +57,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.qooke.levelrunproject.api.BoxApi;
-import com.qooke.levelrunproject.api.ExcerciseApi;
+import com.qooke.levelrunproject.api.ExerciseApi;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.PapagoApi;
 import com.qooke.levelrunproject.api.PlaceApi;
 import com.qooke.levelrunproject.api.WeatherApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.Exercise;
-import com.qooke.levelrunproject.model.ExcerciseRes;
+import com.qooke.levelrunproject.model.ExerciseRes;
 import com.qooke.levelrunproject.model.Place;
 import com.qooke.levelrunproject.model.PlaceList;
 import com.qooke.levelrunproject.model.RandomBox;
@@ -436,7 +436,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
 
                 // 디바이스에 걸음 센서의 존재 여부 체크
                 if (stepSensor == null) {
-                    Toast.makeText(getActivity(), "센서가 연결되지 않았습니다.", Toast.LENGTH_SHORT).show();
+
                 }
                 sensorManager.registerListener(MainFragment.this, stepSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
@@ -453,7 +453,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     private void excerciseRecord() {
         Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
 
-        ExcerciseApi api = retrofit.create(ExcerciseApi.class);
+        ExerciseApi api = retrofit.create(ExerciseApi.class);
 
         sp = getContext().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
@@ -706,14 +706,19 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
             exercise = gson.fromJson(values, Exercise.class);
             calories = exercise.kcal;
             distance = exercise.distance;
-            time = exercise.time;
+
+            seconds = (int) (steps * 0.65);
+            minutes = seconds / 60;
+            hour = minutes / 60;
+
+            setConvert();
+
             steps = exercise.steps;
 
             excerciseRecord();
 
             txtKcal.setText("" + calories);
             txtDistance.setText("" + distance);
-            txtTime.setText(time);
             txtSteps.setText("" + steps);
 
             // 운동 정보가 있는경우
@@ -723,7 +728,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
 
                 // 디바이스에 걸음 센서의 존재 여부 체크
                 if (stepSensor == null) {
-                    Toast.makeText(getActivity(), "센서가 연결되지 않았습니다.", Toast.LENGTH_SHORT).show();
+
                 }
                 sensorManager.registerListener(MainFragment.this, stepSensor, SensorManager.SENSOR_DELAY_FASTEST);
             }
@@ -753,50 +758,39 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         if(isStart != 1 && steps == 0) {
             return;
         }
-
-        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-        stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-
-        // 디바이스에 걸음 센서의 존재 여부 체크
-        if (stepSensor == null) {
-            Toast.makeText(getActivity(), "센서가 연결되지 않았습니다.", Toast.LENGTH_SHORT).show();
-        }
-
-        sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     // db에 있는 운동기록을 가져와 세팅한다.
     private void getRecord() {
-        showProgress();
         Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
 
-        ExcerciseApi api = retrofit.create(ExcerciseApi.class);
+        ExerciseApi api = retrofit.create(ExerciseApi.class);
 
         sp = getContext().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
         token = "Bearer " + token;
 
-        Call<ExcerciseRes> call = api.getRecord(token);
-        call.enqueue(new Callback<ExcerciseRes>() {
+        Call<ExerciseRes> call = api.getRecord(token);
+        call.enqueue(new Callback<ExerciseRes>() {
             @Override
-            public void onResponse(Call<ExcerciseRes> call, Response<ExcerciseRes> response) {
-                dismissProgress();
+            public void onResponse(Call<ExerciseRes> call, Response<ExerciseRes> response) {
                 if(response.isSuccessful()){
-                    ExcerciseRes excerciseRes = response.body();
+                    ExerciseRes exerciseRes = response.body();
 
-                    steps = excerciseRes.items.get(0).steps;
-                    distance = excerciseRes.items.get(0).distance;
-                    calories = excerciseRes.items.get(0).kcal;
+                    steps = exerciseRes.items.get(0).steps;
+                    distance = exerciseRes.items.get(0).distance;
+                    calories = exerciseRes.items.get(0).kcal;
                     txtSteps.setText("" + steps);
                     txtDistance.setText("" + distance);
                     txtKcal.setText("" + calories);
+
                     if(steps != 0) {
                         sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
                         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
                         // 디바이스에 걸음 센서의 존재 여부 체크
                         if (stepSensor == null) {
-                            Toast.makeText(getActivity(), "센서가 연결되지 않았습니다.", Toast.LENGTH_SHORT).show();
+
                         }
                         sensorManager.registerListener(MainFragment.this, stepSensor, SensorManager.SENSOR_DELAY_FASTEST);
                     }
@@ -806,8 +800,8 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
             }
 
             @Override
-            public void onFailure(Call<ExcerciseRes> call, Throwable t) {
-                dismissProgress();
+            public void onFailure(Call<ExerciseRes> call, Throwable t) {
+
             }
         });
     }
@@ -901,33 +895,39 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
                 txtSteps.setText("" + steps);
                 txtKcal.setText("" + calories);
                 txtDistance.setText("" + distance);
-                if(hour < 10) {
-                    if(minutes < 10) {
-                        txtTime.setText("0" + hour + ": 0" + minutes);
-                        time = txtTime.getText().toString().trim() + ":00";
 
-                        save();
-                        return;
-                    }
-                    txtTime.setText("0" + hour + ": " + minutes);
-                    time = txtTime.getText().toString().trim() + ":00";
+                setConvert();
 
-                    save();
-
-                } else {
-                    if(minutes < 10) {
-                        txtTime.setText(hour + ": 0" + minutes);
-                        time = txtTime.getText().toString().trim() + ":00";
-
-                        save();
-                        return;
-                    }
-                    txtTime.setText(hour + ": " + minutes);
-                    time = txtTime.getText().toString().trim() + ":00";
-                    save();
-                }
             }
 
+        }
+    }
+
+    private void setConvert() {
+        if(hour < 10) {
+            if(minutes < 10) {
+                txtTime.setText("0" + hour + ": 0" + minutes);
+                time = txtTime.getText().toString().trim() + ":00";
+
+                save();
+                return;
+            }
+            txtTime.setText("0" + hour + ": " + minutes);
+            time = txtTime.getText().toString().trim() + ":00";
+
+            save();
+
+        } else {
+            if(minutes < 10) {
+                txtTime.setText(hour + ": 0" + minutes);
+                time = txtTime.getText().toString().trim() + ":00";
+
+                save();
+                return;
+            }
+            txtTime.setText(hour + ": " + minutes);
+            time = txtTime.getText().toString().trim() + ":00";
+            save();
         }
     }
 
