@@ -428,9 +428,11 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("tag", "isStart : " + isStart);
                 if(isStart == 1) {
                     return;
                 }
+                isStart = 1;
                 sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
                 stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
@@ -464,8 +466,6 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
             @Override
             public void onResponse(Call<Res> call, Response<Res> response) {
                 if(response.isSuccessful()){
-                    isStart = 1;
-
                     sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
                     editor = sp.edit();
 
@@ -706,14 +706,13 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
             exercise = gson.fromJson(values, Exercise.class);
             calories = exercise.kcal;
             distance = exercise.distance;
+            steps = exercise.steps;
 
             seconds = (int) (steps * 0.65);
             minutes = seconds / 60;
             hour = minutes / 60;
 
             setConvert();
-
-            steps = exercise.steps;
 
             excerciseRecord();
 
@@ -906,26 +905,26 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     private void setConvert() {
         if(hour < 10) {
             if(minutes < 10) {
-                txtTime.setText("0" + hour + ": 0" + minutes);
+                txtTime.setText("0" + hour + ":0" + minutes);
                 time = txtTime.getText().toString().trim() + ":00";
 
                 save();
                 return;
             }
-            txtTime.setText("0" + hour + ": " + minutes);
+            txtTime.setText("0" + hour + ":" + minutes);
             time = txtTime.getText().toString().trim() + ":00";
 
             save();
 
         } else {
             if(minutes < 10) {
-                txtTime.setText(hour + ": 0" + minutes);
+                txtTime.setText(hour + ":0" + minutes);
                 time = txtTime.getText().toString().trim() + ":00";
 
                 save();
                 return;
             }
-            txtTime.setText(hour + ": " + minutes);
+            txtTime.setText(hour + ":" + minutes);
             time = txtTime.getText().toString().trim() + ":00";
             save();
         }
@@ -939,7 +938,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         String value = gson.toJson(exercise);
 
         editor.putString("exercise", value);
-        editor.commit();
+        editor.apply();
     }
 
 

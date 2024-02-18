@@ -69,19 +69,19 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
         String time;
         if(hour < 10) {
             if(minutes < 10) {
-                time = "0" + hour + ": 0" + minutes;
+                time = "0" + hour + ":0" + minutes;
                 return time;
             }
-            time = "0" + hour + ": " + minutes;
+            time = "0" + hour + ":" + minutes;
 
             return time;
         } else {
             if(minutes < 10) {
-                time = hour + ": 0" + minutes;
+                time = hour + ":0" + minutes;
 
                 return time;
             }
-            time = hour + ": " + minutes;
+            time = hour + ":" + minutes;
 
             return time;
         }
