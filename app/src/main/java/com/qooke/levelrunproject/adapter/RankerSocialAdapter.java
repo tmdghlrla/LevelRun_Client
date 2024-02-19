@@ -73,8 +73,6 @@ public class RankerSocialAdapter extends RecyclerView.Adapter<RankerSocialAdapte
                     intent.putExtra("index", index);
                     intent.putExtra("ranker", ranker);
 
-                    Log.i("AAA", "랭커 데이터 확인 : " + ranker.nickName);
-
                     context.startActivity(intent);
                 }
             });

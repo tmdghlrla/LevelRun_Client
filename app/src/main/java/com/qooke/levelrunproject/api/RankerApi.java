@@ -15,7 +15,7 @@ public interface RankerApi {
 
     // 소셜 랭커 정보 가져오기
     @GET("/ranker")
-    Call<RankerRes> rankerimg(@Header("Authorization") String token);
+    Call<RankerRes> rankerImg(@Header("Authorization") String token);
     
     // 추가 부분
     @GET("/rankingList")

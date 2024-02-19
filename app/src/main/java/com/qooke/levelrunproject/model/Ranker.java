@@ -14,6 +14,8 @@ public class Ranker implements Serializable {
     public String imgURL;
     public String content;
     public String createdAt;
+    public int userId;
+    public int postingId;
 
     
     // 밑에 멤버변수 3개 추가

@@ -76,6 +76,7 @@ public class PostDetailActivity extends AppCompatActivity {
     String tags = "";
     Ranker ranker;
     Posting posting;
+    int postingUserId = 0;
     ArrayList<UserInfoRes> userInfoResArrayList = new ArrayList<>();
 
     ArrayList<Posting> postingArrayList = new ArrayList<>();
@@ -154,22 +155,33 @@ public class PostDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if(ranker != null) {
-            nickName = ranker.nickName;
-            profileUrl = ranker.profileUrl;
-            level = ranker.level;
-            ranking = ranker.ranking;
+            postingId = ranker.postingId;
+            postingUserId = ranker.userId;
+
+            if(postingId == 0) {
+                Glide.with(PostDetailActivity.this).load(ranker.profileUrl).into(imgProfile);
+                txtRank.setText("" + ranker.ranking);
+                txtLevel.setText("" + ranker.level);
+                txtNickname.setText("" + ranker.nickName);
+
+                btnChange.setVisibility(View.GONE);
+                btnDelete.setVisibility(View.GONE);
+
+                return;
+            }
             getTag();
             isConfirmed();
+//            content = ranker.content;
+//            createdAt = ranker.createdAt;
+//            likeCnt = posting.likeCnt;
+//            isLike = posting.isLike;
 
-            txtNickname.setText(nickName);
-            txtRank.setText("" + ranking);
-            txtLevel.setText("" + level);
-            Glide.with(PostDetailActivity.this).load(profileUrl).into(imgProfile);
         }
 
         if(posting != null) {
             // 소셜 프레그먼트 포스팅 데이터 받아오기
             postingId = posting.id;
+            postingUserId = posting.userId;
             getTag();
             isConfirmed();
             content = posting.content;
@@ -320,13 +332,13 @@ public class PostDetailActivity extends AppCompatActivity {
                             index = i+1;
 
                             txtRank.setText("" + index);
-                            Log.i("PostDetailActivity_tag", "posting.userId : " + posting.userId);
 
                             if(myIndex == i) {
                                 userId = userInfoResArrayList.get(i).userId;
-                                Log.i("PostDetailActivity_tag", "userId : " + userId);
                             }
-                            if(posting.userId != userId) {
+                            Log.i("PostDetailActivity_tag", "userId : " + userId);
+
+                            if(postingUserId != userId) {
                                 btnChange.setVisibility(View.GONE);
                                 btnDelete.setVisibility(View.GONE);
                             }

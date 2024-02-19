@@ -386,13 +386,6 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
                     100);
             return rootView;
         }
-        if(ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            getActivity().finish();
-            return rootView;
-        }
         // 권한이 있을 때 실행
         // 3초마다 위치 알려줌, 10m 이동할 때마다 위치 알려줌
         // 거리 위치 사용을 원치 않는경우 -1로 쓴다.
@@ -697,9 +690,23 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     public void onResume() {
         super.onResume();
 
+        if (!checkLocationPermission()) {
+            return;
+        }
+
+
         sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         gson = new GsonBuilder().create();
         String values = sp.getString("exercise","");
+
+        isCamer = false;
+        isLocationReady = false;
+        
+        if (locationManager != null && locationListener != null) {
+            // 위치 리스너를 다시 등록합니다.
+            // 여기서 locationManager와 locationListener는 이전에 생성 및 초기화된 객체여야 합니다.
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        }
 
         // 앱내 저장소에 값이 저장되어 있는 경우
         if(!values.equals("")){
@@ -741,13 +748,8 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
             getRecord();
         }
 
-        isCamer = false;
-        isLocationReady = false;
-        if (locationManager != null && locationListener != null) {
-            // 위치 리스너를 다시 등록합니다.
-            // 여기서 locationManager와 locationListener는 이전에 생성 및 초기화된 객체여야 합니다.
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        }
+
+
         // 걸음 센서 세팅
         // * 옵션
         // - TYPE_STEP_DETECTOR:  리턴 값이 무조건 1, 앱이 종료되면 다시 0부터 시작
@@ -757,6 +759,13 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         if(isStart != 1 && steps == 0) {
             return;
         }
+    }
+
+    private boolean checkLocationPermission() {
+        return ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
     // db에 있는 운동기록을 가져와 세팅한다.

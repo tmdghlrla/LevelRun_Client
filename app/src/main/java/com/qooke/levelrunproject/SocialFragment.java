@@ -323,7 +323,7 @@ public class SocialFragment extends Fragment {
         });
 
         // 랭커 프로필
-        Call<RankerRes> rankerCall = rankerApi.rankerimg(token);
+        Call<RankerRes> rankerCall = rankerApi.rankerImg(token);
         rankerCall.enqueue(new Callback<RankerRes>() {
             @Override
             public void onResponse(Call<RankerRes> rankerCall, Response<RankerRes> response) {
@@ -334,8 +334,6 @@ public class SocialFragment extends Fragment {
                     rankerArrayList.clear();
                     rankerArrayList.addAll(rankerRes.items);
                     count = rankerRes.count;
-
-                    Log.i("AAA", "어레이 리스트 : "+postingArrayList);
 
                     rankerSocialAdapter = new RankerSocialAdapter(getActivity(), rankerArrayList);
                     recyclerviewRanker.setAdapter(rankerSocialAdapter);
@@ -403,7 +401,7 @@ public class SocialFragment extends Fragment {
 
         offset = offset + count;
 
-        Call<RankerRes> call = api.rankerimg(token);
+        Call<RankerRes> call = api.rankerImg(token);
         call.enqueue(new Callback<RankerRes>() {
             @Override
             public void onResponse(Call<RankerRes> call, Response<RankerRes> response) {
