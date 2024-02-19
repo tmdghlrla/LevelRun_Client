@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -56,9 +57,11 @@ public class PostDetailActivity extends AppCompatActivity {
     TextView txtCreatedAt;
     TextView txtLikers;
     TextView txtLike;
+    ImageView imgDefault;
     LinearLayout btnLayout;
     Button btnChange;
     Button btnDelete;
+    LinearLayout linearLayout;
 
     // 멤버변수화
     String nickName = "";
@@ -106,6 +109,8 @@ public class PostDetailActivity extends AppCompatActivity {
         btnChange = findViewById(R.id.btnChange);
         btnDelete = findViewById(R.id.btnDelete);
         txtLike = findViewById(R.id.txtLike);
+        imgDefault = findViewById(R.id.imgDefault);
+        linearLayout = findViewById(R.id.linearLayout);
 
 
         // 소셜 프레그먼트 랭커 데이터 받아오기
@@ -164,8 +169,9 @@ public class PostDetailActivity extends AppCompatActivity {
                 txtLevel.setText("" + ranker.level);
                 txtNickname.setText("" + ranker.nickName);
 
-                btnChange.setVisibility(View.GONE);
-                btnDelete.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
+                imgDefault.setVisibility(View.VISIBLE);
+
 
                 return;
             }

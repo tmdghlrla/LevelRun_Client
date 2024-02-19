@@ -39,8 +39,9 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
         holder.txtKcal.setText("" + exercise.kcal);
 
         int seconds = exercise.seconds;
+        int hour = seconds / 3600;
+        seconds = seconds - (hour*3600);
         int minutes = seconds / 60;
-        int hour = minutes / 60;
 
         String time = setConvert(seconds, minutes, hour);
 

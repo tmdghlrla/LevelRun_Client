@@ -12,14 +12,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.qooke.levelrunproject.adapter.PostingAdapter;
@@ -88,9 +87,8 @@ public class SocialFragment extends Fragment {
     }
 
 
-    FloatingActionButton fbtnPostingAdd;
+    ImageView fbtnPostingAdd;
     Switch switchFilter;
-    ProgressBar progressBar;
 
 
     // 페이징 관련 처리 함수
@@ -118,7 +116,6 @@ public class SocialFragment extends Fragment {
 
         fbtnPostingAdd = rootView.findViewById(R.id.fbtnPostingAdd);
         switchFilter = rootView.findViewById(R.id.switchFilter);
-        progressBar = rootView.findViewById(R.id.progressBar);
 
 
         // 랭커 리사이클러뷰 처리하는 함수
@@ -206,7 +203,6 @@ public class SocialFragment extends Fragment {
         api.enqueue(new Callback<PostingList>() {
             @Override
             public void onResponse(Call<PostingList> call, Response<PostingList> response) {
-                progressBar.setVisibility(View.GONE);
 
                 if (response.isSuccessful()) {
 
@@ -242,7 +238,6 @@ public class SocialFragment extends Fragment {
         api.enqueue(new Callback<PostingList>() {
             @Override
             public void onResponse(Call<PostingList> call, Response<PostingList> response) {
-                progressBar.setVisibility(View.GONE);
 
                 if (response.isSuccessful()) {
 
@@ -261,7 +256,7 @@ public class SocialFragment extends Fragment {
 
             @Override
             public void onFailure(Call<PostingList> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+
             }
         });
     }
@@ -299,7 +294,6 @@ public class SocialFragment extends Fragment {
         postCall.enqueue(new Callback<PostingList>() {
             @Override
             public void onResponse(Call<PostingList> call, Response<PostingList> response) {
-                progressBar.setVisibility(View.GONE);
 
                 if (response.isSuccessful()) {
 
@@ -318,7 +312,7 @@ public class SocialFragment extends Fragment {
 
             @Override
             public void onFailure(Call<PostingList> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+
             }
         });
 
@@ -327,7 +321,7 @@ public class SocialFragment extends Fragment {
         rankerCall.enqueue(new Callback<RankerRes>() {
             @Override
             public void onResponse(Call<RankerRes> rankerCall, Response<RankerRes> response) {
-                progressBar.setVisibility(View.GONE);
+
 
                 if (response.isSuccessful()) {
                     RankerRes rankerRes = response.body();
@@ -342,7 +336,7 @@ public class SocialFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RankerRes> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+
             }
         });
     }
@@ -351,7 +345,7 @@ public class SocialFragment extends Fragment {
 
     // 포스팅 데이터 페이징 함수
     private void postNetworkData() {
-        progressBar.setVisibility(View.VISIBLE);
+
 
         Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
         PostingApi api = retrofit.create(PostingApi.class);
@@ -365,7 +359,7 @@ public class SocialFragment extends Fragment {
         call.enqueue(new Callback<PostingList>() {
             @Override
             public void onResponse(Call<PostingList> call, Response<PostingList> response) {
-                progressBar.setVisibility(View.GONE);
+
 
                 if(response.isSuccessful()) {
 
@@ -382,7 +376,7 @@ public class SocialFragment extends Fragment {
 
             @Override
             public void onFailure(Call<PostingList> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+
             }
 
         });
@@ -390,7 +384,7 @@ public class SocialFragment extends Fragment {
 
     // 랭커 데이터 함수
     public void RankerNetworkData() {
-        progressBar.setVisibility(View.VISIBLE);
+
 
         Retrofit retrofit = NetworkClient.getRetrofitClient(getActivity());
         RankerApi api = retrofit.create(RankerApi.class);
@@ -405,7 +399,7 @@ public class SocialFragment extends Fragment {
         call.enqueue(new Callback<RankerRes>() {
             @Override
             public void onResponse(Call<RankerRes> call, Response<RankerRes> response) {
-                progressBar.setVisibility(View.GONE);
+
 
                 if(response.isSuccessful()) {
 
@@ -421,7 +415,7 @@ public class SocialFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RankerRes> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+
             }
         });
     }

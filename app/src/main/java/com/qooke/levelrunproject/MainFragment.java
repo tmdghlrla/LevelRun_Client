@@ -28,6 +28,7 @@ import android.Manifest;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -136,6 +137,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     private boolean isCounting = false;
     ImageView imgWeather;
     ImageView imgLoading;
+    ImageView imgMission;
     TextView txtLocation;
     TextView txtDetail;
     TextView txtWeather;
@@ -173,6 +175,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     boolean isDuplicate = false;
     boolean isCamer = false;
     public TextToSpeech tts;
+    ProgressBar progressBar;
     double calories = 0;
     double distance = 0;
     int steps = 0;
@@ -183,6 +186,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     int isStart = 0;
     Exercise exercise;
     Gson gson;
+    CardView imgCardView;
 
     // 자이로센서 변수
     private SensorManager sensorManager;
@@ -198,15 +202,18 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         txtSteps = rootView.findViewById(R.id.txtSteps);
         txtKcal = rootView.findViewById(R.id.txtKcal);
         txtTime = rootView.findViewById(R.id.txtTime);
+        imgMission = rootView.findViewById(R.id.imgMission);
         txtDistance = rootView.findViewById(R.id.txtDistance);
         imgWeather = rootView.findViewById(R.id.imgWeather);
         imgLoading = rootView.findViewById(R.id.imgLoading);
         txtDetail = rootView.findViewById(R.id.txtDetail);
         txtWeather = rootView.findViewById(R.id.txtWeather);
+        progressBar = rootView.findViewById(R.id.progressBar);
+        imgCardView = rootView.findViewById(R.id.imgCardView);
 
         txtLocation = rootView.findViewById(R.id.txtLocation);
 
-        Glide.with(this).asGif().load(R.drawable.loading_run).into(imgLoading);
+        Glide.with(this).asGif().load(R.drawable.running).into(imgLoading);
 
         // 현재 날짜와 시간을 가져오기 위해 Calendar 객체 생성
         Calendar calendar = Calendar.getInstance();
@@ -315,7 +322,8 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
                     @Override
                     public void onMapReady(@NonNull GoogleMap googleMap) {
                         googleMap.clear();
-                        imgLoading.setVisibility(View.GONE);
+                        imgCardView.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
 
                         // 구글맵 불러오는데 시간이 걸리기 때문에 구글맵 불러온 뒤 마커를 이미지로 바꾼다.
                         if(lat == 0 || lng == 0) {
@@ -416,6 +424,13 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
                 startActivity(intent);
             }
         });
+        imgMission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MissionActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
 
         // 시작 버튼 눌렀을 때
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -506,7 +521,6 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     }
 
     private void getWeatherData() {
-        showProgress();
         Retrofit retrofit = NetworkClient.getWeatherRetrofitClient(getActivity());
 
         WeatherApi api = retrofit.create(WeatherApi.class);
@@ -520,7 +534,6 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         call.enqueue(new Callback<WeatherRes>() {
             @Override
             public void onResponse(Call<WeatherRes> call, Response<WeatherRes> response) {
-                dismissProgress();
                 Log.i("MainFragment_tag", ""+response.code());
                 if(response.isSuccessful()){
                     WeatherRes weatherRes = response.body();
@@ -551,7 +564,6 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
 
             @Override
             public void onFailure(Call<WeatherRes> call, Throwable t) {
-                dismissProgress();
             }
         });
     }
@@ -716,8 +728,10 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
             steps = exercise.steps;
 
             seconds = (int) (steps * 0.65);
+            hour = seconds / 3600;
+            seconds = seconds - (hour*3600);
             minutes = seconds / 60;
-            hour = minutes / 60;
+
 
             setConvert();
 
@@ -892,9 +906,11 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
             if(event.values[0]==1.0f) {
                 DecimalFormat df = new DecimalFormat("#.##");
+
                 seconds = (int) (steps * 0.65);
+                hour = seconds / 3600;
+                seconds = seconds - (hour*3600);
                 minutes = seconds / 60;
-                hour = minutes / 60;
 
                 steps++;
                 calories = Double.parseDouble(df.format(calories + 0.04));

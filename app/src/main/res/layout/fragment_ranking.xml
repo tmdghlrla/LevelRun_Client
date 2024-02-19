@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#329DBF"
         android:orientation="vertical">
 
         <TextView
@@ -16,30 +17,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="70dp"
-            android:layout_marginBottom="50dp"
-            android:gravity="center"
+            android:layout_marginRight="20dp"
             android:text="실시간 유저 랭킹"
+            android:textColor="#FFFFFF"
             android:textSize="35sp"
             android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="140dp"
+            android:layout_height="4dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/baseline_white_bar_24" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:background="#00FFFFFF"
             app:cardBackgroundColor="#ECE7D4"
             app:cardCornerRadius="20dp"
-            app:cardMaxElevation="20dp">
+            app:cardMaxElevation="20dp"
+            app:cardElevation="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="#329DBF"
+                android:hapticFeedbackEnabled="false"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="70dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -48,55 +63,61 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="랭킹"
+                        android:text="Ranking"
                         android:textColor="#000000"
-                        android:textSize="25sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/nick"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3"
+                        android:layout_weight="1"
                         android:gravity="center"
-                        android:text="닉네임"
+                        android:text="Nickname"
                         android:textColor="#000000"
-                        android:textSize="25sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/Lv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="4"
                         android:gravity="center"
-                        android:text="레벨"
+                        android:text="Level"
                         android:textColor="#000000"
-                        android:textSize="25sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/E"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="4"
                         android:gravity="center"
-                        android:text="경험치"
+                        android:text="exp"
                         android:textColor="#000000"
-                        android:textSize="25sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp">
+                    android:layout_height="460dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp">
 
                 </androidx.recyclerview.widget.RecyclerView>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="130dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:background="#00FFFFFF"
                     app:cardBackgroundColor="#F6F2DF"
                     app:cardCornerRadius="20dp"
                     app:cardMaxElevation="20dp">
@@ -111,11 +132,18 @@
                             android:id="@+id/textView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="내 점수"
+                            android:layout_marginLeft="20dp"
+                            android:text="나의 랭킹"
                             android:textColor="#000000"
                             android:textSize="25sp"
                             android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/imageView9"
+                            android:layout_width="80dp"
+                            android:layout_height="4dp"
+                            android:layout_marginLeft="20dp"
+                            android:src="@drawable/baseline_sky_bar_24" />
 
                         <LinearLayout
                             android:id="@+id/linearLayout2"
@@ -135,12 +163,11 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:layout_marginBottom="10dp"
                                     android:layout_weight="1"
                                     android:gravity="center"
-                                    android:text="랭킹"
+                                    android:text="Ranking"
                                     android:textColor="#000000"
-                                    android:textSize="25sp"
+                                    android:textSize="20sp"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -151,7 +178,7 @@
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:textColor="#000000"
-                                    android:textSize="22sp"
+                                    android:textSize="20sp"
                                     android:textStyle="normal" />
                             </LinearLayout>
 
@@ -166,12 +193,11 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:layout_marginBottom="10dp"
                                     android:layout_weight="3"
                                     android:gravity="center"
-                                    android:text="닉네임"
+                                    android:text="Nickname"
                                     android:textColor="#000000"
-                                    android:textSize="25sp"
+                                    android:textSize="20sp"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -182,7 +208,7 @@
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:textColor="#000000"
-                                    android:textSize="22sp" />
+                                    android:textSize="20sp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -196,12 +222,11 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:layout_marginBottom="10dp"
                                     android:layout_weight="1"
                                     android:gravity="center"
-                                    android:text="레벨"
+                                    android:text="Level"
                                     android:textColor="#000000"
-                                    android:textSize="25sp"
+                                    android:textSize="20sp"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -212,7 +237,7 @@
                                     android:layout_weight="2"
                                     android:gravity="center"
                                     android:textColor="#000000"
-                                    android:textSize="22sp" />
+                                    android:textSize="20sp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -226,12 +251,11 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:layout_marginBottom="10dp"
                                     android:layout_weight="1"
                                     android:gravity="center"
-                                    android:text="경험치"
+                                    android:text="exp"
                                     android:textColor="#000000"
-                                    android:textSize="25sp"
+                                    android:textSize="20sp"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -242,7 +266,7 @@
                                     android:layout_weight="2"
                                     android:gravity="center"
                                     android:textColor="#000000"
-                                    android:textSize="22sp" />
+                                    android:textSize="20sp" />
                             </LinearLayout>
 
                         </LinearLayout>

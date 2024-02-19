@@ -26,133 +26,179 @@
             android:layout_height="wrap_content"
             android:src="@drawable/baseline_arrow_back_ios_24" />
 
-        <TextView
-            android:id="@+id/textView3"
+        <ImageView
+            android:id="@+id/imageView9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/txt_register"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="27sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:text="@string/txt_nickname"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/logo" />
 
-        <EditText
-            android:id="@+id/editNickname"
+        <ImageView
+            android:id="@+id/imageView10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:background="#DDDDDD"
-            android:backgroundTintMode="multiply"
-            android:ems="10"
-            android:fontFamily="sans-serif"
-            android:hint="Name"
-            android:inputType="text"
-            android:padding="13dp"
-            android:singleLine="false"
-            android:textColor="#888888"
-            android:textSize="18sp" />
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/account" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:text="@string/txt_id"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="5dp">
 
-        <EditText
-            android:id="@+id/editEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:background="#DDDDDD"
-            android:backgroundTintMode="multiply"
-            android:ems="10"
-            android:fontFamily="sans-serif"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:padding="13dp"
-            android:singleLine="false"
-            android:textColor="#888888"
-            android:textSize="18sp" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:text="@string/txt_password"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+                <ImageView
+                    android:id="@+id/imageView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/nicknameblank"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/editPassword"
-            android:layout_width="match_parent"
+                <EditText
+                    android:id="@+id/editNickname"
+                    android:layout_width="300dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="-360dp"
+                    android:background="#00DDDDDD"
+                    android:backgroundTintMode="multiply"
+                    android:ems="10"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="Nickname"
+                    android:padding="13dp"
+                    android:textColor="#888888"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView11"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView11"
+                    app:layout_constraintHorizontal_bias="0.013"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:background="#DDDDDD"
-            android:backgroundTintMode="multiply"
-            android:ems="10"
-            android:fontFamily="sans-serif"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="13dp"
-            android:singleLine="false"
-            android:textColor="#888888"
-            android:textSize="18sp" />
+            android:layout_marginBottom="5dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/emailblank"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/editEmail"
+                    android:layout_width="300dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="-360dp"
+                    android:background="#00DDDDDD"
+                    android:backgroundTintMode="multiply"
+                    android:ems="10"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:padding="13dp"
+                    android:textColor="#888888"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView8"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView8"
+                    app:layout_constraintHorizontal_bias="0.013"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView7"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center|fill_horizontal|fill_vertical"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/passwordblank" />
+
+                <EditText
+                    android:id="@+id/editPassword"
+                    android:layout_width="300dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginTop="8dp"
+                    android:background="#00DDDDDD"
+                    android:backgroundTintMode="multiply"
+                    android:ems="10"
+                    android:fontFamily="@font/poppins_regular"
+                    android:hint="Password"
+                    android:padding="13dp"
+                    android:textColor="#888888"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
 
         <Button
             android:id="@+id/btnRegister"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
             android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:backgroundTint="#FFC107"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="35dp"
+            android:backgroundTint="#329DBF"
+            android:fontFamily="@font/poppins_regular"
             android:padding="5dp"
             android:text="@string/btn_register"
-            android:textColor="#000000"
-            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="- 다른 방법으로 회원가입 -"
+            android:textAlignment="center"
+            android:textColor="#474747"
+            android:textSize="15sp" />
 
         <ImageView
             android:id="@+id/imgKakaoLogin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="5dp"
             android:src="@drawable/kakao_sink_medium_narrow" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

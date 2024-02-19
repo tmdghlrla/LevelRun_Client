@@ -1,150 +1,208 @@
 // MissionActivity.java
 package com.qooke.levelrunproject;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import android.widget.TextView;
-import android.animation.ObjectAnimator;
-import android.view.animation.LinearInterpolator;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.qooke.levelrunproject.api.ExerciseApi;
+import com.qooke.levelrunproject.api.MissionApi;
+import com.qooke.levelrunproject.api.NetworkClient;
+import com.qooke.levelrunproject.api.PostingApi;
+import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.Exercise;
+import com.qooke.levelrunproject.model.ExerciseRes;
+import com.qooke.levelrunproject.model.PostingDetail;
+import com.qooke.levelrunproject.model.RankerRes;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MissionActivity extends AppCompatActivity {
 
-    private ImageButton backButton, btnClickMe1, btnClickMe2, btnClickMe3, btnClickMe4, btnClickMe5;
+    private ImageButton btnBack, btnClear, btnClear2, btnClear3, btnClear4, btnClear5;
     private ProgressBar progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6;
-    private ProgressBar levelProgressBar;
-
-    private int totalSteps = 0;
-    private int currentLevel = 1;
+    private ProgressBar progressBarExp;
+    TextView txtLevel, txtExp;
+    Gson gson;
+    int steps = 0;
+    int mission = 0;
+    int isClear1 = 0;
+    int isClear2 = 0;
+    int isClear3 = 0;
+    int isClear4 = 0;
+    int isClear5 = 0;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission);
 
-        // 레벨 텍스트뷰 초기화
-        TextView levelTextView = findViewById(R.id.level_text);
-        levelTextView.setText("Lv." + currentLevel);
+        txtLevel = findViewById(R.id.txtLevel);
+        progressBarExp = findViewById(R.id.progressBarExp);
+        txtExp = findViewById(R.id.txtExp);
 
         // UI 요소 초기화
-        backButton = findViewById(R.id.imageButton7);
-        btnClickMe1 = findViewById(R.id.imageButton2);
-        btnClickMe2 = findViewById(R.id.imageButton3);
-        btnClickMe3 = findViewById(R.id.imageButton4);
-        btnClickMe4 = findViewById(R.id.imageButton5);
-        btnClickMe5 = findViewById(R.id.imageButton6);
+        btnBack = findViewById(R.id.btnBack);
+        btnClear = findViewById(R.id.btnClear);
+        btnClear2 = findViewById(R.id.btnClear2);
+        btnClear3 = findViewById(R.id.btnClear3);
+        btnClear4 = findViewById(R.id.btnClear4);
+        btnClear5 = findViewById(R.id.btnClear5);
 
-        //프로그레스바 기본값 설정
-        levelProgressBar = findViewById(R.id.progress_bar_exp_text);
-        levelProgressBar.setMax(1000); // 현재 레벨에서, 다음 레벨까지 필요한 경험치값
-        levelProgressBar.setProgress(0); // 초기 설정 경험치값
-
-
-        //프로그레스바
+        // 임무 프로그레스바
         progressBar1 = findViewById(R.id.progressBar1);
         progressBar2 = findViewById(R.id.progressBar2);
         progressBar3 = findViewById(R.id.progressBar3);
         progressBar4 = findViewById(R.id.progressBar4);
-        progressBar5 = findViewById(R.id.progressBar5);
-        progressBar6 = findViewById(R.id.progressBar6);
 
-        // 뒤로 가기 버튼에 대한 클릭 리스너 설정
-        backButton.setOnClickListener(view -> finish());
+        // 뒤로가기 버튼
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
-        // 경험치 획득 버튼에 대한 클릭 리스너 설정
-        btnClickMe1.setOnClickListener(v -> {
-            gainExperience(100);
-            enableButton(btnClickMe1, 1000, 100);
-        });
-        btnClickMe2.setOnClickListener(v -> {
-            gainExperience(300);
-            enableButton(btnClickMe2, 3000, 300);
-        });
-        btnClickMe3.setOnClickListener(v -> {
-            gainExperience(500);
-            enableButton(btnClickMe3, 5000, 500);
-        });
-        btnClickMe4.setOnClickListener(v -> {
-            gainExperience(1000);
-            enableButton(btnClickMe4, 10000, 1000);
-        });
-        btnClickMe5.setOnClickListener(v -> {
-            gainExperience(2000);
-            enableButton(btnClickMe5, 10000, 2000);
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(steps < 1000) {
+                    return;
+                }
+
+                // todo: db에 저장하는 코드
+                mission = 1;
+                setExp();
+            }
         });
     }
 
-    // 토스트 메시지를 보여주는 메서드
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    private void setExp() {
+        // 0. 다이얼로그를 화면에 보여준다.
+        showProgress();
+
+        Retrofit retrofit = NetworkClient.getRetrofitClient(MissionActivity.this);
+
+        MissionApi api = retrofit.create(MissionApi.class);
+
+        // 2-1. 토큰 받아와야 할 때 토큰을 받아오고 token을 초기화 한다.
+        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        Call<RankerRes> call = api.setExp(token, mission);
+
+        call.enqueue(new Callback<RankerRes>() {
+
+            // 성공했을 때
+            @Override
+            public void onResponse(Call<RankerRes> call, Response<RankerRes> response) {
+                // 서버에서 보낸 응답이 200 OK 일 때 처리하는 코드
+                if (response.isSuccessful()) {
+                    RankerRes RankerRes = response.body();
+//                    txtLevel.setText("Lv." + RankerRes.);
+                } else if (response.code() == 500) {
+                    return;
+                }
+
+            }
+
+            // 실패 했을 때
+            @Override
+            public void onFailure(Call<RankerRes> call, Throwable t) {
+                // 유저한테 네트워크 통신 실패 했다고 알려준다.
+                Toast.makeText(MissionActivity.this, "네트워크 파싱 오류입니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void gainExperience(int experience) {
-        totalSteps += experience; // 경험치 획득
-        updateProgressBars(); // 프로그레스바 갱신
-        updateLevelProgressBar(experience); // 레벨 프로그레스바 및 exp_text 업데이트
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        gson = new GsonBuilder().create();
+        String values = sp.getString("exercise", "");
 
-        // 1000의 배수마다 레벨 업 확인
-        if (totalSteps >= currentLevel * 1000) {
-            levelUp();
-            int remainingExp = (currentLevel + 1) * 1000 - totalSteps;
-            showToast("경험치 획득! " + "다음 레벨까지 남은 경험치: " + remainingExp);
+        // 앱내 저장소에 값이 저장되어 있는 경우
+        // 보상을 받았는지 확인한다.
+        if (!values.equals("")) {
+            Exercise exercise = gson.fromJson(values, Exercise.class);
+            steps = exercise.steps;
+            progressBar1.setProgress(steps);
+            progressBar2.setProgress(steps);
+            progressBar3.setProgress(steps);
+            progressBar4.setProgress(steps);
+        }
+        // 걸음수 호출
+        else {
+            getRecord();
         }
     }
 
-    private void updateLevelProgressBar(int experience) {
-        int newProgress = levelProgressBar.getProgress() + experience;
-        levelProgressBar.setProgress(Math.min(newProgress, levelProgressBar.getMax()));
+    private void getRecord() {
+        Retrofit retrofit = NetworkClient.getRetrofitClient(MissionActivity.this);
 
-        // 경험치바 업데이트
-        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(levelProgressBar, "progress", newProgress)
-                .setDuration(500);  // 애니메이션 지속 시간 (500ms로 설정)
-        progressAnimator.setInterpolator(new LinearInterpolator());
-        progressAnimator.start();
+        ExerciseApi api = retrofit.create(ExerciseApi.class);
 
-        // 경험치바가 다 찼을 때, 레벨업하고 경험치바를 초기화
-        if (newProgress >= levelProgressBar.getMax()) {
-            levelUp();
-        }
-        // exp_text 업데이트
-        TextView expTextView = findViewById(R.id.tv_exp_text);
-        expTextView.setText(newProgress + "/" + levelProgressBar.getMax());
+        sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        Call<ExerciseRes> call = api.getRecord(token);
+        call.enqueue(new Callback<ExerciseRes>() {
+            @Override
+            public void onResponse(Call<ExerciseRes> call, Response<ExerciseRes> response) {
+                if(response.isSuccessful()){
+                    ExerciseRes exerciseRes = response.body();
+                    steps = exerciseRes.items.get(0).steps;
+                    progressBar1.setProgress(steps);
+                    progressBar2.setProgress(steps);
+                    progressBar3.setProgress(steps);
+                    progressBar4.setProgress(steps);
+                }
+
+                else{
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ExerciseRes> call, Throwable t) {
+
+            }
+        });
     }
 
-    private void enableButton(ImageButton button, int requiredSteps, int experience) {
-        if (totalSteps >= requiredSteps) {
-            button.setEnabled(true);
-            showToast(experience + " 경험치 획득!");
-        } else {
-            button.setEnabled(false);
-        }
+    Dialog dialog;
+    private void showProgress(){
+        dialog = new Dialog(this);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(new ProgressBar(this));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
-
-    private void levelUp() {
-        currentLevel++;
-        levelProgressBar.setProgress(0);
-        // 레벨 업 시 토스트 메시지
-        showToast("레벨 UP!!");
-
-        // 다음 레벨에서, 다음 레벨까지 필요한 경험치값 설정
-        int nextLevelExp = (currentLevel + 1) * 1000;
-        levelProgressBar.setMax(nextLevelExp);
-
-        // 레벨 텍스트뷰 업데이트
-        TextView levelTextView = findViewById(R.id.level_text);
-        levelTextView.setText("Lv." + currentLevel);
-
-    }
-
-    private void updateProgressBars() {
-        progressBar1.setProgress(Math.min(totalSteps, 1000));
-        progressBar2.setProgress(Math.min(totalSteps, 3000));
-        progressBar3.setProgress(Math.min(totalSteps, 5000));
-        progressBar4.setProgress(Math.min(totalSteps, 10000));
-        progressBar5.setProgress(Math.min(totalSteps, 10000));
-        progressBar6.setProgress(Math.min(totalSteps, 20000));
+    private void dismissProgress(){
+        dialog.dismiss();
     }
 }

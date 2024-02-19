@@ -8,22 +8,13 @@
     android:background="#FFFFFF"
     tools:context=".SocialFragment">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <ImageView
         android:id="@+id/fbtnPostingAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_margin="3dp"
-        android:clickable="true"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="#FFC107" />
+        android:layout_marginTop="10dp"
+        android:src="@drawable/addpostbtn" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,12 +25,21 @@
             android:id="@+id/textView9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
-            android:text="@string/txt_ranker"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Rankings Top 20"
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:src="@drawable/line" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerviewRanker"
@@ -52,20 +52,35 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="35dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:text="@string/txt_posting"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Post"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/imageView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/line" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textView18"
@@ -73,10 +88,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginRight="3dp"
+                android:fontFamily="@font/poppins_semibold"
                 android:gravity="center"
                 android:text="최신순"
-                android:textColor="#673AB7"
-                android:textSize="17sp"
+                android:textColor="#329DBF"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <Switch
@@ -110,9 +126,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginRight="5dp"
+                android:fontFamily="@font/poppins_semibold"
                 android:text="인기순"
-                android:textColor="#0E29BF"
-                android:textSize="17sp"
+                android:textColor="#477DD7"
+                android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
 

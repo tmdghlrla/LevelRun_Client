@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -103,8 +104,8 @@ public class ProfileFragment extends Fragment {
     CharacterAdapter adapter;
     ArrayList<Character> characterArrayList = new ArrayList<>();
     RecyclerView recyclerView;
-    Button btnCollection;
-    ImageView imgBox;
+    FrameLayout btnCollection;
+    FrameLayout imgBox;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

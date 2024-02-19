@@ -72,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
     TextView txtLoginType;
     TextView txtEmail;
     EditText editNickname;
-    Button btnLogout;
+    TextView txtLogout;
 
     String token;
 
@@ -98,7 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
         txtLoginType = findViewById(R.id.txtLoginType);
         txtEmail = findViewById(R.id.txtEmail);
         editNickname = findViewById(R.id.editNickname);
-        btnLogout = findViewById(R.id.btnLogout);
+        txtLogout = findViewById(R.id.txtLogout);
 
 
         // 프로필 프레그먼트 데이터 받아오기
@@ -202,7 +202,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         // 로그아웃 버튼
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        txtLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showLogoutDialog();

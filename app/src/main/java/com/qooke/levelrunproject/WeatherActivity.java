@@ -48,7 +48,7 @@ public class WeatherActivity extends AppCompatActivity {
         txtWeather = findViewById(R.id.txtWeather);
         txtAirLevel = findViewById(R.id.txtAirLevel);
         txtLevel = findViewById(R.id.txtLevel);
-        progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBarExp);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);

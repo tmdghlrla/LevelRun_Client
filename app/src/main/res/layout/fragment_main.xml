@@ -321,7 +321,7 @@
                 android:visibility="visible">
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/imgback"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -358,14 +358,42 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imgLoading"
-        android:layout_width="match_parent"
-        android:layout_height="420dp"
-        android:animateLayoutChanges="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/loading_run" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/imgCardView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="false"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="125dp"
+        android:foregroundGravity="center_horizontal"
+        app:cardCornerRadius="200dp">
 
+        <ImageView
+            android:id="@+id/imgLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:animateLayoutChanges="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/running" />
+    </androidx.cardview.widget.CardView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginTop="50dp"
+        android:hapticFeedbackEnabled="false" />
+
+    <ImageView
+        android:id="@+id/imgMission"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="right"
+        android:layout_marginLeft="320dp"
+        android:src="@drawable/mission" />
     <!-- 날짜 텍스트 뷰 -->
 
 </RelativeLayout>

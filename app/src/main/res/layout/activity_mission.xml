@@ -17,7 +17,7 @@
 
         <!-- 뒤로 가기 -->
         <ImageButton
-            android:id="@+id/imageButton7"
+            android:id="@+id/btnBack"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:background="#00FF0000"
@@ -67,9 +67,10 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/level_text"
+            android:id="@+id/txtLevel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_extrabold_italic"
             android:text="Lv.0"
             android:textColor="#45474B"
             android:textSize="20sp" />
@@ -86,7 +87,7 @@
             android:layout_height="match_parent">
 
             <ProgressBar
-                android:id="@+id/progress_bar_exp_text"
+                android:id="@+id/progressBarExp"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,13 +100,12 @@
                 android:minWidth="48dp"
                 android:minHeight="16dp"
                 android:mirrorForRtl="true"
-                android:progress="50"
                 android:progressDrawable="@drawable/progress_bar_exp" />
 
             <!-- EXP text -->
 
             <TextView
-                android:id="@+id/tv_exp_text"
+                android:id="@+id/txtExp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -155,7 +155,7 @@
 
             <!-- 이미지 버튼 -->
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/btnClear"
                 style="@android:style/Widget.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -169,9 +169,9 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageButton2"
+                android:layout_below="@id/btnClear"
                 android:layout_marginStart="-69dp"
-                android:layout_toEndOf="@id/imageButton2"
+                android:layout_toEndOf="@id/btnClear"
                 android:text="exp100" />
         </RelativeLayout>
 
@@ -200,7 +200,7 @@
 
             <!-- 이미지 버튼 -->
             <ImageButton
-                android:id="@+id/imageButton3"
+                android:id="@+id/btnClear2"
                 style="@android:style/Widget.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -214,9 +214,9 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageButton3"
+                android:layout_below="@id/btnClear2"
                 android:layout_marginStart="-68dp"
-                android:layout_toEndOf="@id/imageButton3"
+                android:layout_toEndOf="@id/btnClear2"
                 android:text="exp300" />
         </RelativeLayout>
 
@@ -246,7 +246,7 @@
 
             <!-- 이미지 버튼 -->
             <ImageButton
-                android:id="@+id/imageButton4"
+                android:id="@+id/btnClear3"
                 style="@android:style/Widget.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -260,9 +260,9 @@
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageButton4"
+                android:layout_below="@id/btnClear3"
                 android:layout_marginStart="-66dp"
-                android:layout_toEndOf="@id/imageButton4"
+                android:layout_toEndOf="@id/btnClear3"
                 android:text="exp500" />
         </RelativeLayout>
 
@@ -293,7 +293,7 @@
 
             <!-- 이미지 버튼 -->
             <ImageButton
-                android:id="@+id/imageButton5"
+                android:id="@+id/btnClear4"
                 style="@android:style/Widget.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -307,9 +307,9 @@
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageButton5"
+                android:layout_below="@id/btnClear4"
                 android:layout_marginStart="-66dp"
-                android:layout_toEndOf="@id/imageButton5"
+                android:layout_toEndOf="@id/btnClear4"
                 android:text="exp1000" />
 
         </RelativeLayout>
@@ -356,7 +356,7 @@
 
             <!-- 이미지 버튼 -->
             <ImageButton
-                android:id="@+id/imageButton6"
+                android:id="@+id/btnClear5"
                 style="@android:style/Widget.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -370,9 +370,9 @@
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageButton6"
+                android:layout_below="@id/btnClear5"
                 android:layout_marginStart="-67dp"
-                android:layout_toEndOf="@id/imageButton6"
+                android:layout_toEndOf="@id/btnClear5"
                 android:text="exp1000" />
 
         </RelativeLayout>
