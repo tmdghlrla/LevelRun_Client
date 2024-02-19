@@ -171,10 +171,6 @@ public class PostDetailActivity extends AppCompatActivity {
             }
             getTag();
             isConfirmed();
-//            content = ranker.content;
-//            createdAt = ranker.createdAt;
-//            likeCnt = posting.likeCnt;
-//            isLike = posting.isLike;
 
         }
 
