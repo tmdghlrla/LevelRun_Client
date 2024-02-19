@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -20,15 +21,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.qooke.levelrunproject.adapter.CharacterAdapter;
 import com.qooke.levelrunproject.api.ExerciseApi;
 import com.qooke.levelrunproject.api.MissionApi;
 import com.qooke.levelrunproject.api.NetworkClient;
 import com.qooke.levelrunproject.api.PostingApi;
+import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
+import com.qooke.levelrunproject.model.CharacterUrl;
 import com.qooke.levelrunproject.model.Exercise;
 import com.qooke.levelrunproject.model.ExerciseRes;
+import com.qooke.levelrunproject.model.MissionRes;
 import com.qooke.levelrunproject.model.PostingDetail;
 import com.qooke.levelrunproject.model.RankerRes;
+import com.qooke.levelrunproject.model.UserInfoRes;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -85,52 +91,74 @@ public class MissionActivity extends AppCompatActivity {
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(steps < 1000) {
+                if(steps < 1000 || isClear1 == 1) {
                     return;
                 }
 
-                // todo: db에 저장하는 코드
                 mission = 1;
+                setExp();
+                getNetworkData();
+            }
+        });
+        btnClear2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(steps < 3000 || isClear2 == 1) {
+                    return;
+                }
+
+                mission = 2;
+                setExp();
+            }
+        });
+        btnClear3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(steps < 5000 || isClear3 == 1) {
+                    return;
+                }
+
+                mission = 3;
+                setExp();
+            }
+        });
+        btnClear4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(steps < 10000 || isClear4 == 1) {
+                    return;
+                }
+
+                mission = 4;
                 setExp();
             }
         });
     }
 
     private void setExp() {
-        // 0. 다이얼로그를 화면에 보여준다.
-        showProgress();
-
         Retrofit retrofit = NetworkClient.getRetrofitClient(MissionActivity.this);
 
         MissionApi api = retrofit.create(MissionApi.class);
 
-        // 2-1. 토큰 받아와야 할 때 토큰을 받아오고 token을 초기화 한다.
-        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         String token = sp.getString("token", "");
         token = "Bearer " + token;
 
         Call<RankerRes> call = api.setExp(token, mission);
-
         call.enqueue(new Callback<RankerRes>() {
-
-            // 성공했을 때
             @Override
             public void onResponse(Call<RankerRes> call, Response<RankerRes> response) {
-                // 서버에서 보낸 응답이 200 OK 일 때 처리하는 코드
-                if (response.isSuccessful()) {
-                    RankerRes RankerRes = response.body();
-//                    txtLevel.setText("Lv." + RankerRes.);
-                } else if (response.code() == 500) {
-                    return;
+                if(response.isSuccessful()){
                 }
 
+                else{
+
+                }
             }
 
-            // 실패 했을 때
             @Override
             public void onFailure(Call<RankerRes> call, Throwable t) {
-                // 유저한테 네트워크 통신 실패 했다고 알려준다.
-                Toast.makeText(MissionActivity.this, "네트워크 파싱 오류입니다.", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -138,6 +166,7 @@ public class MissionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getNetworkData();
         sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         gson = new GsonBuilder().create();
         String values = sp.getString("exercise", "");
@@ -156,6 +185,61 @@ public class MissionActivity extends AppCompatActivity {
         else {
             getRecord();
         }
+    }
+
+    private void getNetworkData() {
+        showProgress();
+        // 1. retrofit 변수 생성
+        Retrofit retrofit = NetworkClient.getRetrofitClient(MissionActivity.this);
+
+        // 2. api 패키지에 있는 interface 생성
+        MissionApi api = retrofit.create(MissionApi.class);
+
+        // 유저의 토큰 값을 가져온다.
+        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        // 3. api 호출
+        Call<MissionRes> call = api.getMissionInfo(token);
+
+        // 5. 서버로부터 받은 응답을 처리하는 코드 작성
+        call.enqueue(new Callback<MissionRes>() {
+
+            // 성공했을 때
+            @Override
+            public void onResponse(Call<MissionRes> call, Response<MissionRes> response) {
+                dismissProgress();
+                // 서버에서 보낸 응답이 200 OK 일 때 처리하는 코드
+                // 데이터 베이스에 카카오 로그인 정보가 없을 때
+                if(response.isSuccessful()) {
+                    MissionRes missionRes = response.body();
+
+                    int level = missionRes.items.get(0).level;
+                    int exp = missionRes.items.get(0).exp;
+                    int max = level*1000;
+                    isClear1 = missionRes.items.get(0).isClear1;
+                    isClear2 = missionRes.items.get(0).isClear2;
+                    isClear3 = missionRes.items.get(0).isClear3;
+                    isClear4 = missionRes.items.get(0).isClear4;
+                    isClear5 = missionRes.items.get(0).isClear5;
+
+                    txtLevel.setText("Lv." + level);
+                    txtExp.setText(exp + "/" + max);
+
+                } else {
+
+                }
+            }
+
+            // 실패 했을 때
+            @Override
+            public void onFailure(Call<MissionRes> call, Throwable t) {
+                dismissProgress();
+                // 유저한테 네트워크 통신 실패 했다고 알려준다.
+                Toast.makeText(MissionActivity.this, "네트워크 파싱 오류입니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void getRecord() {
