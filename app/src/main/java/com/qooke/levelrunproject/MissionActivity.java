@@ -2,39 +2,30 @@
 package com.qooke.levelrunproject;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.qooke.levelrunproject.adapter.CharacterAdapter;
 import com.qooke.levelrunproject.api.ExerciseApi;
 import com.qooke.levelrunproject.api.MissionApi;
 import com.qooke.levelrunproject.api.NetworkClient;
-import com.qooke.levelrunproject.api.PostingApi;
-import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
-import com.qooke.levelrunproject.model.CharacterUrl;
 import com.qooke.levelrunproject.model.Exercise;
 import com.qooke.levelrunproject.model.ExerciseRes;
 import com.qooke.levelrunproject.model.MissionRes;
-import com.qooke.levelrunproject.model.PostingDetail;
-import com.qooke.levelrunproject.model.RankerRes;
-import com.qooke.levelrunproject.model.UserInfoRes;
+import com.qooke.levelrunproject.model.Task;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,10 +34,11 @@ import retrofit2.Retrofit;
 
 public class MissionActivity extends AppCompatActivity {
 
-    private ImageButton btnBack, btnClear, btnClear2, btnClear3, btnClear4, btnClear5;
-    private ProgressBar progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6;
+    private ProgressBar progressBar1, progressBar2, progressBar3, progressBar4, progressBar5;
     private ProgressBar progressBarExp;
-    TextView txtLevel, txtExp;
+    ImageView imgBack, imgClear1, imgClear2, imgClear3, imgClear4, imgClear5;
+    TextView txtLevel, txtExp, txtRank, txtMax;
+    TextView txtStep1, txtStep2, txtStep3, txtStep4, txtStep5;
     Gson gson;
     int steps = 0;
     int mission = 0;
@@ -63,76 +55,45 @@ public class MissionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mission);
 
         txtLevel = findViewById(R.id.txtLevel);
+        txtRank = findViewById(R.id.txtRank);
         progressBarExp = findViewById(R.id.progressBarExp);
+        txtMax = findViewById(R.id.txtMax);
         txtExp = findViewById(R.id.txtExp);
 
+        // 걸음수 나타낼 TextView
+        txtStep1 = findViewById(R.id.txtStep1);
+        txtStep2 = findViewById(R.id.txtStep2);
+        txtStep3 = findViewById(R.id.txtStep3);
+        txtStep4 = findViewById(R.id.txtStep4);
+        txtStep5 = findViewById(R.id.txtStep5);
+
+        // 완료 나타낼 ImageView
+        imgClear1 = findViewById(R.id.imgClear1);
+        imgClear2 = findViewById(R.id.imgClear2);
+        imgClear3 = findViewById(R.id.imgClear3);
+        imgClear4 = findViewById(R.id.imgClear4);
+        imgClear5 = findViewById(R.id.imgClear5);
+
         // UI 요소 초기화
-        btnBack = findViewById(R.id.btnBack);
-        btnClear = findViewById(R.id.btnClear);
-        btnClear2 = findViewById(R.id.btnClear2);
-        btnClear3 = findViewById(R.id.btnClear3);
-        btnClear4 = findViewById(R.id.btnClear4);
-        btnClear5 = findViewById(R.id.btnClear5);
+        imgBack = findViewById(R.id.imgBack);
 
         // 임무 프로그레스바
-        progressBar1 = findViewById(R.id.progressBar1);
+        progressBar1 = findViewById(R.id.progressBar4);
         progressBar2 = findViewById(R.id.progressBar2);
         progressBar3 = findViewById(R.id.progressBar3);
         progressBar4 = findViewById(R.id.progressBar4);
+        progressBar5 = findViewById(R.id.progressBar5);
+        getNetworkData();
 
         // 뒤로가기 버튼
-        btnBack.setOnClickListener(new View.OnClickListener() {
+        imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
 
-        btnClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(steps < 1000 || isClear1 == 1) {
-                    return;
-                }
 
-                mission = 1;
-                setExp();
-                getNetworkData();
-            }
-        });
-        btnClear2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(steps < 3000 || isClear2 == 1) {
-                    return;
-                }
-
-                mission = 2;
-                setExp();
-            }
-        });
-        btnClear3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(steps < 5000 || isClear3 == 1) {
-                    return;
-                }
-
-                mission = 3;
-                setExp();
-            }
-        });
-        btnClear4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(steps < 10000 || isClear4 == 1) {
-                    return;
-                }
-
-                mission = 4;
-                setExp();
-            }
-        });
     }
 
     private void setExp() {
@@ -144,11 +105,14 @@ public class MissionActivity extends AppCompatActivity {
         String token = sp.getString("token", "");
         token = "Bearer " + token;
 
-        Call<RankerRes> call = api.setExp(token, mission);
-        call.enqueue(new Callback<RankerRes>() {
+        Task task = new Task(mission);
+
+        Call<MissionRes> call = api.setExp(token, task);
+        call.enqueue(new Callback<MissionRes>() {
             @Override
-            public void onResponse(Call<RankerRes> call, Response<RankerRes> response) {
+            public void onResponse(Call<MissionRes> call, Response<MissionRes> response) {
                 if(response.isSuccessful()){
+                    getNetworkData();
                 }
 
                 else{
@@ -157,7 +121,7 @@ public class MissionActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<RankerRes> call, Throwable t) {
+            public void onFailure(Call<MissionRes> call, Throwable t) {
 
             }
         });
@@ -166,7 +130,6 @@ public class MissionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getNetworkData();
         sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
         gson = new GsonBuilder().create();
         String values = sp.getString("exercise", "");
@@ -176,6 +139,14 @@ public class MissionActivity extends AppCompatActivity {
         if (!values.equals("")) {
             Exercise exercise = gson.fromJson(values, Exercise.class);
             steps = exercise.steps;
+            Log.i("MissionActivity_tag", "steps : " + steps);
+
+            txtStep1.setText("" + steps);
+            txtStep2.setText("" + steps);
+            txtStep3.setText("" + steps);
+            txtStep4.setText("" + steps);
+
+
             progressBar1.setProgress(steps);
             progressBar2.setProgress(steps);
             progressBar3.setProgress(steps);
@@ -218,14 +189,35 @@ public class MissionActivity extends AppCompatActivity {
                     int level = missionRes.items.get(0).level;
                     int exp = missionRes.items.get(0).exp;
                     int max = level*1000;
+                    int rank = missionRes.rank;
+
+                    progressBarExp.setMax(max);
                     isClear1 = missionRes.items.get(0).isClear1;
                     isClear2 = missionRes.items.get(0).isClear2;
                     isClear3 = missionRes.items.get(0).isClear3;
                     isClear4 = missionRes.items.get(0).isClear4;
                     isClear5 = missionRes.items.get(0).isClear5;
 
+                    if(isClear1 == 1) {
+                        imgClear1.setVisibility(View.VISIBLE);
+                    }
+                    if(isClear2 == 1) {
+                        imgClear2.setVisibility(View.VISIBLE);
+                    }
+                    if(isClear3 == 1) {
+                        imgClear3.setVisibility(View.VISIBLE);
+                    }
+                    if(isClear4 == 1) {
+                        imgClear4.setVisibility(View.VISIBLE);
+                    }
+                    if(isClear5 == 1) {
+                        imgClear5.setVisibility(View.VISIBLE);
+                    }
+
+                    txtRank.setText("" + rank);
                     txtLevel.setText("Lv." + level);
-                    txtExp.setText(exp + "/" + max);
+                    txtExp.setText("" + exp);
+                    txtMax.setText(max + ")");
 
                 } else {
 
@@ -258,6 +250,12 @@ public class MissionActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     ExerciseRes exerciseRes = response.body();
                     steps = exerciseRes.items.get(0).steps;
+                    txtStep1.setText("" + steps);
+                    txtStep2.setText("" + steps);
+                    txtStep3.setText("" + steps);
+                    txtStep4.setText("" + steps);
+                    txtStep5.setText("" + steps);
+
                     progressBar1.setProgress(steps);
                     progressBar2.setProgress(steps);
                     progressBar3.setProgress(steps);

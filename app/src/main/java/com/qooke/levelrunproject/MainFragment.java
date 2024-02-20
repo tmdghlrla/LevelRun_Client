@@ -74,6 +74,8 @@ import com.qooke.levelrunproject.model.Translate;
 import com.qooke.levelrunproject.model.TranslateRes;
 import com.qooke.levelrunproject.model.WeatherRes;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -191,11 +193,13 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
     // 자이로센서 변수
     private SensorManager sensorManager;
     private Sensor stepSensor;
+    private PermissionSupport permission;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main, container, false);
+        permissionCheck();
 
         btnStart = rootView.findViewById(R.id.btnStart);
         txtDate = rootView.findViewById(R.id.txtDate);
@@ -383,6 +387,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
 
             }
         };
+
         // 권한 허용하는 코드
         if(ActivityCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
@@ -404,12 +409,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
                 locationListener
         );
 
-        // 활동 퍼미션 체크
-        if(ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
 
-            requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
-        }
 
         txtDetail.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -457,6 +457,31 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
 
 
         return rootView;
+    }
+
+    private void permissionCheck() {
+        // sdk 23버전 이하 버전에서는 permission이 필요하지 않음
+        if(Build.VERSION.SDK_INT >= 23){
+
+            // 클래스 객체 생성
+            permission =  new PermissionSupport(getActivity(), getContext());
+
+            // 권한 체크한 후에 리턴이 false일 경우 권한 요청을 해준다.
+            if(!permission.checkPermission()){
+                permission.requestPermission();
+            }
+        }
+    }
+
+    // Request Permission에 대한 결과 값을 받는다.
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // 리턴이 false일 경우 다시 권한 요청
+        if (!permission.permissionResult(requestCode, permissions, grantResults)){
+            permission.requestPermission();
+        }
     }
 
     // 운동정보를 db에 기록

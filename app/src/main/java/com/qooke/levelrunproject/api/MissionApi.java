@@ -1,7 +1,7 @@
 package com.qooke.levelrunproject.api;
 
 import com.qooke.levelrunproject.model.MissionRes;
-import com.qooke.levelrunproject.model.RankerRes;
+import com.qooke.levelrunproject.model.Task;
 
 
 import retrofit2.Call;
@@ -13,8 +13,8 @@ import retrofit2.http.POST;
 public interface MissionApi {
     // 임무 완료
     @POST("/mission")
-    Call<RankerRes> setExp(@Header("Authorization") String token,
-                           @Body int mission);
+    Call<MissionRes> setExp(@Header("Authorization") String token,
+                           @Body Task task);
 
     // 레벨 정보 가져오기
     @GET("/user/mission")
