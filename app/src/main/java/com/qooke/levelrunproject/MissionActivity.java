@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -39,6 +40,7 @@ public class MissionActivity extends AppCompatActivity {
     ImageView imgBack, imgClear1, imgClear2, imgClear3, imgClear4, imgClear5;
     TextView txtLevel, txtExp, txtRank, txtMax;
     TextView txtStep1, txtStep2, txtStep3, txtStep4, txtStep5;
+    FrameLayout frameLayout1, frameLayout2, frameLayout3, frameLayout4, frameLayout5;
     Gson gson;
     int steps = 0;
     int mission = 0;
@@ -74,6 +76,13 @@ public class MissionActivity extends AppCompatActivity {
         imgClear4 = findViewById(R.id.imgClear4);
         imgClear5 = findViewById(R.id.imgClear5);
 
+        // 임무 클릭 FrameLayout
+        frameLayout1 = findViewById(R.id.frameLayout1);
+        frameLayout2 = findViewById(R.id.frameLayout2);
+        frameLayout3 = findViewById(R.id.frameLayout3);
+        frameLayout4 = findViewById(R.id.frameLayout4);
+        frameLayout5 = findViewById(R.id.frameLayout5);
+
         // UI 요소 초기화
         imgBack = findViewById(R.id.imgBack);
 
@@ -93,6 +102,51 @@ public class MissionActivity extends AppCompatActivity {
             }
         });
 
+        frameLayout1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(steps<1000 || isClear1 == 1) {
+                    return;
+                }
+                setExp();
+            }
+        });
+        frameLayout2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(steps<5000 || isClear2 == 1) {
+                    return;
+                }
+                setExp();
+            }
+        });
+        frameLayout3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(steps<10000 || isClear3 == 1) {
+                    return;
+                }
+                setExp();
+            }
+        });
+        frameLayout4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(steps<100000 || isClear4 == 1) {
+                    return;
+                }
+                setExp();
+            }
+        });
+        frameLayout5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(steps<500000 || isClear5 == 1) {
+                    return;
+                }
+                setExp();
+            }
+        });
 
     }
 

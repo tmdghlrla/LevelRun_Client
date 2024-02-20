@@ -208,7 +208,7 @@ public class ProfileFragment extends Fragment {
                     // 정보 세팅하기
                     Glide.with(getActivity()).load(profileUrl).into(imgProfile);
 
-                    txtCount.setText("보유 상자 " + boxCount + " 개");
+                    txtCount.setText("" + boxCount);
 
                     txtNickName.setText(nickName);
                     txtRank.setText(""+ rank);
