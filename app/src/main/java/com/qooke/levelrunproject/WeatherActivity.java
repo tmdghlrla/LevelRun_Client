@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,9 +32,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class WeatherActivity extends AppCompatActivity {
-    TextView txtLocation, txtTemp, txtWeather, txtAirLevel, txtLevel;
-    ImageView imgWeather;
-    ProgressBar progressBar;
+    TextView txtLocation, txtTemp, txtWeather, txtLevel;
+    ImageView imgBack, imgWeather, imgAirLevel;
     double lat, lng;
     RecyclerView recyclerView;
     WeatherAdapter adapter;
@@ -45,17 +45,24 @@ public class WeatherActivity extends AppCompatActivity {
         txtLocation = findViewById(R.id.txtLocation);
         imgWeather = findViewById(R.id.imgWeather);
         txtTemp = findViewById(R.id.txtTemp);
+        imgBack = findViewById(R.id.imgBack);
         txtWeather = findViewById(R.id.txtWeather);
-        txtAirLevel = findViewById(R.id.txtAirLevel);
-        txtLevel = findViewById(R.id.txtLevel);
-        progressBar = findViewById(R.id.progressBarExp);
+        imgAirLevel = findViewById(R.id.imgAirLevel);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(WeatherActivity.this));
 
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         lat = getIntent().getDoubleExtra("lat" , 0);
         lng = getIntent().getDoubleExtra("lng" , 0);
+
         getWeatherData();
         getAirCondition();
         timelyWeatherData();
@@ -112,28 +119,23 @@ public class WeatherActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     WeatherRes weatherRes = response.body();
                     int airLevel = weatherRes.list.get(0).main.aqi;
-                    txtAirLevel.setText(airLevel + "단계");
+
 
                     switch (airLevel) {
                         case 1:
-                            txtLevel.setText("매우 좋음");
-                            progressBar.setProgress(airLevel);
+                            imgAirLevel.setImageResource(R.drawable.air_pollution1);
                             break;
                         case 2:
-                            txtLevel.setText("좋음");
-                            progressBar.setProgress(airLevel);
+                            imgAirLevel.setImageResource(R.drawable.air_pollution2);
                             break;
                         case 3:
-                            txtLevel.setText("보통");
-                            progressBar.setProgress(airLevel);
+                            imgAirLevel.setImageResource(R.drawable.air_pollution3);
                             break;
                         case 4:
-                            txtLevel.setText("나쁨");
-                            progressBar.setProgress(airLevel);
+                            imgAirLevel.setImageResource(R.drawable.air_pollution4);
                             break;
                         default:
-                            txtLevel.setText("매우 나쁨");
-                            progressBar.setProgress(airLevel);
+                            imgAirLevel.setImageResource(R.drawable.air_pollution5);
                     }
 
 
