@@ -24,6 +24,9 @@ import com.qooke.levelrunproject.model.Translate;
 import com.qooke.levelrunproject.model.TranslateRes;
 import com.qooke.levelrunproject.model.WeatherRes;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -32,7 +35,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class WeatherActivity extends AppCompatActivity {
-    TextView txtLocation, txtTemp, txtWeather, txtLevel;
+    TextView txtLocation, txtTemp, txtWeather, txtDate;
     ImageView imgBack, imgWeather, imgAirLevel;
     double lat, lng;
     RecyclerView recyclerView;
@@ -48,11 +51,24 @@ public class WeatherActivity extends AppCompatActivity {
         imgBack = findViewById(R.id.imgBack);
         txtWeather = findViewById(R.id.txtWeather);
         imgAirLevel = findViewById(R.id.imgAirLevel);
+        txtDate = findViewById(R.id.txtDate);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(WeatherActivity.this));
 
+        ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+
+        // 현재 서울 시간 가져오기
+        ZonedDateTime seoulTime = ZonedDateTime.now(seoulZoneId);
+
+        // 출력 포맷 지정
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // 현재 서울 시간을 지정된 포맷으로 출력
+        String formattedSeoulTime = seoulTime.format(formatter);
+        String[] strDate = formattedSeoulTime.split("-");
+        txtDate.setText(strDate[0] + "년 " + strDate[1] + "월 " + strDate[2] + "일");
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,7 +205,7 @@ public class WeatherActivity extends AppCompatActivity {
 
 
                     Glide.with(WeatherActivity.this).load(weatherUrl).into(imgWeather);
-                    txtTemp.setText(temp + "°");
+                    txtTemp.setText(temp + " ℃");
                     txtWeather.setText(weatherRes.weather.get(0).description);
 
 

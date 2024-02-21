@@ -15,7 +15,7 @@
         android:src="@drawable/baseline_arrow_back_ios_24" />
 
     <TextView
-        android:id="@+id/textView17"
+        android:id="@+id/txtDate"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_marginTop="5dp"
@@ -100,11 +100,11 @@
                             android:id="@+id/txtTemp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
                             android:layout_marginBottom="10dp"
                             android:text="기온"
                             android:textAlignment="center"
-                            android:textColor="#FFFFFF" />
+                            android:textColor="#FFFFFF"
+                            android:textSize="25sp" />
 
                         <TextView
                             android:id="@+id/txtWeather"
@@ -113,7 +113,8 @@
                             android:layout_marginTop="5dp"
                             android:text="맑음"
                             android:textAlignment="center"
-                            android:textColor="#FFFFFF" />
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -121,22 +122,12 @@
 
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
+        <ImageView
+            android:id="@+id/imgAirLevel"
             android:layout_width="85dp"
             android:layout_height="150dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="20dp"
-            app:cardMaxElevation="20dp">
-
-            <ImageView
-                android:id="@+id/imgAirLevel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/air_pollution1" />
-        </androidx.cardview.widget.CardView>
+            android:src="@drawable/air_pollution1" />
 
     </LinearLayout>
 

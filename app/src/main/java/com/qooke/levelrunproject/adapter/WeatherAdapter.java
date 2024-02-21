@@ -50,7 +50,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
         String time = air.dt_txt;
         String weatherUrl = Config.WEATHER_IMAGE_URL + air.weather.get(0).icon + "@2x.png";
 
-        holder.txtTemp.setText("" + air.main.temp + "°");
+        holder.txtTemp.setText("" + air.main.temp + " ℃");
         Glide.with(context).load(weatherUrl).into(holder.forecastItemWeatherIcon);
         holder.txtWeather.setText(air.weather.get(0).description);
 
@@ -67,7 +67,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
             // 서울 시간을 형식화하여 출력합니다.
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String seoulTimeString = seoulTime.format(formatter);
-
+            seoulTimeString = seoulTimeString.substring(0, 16);
             // 서울 시간을 TextView에 설정합니다.
             holder.txtTime.setText(seoulTimeString);
 

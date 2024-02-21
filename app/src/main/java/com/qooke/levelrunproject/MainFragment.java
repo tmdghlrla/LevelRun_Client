@@ -131,7 +131,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         }
     }
     private ImageView btnStart;
-    private TextView txtDate;
+    private TextView txtDate, txtTemp;
     private boolean isSensorAvailable = false;
     // 기록 정보
     TextView txtDistance, txtKcal, txtTime, txtSteps;
@@ -214,6 +214,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         txtWeather = rootView.findViewById(R.id.txtWeather);
         progressBar = rootView.findViewById(R.id.progressBar);
         imgCardView = rootView.findViewById(R.id.imgCardView);
+        txtTemp = rootView.findViewById(R.id.txtTemp);
 
         txtLocation = rootView.findViewById(R.id.txtLocation);
 
@@ -578,6 +579,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
                     Log.i("MainFragment_tag", "location : " + location);
 
                     Glide.with(getActivity()).load(weatherUrl).into(imgWeather);
+                    txtTemp.setText(temp + "℃");
 
 
                     txtLocation.setText("");
