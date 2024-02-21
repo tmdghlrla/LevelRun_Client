@@ -59,7 +59,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtDate = itemView.findViewById(R.id.txtDate);
-            txtSteps = itemView.findViewById(R.id.txtSteps);
+            txtSteps = itemView.findViewById(R.id.txtDistance);
             txtKcal = itemView.findViewById(R.id.txtKcal);
             txtTime = itemView.findViewById(R.id.txtTime);
             txtDistance = itemView.findViewById(R.id.txtDistance);

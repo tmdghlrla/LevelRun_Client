@@ -49,6 +49,7 @@ public class MissionActivity extends AppCompatActivity {
     int isClear3 = 0;
     int isClear4 = 0;
     int isClear5 = 0;
+    int monthlySteps = 0;
     SharedPreferences sp;
 
     @Override
@@ -88,10 +89,15 @@ public class MissionActivity extends AppCompatActivity {
 
         // 임무 프로그레스바
         progressBar1 = findViewById(R.id.progressBar4);
+        progressBar1.setIndeterminate(false);
         progressBar2 = findViewById(R.id.progressBar2);
+        progressBar2.setIndeterminate(false);
         progressBar3 = findViewById(R.id.progressBar3);
+        progressBar3.setIndeterminate(false);
         progressBar4 = findViewById(R.id.progressBar4);
+        progressBar4.setIndeterminate(false);
         progressBar5 = findViewById(R.id.progressBar5);
+        progressBar5.setIndeterminate(false);
         getNetworkData();
 
         // 뒤로가기 버튼
@@ -304,16 +310,18 @@ public class MissionActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     ExerciseRes exerciseRes = response.body();
                     steps = exerciseRes.items.get(0).steps;
+                    monthlySteps = exerciseRes.monthlySteps;
                     txtStep1.setText("" + steps);
                     txtStep2.setText("" + steps);
                     txtStep3.setText("" + steps);
-                    txtStep4.setText("" + steps);
-                    txtStep5.setText("" + steps);
+                    txtStep4.setText("" + monthlySteps);
+                    txtStep5.setText("" + monthlySteps);
 
                     progressBar1.setProgress(steps);
                     progressBar2.setProgress(steps);
                     progressBar3.setProgress(steps);
-                    progressBar4.setProgress(steps);
+                    progressBar4.setProgress(monthlySteps);
+                    progressBar5.setProgress(monthlySteps);
                 }
 
                 else{

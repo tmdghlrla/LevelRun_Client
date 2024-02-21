@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView33"
+        android:id="@+id/txtSteps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/textView28"
+                    android:id="@+id/txtDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="98dp"
@@ -118,7 +118,7 @@
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/textView32"
-                    app:layout_constraintStart_toEndOf="@+id/textView28"
+                    app:layout_constraintStart_toEndOf="@+id/txtDate"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView

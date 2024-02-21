@@ -139,7 +139,7 @@
                             android:textStyle="bold" />
 
                         <ImageView
-                            android:id="@+id/imageView9"
+                            android:id="@+id/btnStart"
                             android:layout_width="80dp"
                             android:layout_height="4dp"
                             android:layout_marginLeft="20dp"

@@ -130,7 +130,7 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-    private Button btnStart;
+    private ImageView btnStart;
     private TextView txtDate;
     private boolean isSensorAvailable = false;
     // 기록 정보
