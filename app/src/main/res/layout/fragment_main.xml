@@ -84,7 +84,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
                             android:fontFamily="@font/poppins_regular"
-                            android:text="2월 16일"
+                            android:text="0월 0일"
                             android:textColor="#000000"
                             android:textSize="18sp" />
 
@@ -94,7 +94,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
                             android:fontFamily="@font/poppins_regular"
-                            android:text="서울시"
+                            android:text="OO시"
                             android:textColor="#000000"
                             android:textSize="18sp" />
 
@@ -134,7 +134,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="20dp"
                                 android:fontFamily="@font/poppins_semibold"
-                                android:text="5.8 ℃"
+                                android:text="0 ℃"
                                 android:textColor="#000000"
                                 android:textSize="20sp" />
 
