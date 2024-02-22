@@ -441,6 +441,8 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
                 if(isStart == 1) {
                     return;
                 }
+                Toast.makeText(getActivity(), "운동기록을 시작합니다.", Toast.LENGTH_SHORT).show();
+
                 isStart = 1;
                 sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
                 stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
