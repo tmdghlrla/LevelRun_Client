@@ -12,6 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="false"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
         android:src="@drawable/baseline_arrow_back_ios_24" />
 
     <TextView
@@ -22,6 +24,7 @@
         android:layout_marginBottom="5dp"
         android:text="년, 월, 일"
         android:textAlignment="center"
+        android:textColor="#000000"
         android:textSize="16sp"
         android:textStyle="italic" />
 
@@ -33,6 +36,7 @@
         android:layout_marginTop="5dp"
         android:text="오늘의 날씨"
         android:textAlignment="viewStart"
+        android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -44,6 +48,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:text="have a nice day !"
+        android:textColor="#000000"
         android:textStyle="italic" />
 
     <LinearLayout
@@ -139,6 +144,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="5dp"
         android:text="날씨 예보"
+        android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold" />
 
