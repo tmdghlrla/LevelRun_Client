@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.api.NetworkClient;
+import com.qooke.levelrunproject.api.PostingApi;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.MyAppUser;
@@ -82,6 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
     String profileUrl;
     String email;
     int type;
+    String photoFileName = "";
 
 
     Context context;
@@ -106,10 +108,10 @@ public class SettingsActivity extends AppCompatActivity {
         profileUrl = myAppUser.profileUrl;
         nickName = myAppUser.nickName;
         email = myAppUser.email;
-        type = myAppUser.type;
 
-        Log.i("AAA", "데이터 : "+myAppUser.profileUrl);
-        Log.i("AAA", "데이터 : "+myAppUser.nickName);
+        if(myAppUser.password.equals("")) {
+            type =1;
+        }
 
         txtEmail.setText(email);
         editNickname.setText(nickName);
@@ -152,54 +154,13 @@ public class SettingsActivity extends AppCompatActivity {
                     Toast.makeText(SettingsActivity.this, "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                setData();
 
-                showProgress();
 
-                // 네트워크로 API 호출
-                Retrofit retrofit = NetworkClient.getRetrofitClient(SettingsActivity.this);
-                UserApi api = retrofit.create(UserApi.class);
-
-                SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME,MODE_PRIVATE);
-                String token = sp.getString("token", "");
-                token = "Bearer " + token;
-
-                // 보낼 데이터
-                RequestBody fileBody = RequestBody.create(photoFile, MediaType.parse("image/jpeg"));
-                MultipartBody.Part image = MultipartBody.Part.createFormData("image", photoFile.getName(), fileBody);
-                RequestBody textBody = RequestBody.create(nickName, MediaType.parse("text/plain"));
-
-                Call<Res> call = api.profileChange(token, image, textBody);
-                call.enqueue(new Callback<Res>() {
-                    @Override
-                    public void onResponse(Call<Res> call, Response<Res> response) {
-                        dismissProgress();
-
-                        if(response.isSuccessful()) {
-                            Intent intent = new Intent(SettingsActivity.this, ProfileFragment.class);
-                            startActivity(intent);
-                            finish();
-
-                        } else if (response.code() == 500) {
-                            Toast.makeText(SettingsActivity.this, "데이터 베이스에 문제가 있습니다.", Toast.LENGTH_SHORT).show();
-                            return;
-                        } else if (response.code() == 406) {
-                            Toast.makeText(SettingsActivity.this, "중복된 닉네임이 있습니다.", Toast.LENGTH_SHORT).show();
-                            return;
-                        } else {
-                            Toast.makeText(SettingsActivity.this, "잠시후 다시 이용하세요.", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Res> call, Throwable t) {
-                        dismissProgress();
-                        Toast.makeText(SettingsActivity.this, "네트워크 연결 오류", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                });
             }
         });
+
+
 
         // 로그아웃 버튼
         txtLogout.setOnClickListener(new View.OnClickListener() {
@@ -208,6 +169,70 @@ public class SettingsActivity extends AppCompatActivity {
                 showLogoutDialog();
             }
         });
+
+    }
+
+    private void setData() {
+        String nickName = editNickname.getText().toString().trim();
+
+        if(nickName.isEmpty()) {
+            Toast.makeText(SettingsActivity.this, "닉네임을 입력하세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        showProgress();
+
+        Retrofit retrofit = NetworkClient.getRetrofitClient(SettingsActivity.this);
+        UserApi api = retrofit.create(UserApi.class);
+
+        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        String token = sp.getString("token", "");
+        token = "Bearer " + token;
+
+        // 보낼 파일
+        // 서버에 jpg 형식으로 보낸다. 또는 다른 형식으로 보낸다.
+        // 파일은 용량이 커서 쪼개서 보낸다.
+        RequestBody fileBody;
+        if(photoFile != null) {
+            photoFileName = photoFile.getName();
+            fileBody = RequestBody.create(photoFile, MediaType.parse("image/jpg"));
+
+        } else {
+            photoFileName = "";
+            fileBody = RequestBody.create(photoFileName, MediaType.parse(""));
+        }
+        MultipartBody.Part imgProfile = MultipartBody.Part.createFormData("imgProfile", photoFileName, fileBody);
+
+
+        // 보낼 텍스트
+        // 텍스트는 쪼개서 보낼필요가 없다.
+        RequestBody textBody = RequestBody.create(nickName, MediaType.parse("text/plain"));
+        Call<Res> call = api.profileChange(token, imgProfile, textBody);
+
+        // 5. 서버로부터 받은 응답을 처리하는 코드 작성
+
+        call.enqueue(new Callback<Res>() {
+            @Override
+            public void onResponse(Call<Res> call, Response<Res> response) {
+                dismissProgress();
+
+                if(response.isSuccessful()){
+
+                    finish();
+
+                }else{
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Res> call, Throwable t) {
+                dismissProgress();
+            }
+        });
+
+
 
     }
 

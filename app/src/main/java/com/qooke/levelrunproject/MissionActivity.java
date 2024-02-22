@@ -277,6 +277,7 @@ public class MissionActivity extends AppCompatActivity {
                     txtRank.setText("" + rank);
                     txtLevel.setText("Lv." + level);
                     txtExp.setText("" + exp);
+                    progressBarExp.setProgress(exp);
                     txtMax.setText(max + ")");
 
                 } else {

@@ -17,7 +17,7 @@ public interface RankerApi {
     @GET("/ranker")
     Call<RankerRes> rankerImg(@Header("Authorization") String token);
     
-    // 추가 부분
+    // 랭킹 리스트 불러오기
     @GET("/rankingList")
     Call<Ranker> getRanking(@Header("Authorization") String token);
 }

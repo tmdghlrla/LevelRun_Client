@@ -52,6 +52,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -74,6 +76,7 @@ public class PostingAddActivity extends AppCompatActivity {
     String fileUrl;
     String tags = "";
     String tag = "";
+    String content = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +121,31 @@ public class PostingAddActivity extends AppCompatActivity {
                     Toast.makeText(PostingAddActivity.this, "해시 태그 형식이 아닙니다. \nex) #근력운동 #운동 #다이어트", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                content = editContent.getText().toString().trim();
+                String[] tags = tag.split("#");
+                tag = "";
+                // 중복 제거를 위해 Set을 사용합니다.
+                Set<String> uniqueTags = new HashSet<>();
+                for (String tag : tags) {
+                    // 공백이나 빈 문자열이 아닌 경우에만 추가합니다.
+                    if (!tag.trim().isEmpty()) {
+                        uniqueTags.add("#" + tag.trim());
+                    }
+                }
+
+                // Set을 다시 문자열로 변환합니다.
+                StringBuilder result = new StringBuilder();
+                for (String tag : uniqueTags) {
+                    result.append(tag).append(" ");
+                }
+
+                tag = result.toString().trim();
+                Log.i("PostingAddActivity_tag", "tag : " + tag);
+
+                if (fileUrl.isEmpty() || content.isEmpty()) {
+                    Toast.makeText(PostingAddActivity.this, "사진과 내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 addPosting();
 
             }
@@ -125,12 +153,6 @@ public class PostingAddActivity extends AppCompatActivity {
     }
 
     private void addPosting() {
-        String content = editContent.getText().toString().trim();
-
-        if (fileUrl.isEmpty() || content.isEmpty()) {
-            Toast.makeText(PostingAddActivity.this, "사진과 내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
-            return;
-        }
         showProgress();
 
         // 네트워크로 API 호출
@@ -140,6 +162,7 @@ public class PostingAddActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME,MODE_PRIVATE);
         String token = sp.getString("token", "");
         token = "Bearer " + token;
+        Log.i("PostingAddActivity_tag", "token : " + token);
 
         Posting posting = new Posting(fileUrl, content, tag);
 

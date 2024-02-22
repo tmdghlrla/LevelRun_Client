@@ -114,6 +114,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // 소셜 프레그먼트 랭커 데이터 받아오기
         ranker = (Ranker) getIntent().getSerializableExtra("ranker");
+        index = getIntent().getIntExtra("index", 0);
         posting = (Posting) getIntent().getSerializableExtra("posting");
 
 
@@ -164,7 +165,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
             if(postingId == 0) {
                 Glide.with(PostDetailActivity.this).load(ranker.profileUrl).into(imgProfile);
-                txtRank.setText("" + ranker.ranking);
+                txtRank.setText("" + (index+1));
                 txtLevel.setText("" + ranker.level);
                 txtNickname.setText("" + ranker.nickName);
 

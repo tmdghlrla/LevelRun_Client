@@ -12,6 +12,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
@@ -32,10 +33,11 @@ public interface UserApi {
     Call<UserRes> kakaoLogin(@Body MyAppUser user);
 
     // 유저 정보 수정
+    @Multipart
     @PUT("/user")
     Call<Res> profileChange(@Header("Authorization") String token,
-                         @Part MultipartBody.Part image,
-                         @Part ("nickName") RequestBody nickName);
+                            @Part MultipartBody.Part imgProfile,
+                            @Part ("nickName") RequestBody nickName);
 
     // 로그아웃
     @DELETE("/user/logout")
