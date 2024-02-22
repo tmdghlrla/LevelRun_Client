@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#329DBF"
+    android:backgroundTint="#FFFFFF"
     android:orientation="vertical"
     tools:context=".ProfileFragment">
 
@@ -51,6 +52,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
+                        android:background="#FFFFFF"
+                        android:backgroundTint="#FFFFFF"
                         app:cardCornerRadius="70dp">
 
                         <ImageView
@@ -58,7 +61,7 @@
                             android:layout_width="120dp"
                             android:layout_height="120dp"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/blankprofilepicture" />
+                            android:src="@drawable/default_img" />
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
