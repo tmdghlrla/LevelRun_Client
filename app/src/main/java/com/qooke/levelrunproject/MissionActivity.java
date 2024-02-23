@@ -275,7 +275,7 @@ public class MissionActivity extends AppCompatActivity {
                     }
 
                     txtRank.setText("" + rank);
-                    txtLevel.setText("Lv." + level);
+                    txtLevel.setText("" + level);
                     txtExp.setText("" + exp);
                     progressBarExp.setProgress(exp);
                     txtMax.setText(max + ")");
@@ -296,6 +296,7 @@ public class MissionActivity extends AppCompatActivity {
     }
 
     private void getRecord() {
+        // todo: 500 에러
         Retrofit retrofit = NetworkClient.getRetrofitClient(MissionActivity.this);
 
         ExerciseApi api = retrofit.create(ExerciseApi.class);
@@ -312,6 +313,7 @@ public class MissionActivity extends AppCompatActivity {
                     ExerciseRes exerciseRes = response.body();
                     steps = exerciseRes.items.get(0).steps;
                     monthlySteps = exerciseRes.monthlySteps;
+                    Log.i("MissionAcitivty_tag", "steps : " + steps);
                     txtStep1.setText("" + steps);
                     txtStep2.setText("" + steps);
                     txtStep3.setText("" + steps);
