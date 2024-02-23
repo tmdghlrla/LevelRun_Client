@@ -94,9 +94,9 @@
 
                 <TextView
                     android:id="@+id/txtRank"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2.5"
+                    android:layout_weight="1"
                     android:fontFamily="@font/poppins_bold"
                     android:text="0"
                     android:textAlignment="center"
@@ -105,9 +105,9 @@
 
                 <TextView
                     android:id="@+id/txtAirLevel"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2.5"
+                    android:layout_weight="1"
                     android:fontFamily="@font/poppins_bold"
                     android:text="0"
                     android:textAlignment="center"
@@ -116,9 +116,9 @@
 
                 <TextView
                     android:id="@+id/txtExp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2.5"
+                    android:layout_weight="1"
                     android:fontFamily="@font/poppins_bold"
                     android:text="0"
                     android:textAlignment="center"
