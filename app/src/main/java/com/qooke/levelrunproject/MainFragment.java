@@ -428,6 +428,8 @@ public class MainFragment extends Fragment  implements SensorEventListener, Text
         imgMission.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                excerciseRecord();
                 Intent intent = new Intent(getActivity(), MissionActivity.class);
                 getActivity().startActivity(intent);
             }

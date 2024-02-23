@@ -201,16 +201,14 @@ public class MissionActivity extends AppCompatActivity {
             steps = exercise.steps;
             Log.i("MissionActivity_tag", "steps : " + steps);
 
-            txtStep1.setText("" + steps);
-            txtStep2.setText("" + steps);
-            txtStep3.setText("" + steps);
-            txtStep4.setText("" + steps);
-
-
             progressBar1.setProgress(steps);
             progressBar2.setProgress(steps);
             progressBar3.setProgress(steps);
             progressBar4.setProgress(steps);
+            getRecord();
+            txtStep1.setText("" + steps);
+            txtStep2.setText("" + steps);
+            txtStep3.setText("" + steps);
         }
         // 걸음수 호출
         else {
@@ -296,7 +294,7 @@ public class MissionActivity extends AppCompatActivity {
     }
 
     private void getRecord() {
-        // todo: 500 에러
+        Log.i("MissionAcitivty_tag", "steps : " + steps);
         Retrofit retrofit = NetworkClient.getRetrofitClient(MissionActivity.this);
 
         ExerciseApi api = retrofit.create(ExerciseApi.class);

@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFFFF"
+    android:backgroundTint="#FFFFFFFF"
     tools:context=".RegisterActivity">
 
     <LinearLayout
@@ -14,6 +16,8 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="14dp"
         android:layout_marginBottom="15dp"
+        android:background="#FFFFFFFF"
+        android:backgroundTint="#FFFFFFFF"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +66,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                    android:id="@+id/editNickname"
+                    android:id="@+id/editNickName"
                     android:layout_width="300dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="60dp"

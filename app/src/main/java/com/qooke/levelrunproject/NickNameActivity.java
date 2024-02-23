@@ -32,7 +32,7 @@ public class NickNameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nick_name);
-        txtNickName = findViewById(R.id.editEmail);
+        txtNickName = findViewById(R.id.editNickName);
         btnStart = findViewById(R.id.btnLogin);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override

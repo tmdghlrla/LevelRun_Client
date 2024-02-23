@@ -40,7 +40,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.qooke.levelrunproject.api.NetworkClient;
-import com.qooke.levelrunproject.api.PostingApi;
 import com.qooke.levelrunproject.api.UserApi;
 import com.qooke.levelrunproject.config.Config;
 import com.qooke.levelrunproject.model.MyAppUser;
@@ -99,7 +98,7 @@ public class SettingsActivity extends AppCompatActivity {
         imgLoginType = findViewById(R.id.imgLoginType);
         txtLoginType = findViewById(R.id.txtLoginType);
         txtEmail = findViewById(R.id.txtEmail);
-        editNickname = findViewById(R.id.editNickname);
+        editNickname = findViewById(R.id.editNickName);
         txtLogout = findViewById(R.id.txtLogout);
 
 
